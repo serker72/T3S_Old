@@ -1,0 +1,109 @@
+
+/* tooltip styling. uses a background image (a black box with an arrow) */
+div.tooltip {
+	background: #333;
+	font-size:14px;
+	height:153px;
+	width: 100%;
+	font-size:14px;
+	display:none;
+	color:#fff;
+}
+
+/* tooltip title element (h3) */
+div.tooltip h3 {
+	margin:0;
+	font-size:18px;
+	color:#fff;
+}
+
+.trigger {
+	background: url(icon_home/tovar.jpg) no-repeat top;
+	width: 288px;
+	height: 288px;
+	display: block;
+	font-size: 0;
+		-webkit-transition: all 0ms;
+		-moz-transition: all 0ms;
+		-ms-transition: all 0ms;
+		-o-transition: all 0ms;
+	transition: all 0ms;
+}
+
+/* simple mouseover effect for the trigger */
+.trigger:hover {
+	background: url(icon_home/tovar.jpg) no-repeat bottom;
+}
+
+/* tooltip styling. uses a background image (a black box with an arrow) */
+div.tooltip1 {
+	background: #333;
+	font-size:14px;
+	height:153px;
+	width: 100%;
+	font-size:14px;
+	display:none;
+	color:#fff;
+}
+
+/* tooltip title element (h3) */
+div.tooltip1 h3 {
+	margin:0;
+	font-size:18px;
+	color:#fff;
+}
+
+.trigger1 {
+	background: url(icon_home/transport.jpg) no-repeat top;
+	width: 288px;
+	height: 288px;
+	display: block;
+	font-size: 0;
+		-webkit-transition: all 0ms;
+		-moz-transition: all 0ms;
+		-ms-transition: all 0ms;
+		-o-transition: all 0ms;
+	transition: all 0ms;
+}
+
+/* simple mouseover effect for the trigger */
+.trigger1:hover {
+	background: url(icon_home/transport.jpg) no-repeat bottom;
+}
+
+
+
+div.tooltip2 {
+	background: #333;
+	font-size:14px;
+	height:153px;
+	width: 100%;
+	font-size:14px;
+	display:none;
+	color:#fff;
+}
+
+/* tooltip title element (h3) */
+div.tooltip2 h3 {
+	margin:0;
+	font-size:18px;
+	color:#fff;
+}
+
+.trigger2 {
+	background: url(icon_home/torg.jpg) no-repeat top;
+	width: 288px;
+	height: 288px;
+	display: block;
+	font-size: 0;
+		-webkit-transition: all 0ms;
+		-moz-transition: all 0ms;
+		-ms-transition: all 0ms;
+		-o-transition: all 0ms;
+	transition: all 0ms;
+}
+
+/* simple mouseover effect for the trigger */
+.trigger2:hover {
+	background: url(icon_home/torg.jpg) no-repeat bottom;
+}

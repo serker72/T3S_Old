@@ -1,0 +1,2 @@
+[Apr 13, 2015 11:40:39 4-error] [] Connected to server but unexpected output: ﻿0
+[Apr 13, 2015 11:40:40 4-error] [] Fileoptions raw file contents for troubleshooting: ``.

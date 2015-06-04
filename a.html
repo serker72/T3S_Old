@@ -1,0 +1,61 @@
+<html>
+<head>
+    <style type="text/css">
+        .show{
+            position: relative;
+            background-color: transparent;
+            z-index: 50;
+        }
+        .thumbnail span{ /*CSS for enlarged image*/
+            z-index: 0;
+            position: absolute;
+            background-color: lightblue;
+            padding: 5px;
+            left: -1000px;
+            border: 1px solid white;
+            visibility: hidden;
+            color: black;
+            text-decoration: none;
+            border-radius: 4px 4px 4px 4px;
+            -moz-border-radius: 4px 4px 4px 4px;
+            -webkit-border-radius: 4px 4px 4px 4px;
+        }
+        .thumbnail span img{ /*CSS for enlarged image*/
+            border-width: 0;
+            padding: 2px;
+        }
+        .show span{ /*CSS for enlarged image on hover*/
+            visibility: visible;
+            top: 20px;
+            left: 60px; /*position where enlarged image should offset horizontally */
+            width: 300px;
+        }
+        #close{
+            text-align: center;
+            line-height: 15px;
+            position: absolute;
+            top: 3px;
+            right: 8px;
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<a class="thumbnail" href="#">
+    Ññûëêà
+    <span>
+        Çäåñü îïèñàíèå
+        <img src="ÂÀØÀ ÊÀÐÒÈÍÊÀ" width="500"/>
+        <div id="close">x</div>
+    </span>
+</a>
+<script type="text/javascript">
+    var thumb=document.getElementsByClassName("thumbnail")[0];
+    thumb.onmouseover=function(){thumb.className="thumbnail show";};
+    var close=document.getElementById("close");
+    close.onclick=function(){thumb.className="thumbnail";};
+</script>
+</body>
+</html>
