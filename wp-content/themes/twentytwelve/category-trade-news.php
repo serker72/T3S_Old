@@ -19,7 +19,7 @@ get_header(); ?>
     <?php if ( have_posts() ) : ?>
             <header class="archive-header">
                 <div>
-                    <h1 class="archive-title"><span><img src="/wp-content/uploads/2015/05/news_1_r.jpg" alt="News" width="150px"></span>
+                    <h1 class="archive-title"><!--span><img src="/wp-content/uploads/2015/05/news_1_r.jpg" alt="News" width="150px"></span-->
                         <?php printf( __( '%s', 'twentytwelve' ), '<span>' . single_cat_title( '', false ) . '</span>' ); ?></h1>
                 </div>
 
@@ -29,9 +29,9 @@ get_header(); ?>
 
             </header><!-- .archive-header -->
             
-        <div class="container-fluid">    
+        <div class="container-fluid" style="margin: 0px; padding: 0px;">    
             <div class="row-fluid">
-                <div class="span10">
+                <div class="span12">
                     <div class="news-wrapper">
                         <ul class="news-list">
                             

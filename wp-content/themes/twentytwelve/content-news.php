@@ -18,7 +18,7 @@
 		<?php endif; ?>
 		<header class="entry-header">
 			<?php if ( ! post_password_required() && ! is_attachment() ) :
-				the_post_thumbnail();
+				//the_post_thumbnail();
 			endif; ?>
 
 			<?php if ( is_single() ) : ?>

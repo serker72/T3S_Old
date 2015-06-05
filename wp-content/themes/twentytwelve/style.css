@@ -1508,6 +1508,7 @@ max-height: 46px !important;
 .news-wrapper {
 }
 .news-list {
+    margin: 0px;
     list-style: outside none none;
 }
 .news-list li {
@@ -1536,9 +1537,9 @@ max-height: 46px !important;
 }
 .news-list .teaser-text span {
     /*background: #FFBF00 url(images/menu_bg.gif) repeat-x repeat-y;*/
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
 }
 .news-list .news-more {
-    margin: 15px 0 0 0;
+    margin: 0 0 0 0;
 }
