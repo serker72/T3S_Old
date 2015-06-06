@@ -111,8 +111,12 @@ $GLOBALS['tzs_pr_curr'] = array(
 $GLOBALS['tzs_pr_payment'] = array(
 	0 => 'любая',
 	1 => 'наличная',
-	2 => 'безналичная без НДС',
-	3 => 'безналичная, включая НДС',
+	2 => 'безналичная',
+);
+
+$GLOBALS['tzs_pr_nds'] = array(
+	0 => 'без НДС',
+	1 => 'в т.ч. НДС',
 );
 
 $GLOBALS['tzs_au_unit'] = array(

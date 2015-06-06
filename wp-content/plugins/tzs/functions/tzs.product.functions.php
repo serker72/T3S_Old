@@ -11,4 +11,33 @@ function tzs_find_latest_product_rec() {
 		return $row->id;
 	return 0;
 }
+/*******************************************************************************
+ * 
+ * tzs_get_user_meta - получение информации из таблицы wp_user_meta
+ * 
+ *******************************************************************************/
+function tzs_get_user_meta($user_id) {
+    if ($user_id && ($user_id > 0)) {
+	$user_info = get_userdata($user_id);
+        
+        return array(
+            'id' => $uid,
+            'user_login' => $user_info->user_login,
+            'user_nicename' => $user_info->user_nicename,
+            'user_email' => $user_info->user_email,
+            'user_status' => $user_info->user_status,
+            'fio' => get_user_meta($user_id, 'fio', true),
+            'skype' => get_user_meta($user_id, 'skype', true),
+            'telephone' => get_user_meta($user_id, 'telephone', true),
+            'company' => get_user_meta($user_id, 'company', true),
+            'description' => get_user_meta($user_id, 'description', true),
+            'kod_edrpou' => get_user_meta($user_id, 'kod_edrpou', true),
+            'adress' => get_user_meta($user_id, 'adress', true),
+            'tel_fax' => get_user_meta($user_id, 'tel_fax', true),
+        );
+//            '' => get_user_meta($user_id, '', true),
+    } else {
+        return array();
+    }
+}
 ?>

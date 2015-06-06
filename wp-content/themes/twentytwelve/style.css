@@ -820,14 +820,14 @@ input[type=text], input[type=password], select {
 	width: 135px;
 }
 
-#tbl_products {
+.tbl_products {
 	width: 100%;
 	border: 0;
 	margin: 0;
 	padding: 0;
 	float: left;
 }
-#tbl_products th {
+.tbl_products th {
 	background: #a3bfd4;
 	border-radius: 5px 5px 0 0;
 	text-align: center;
@@ -839,45 +839,53 @@ input[type=text], input[type=password], select {
 	padding: 0 5px;
 	font-size: 14px;
 }
-#tbl_products td {
+.tbl_products td {
+        /*font-size: 13px;*/
 	text-align: center;
-	border-bottom: 1px solid #a3bfd4;
-	height: 55px;
+        vertical-align: top;
+	/*border-bottom: 1px solid #a3bfd4;*/
+        border: 1px solid #CDE;
+	min-height: 55px;
 	margin: 0;
-	padding: 0;
+	padding: 5px 0 0 0;
 }
-#tbl_products tr:hover {
+.tbl_products tr:hover {
 	background: #e8e8e8;
 	cursor: pointer;
 }
-#tbl_products td img {
+.tbl_products td img {
     padding: 5px;	
     /*width: 75px;
     height: 75px;*/
 }
-#tbl_products_id {
-    min-width: 45px;
+.tbl_products_id {
+    min-width: 65px;
 }
-#tbl_products_img {
-    min-width: 90px;
+.tbl_products_img {
+    min-width: 100px;
 }
-#tbl_products_dtc {
-    min-width: 80px;
+.tbl_products_dtc {
+    min-width: 70px;
+    font-weight: bold;
 }
-#tbl_products_title {
+.tbl_products_title {
     min-width: 200px;
 }
-#tbl_products_price {
+.tbl_products_title div {
+    padding: 0 2px;
+    text-align: left !important;
+}
+.tbl_products_price {
     min-width: 90px;
 }
-#tbl_products_payment {
+.tbl_products_payment {
     min-width: 80px;
 }
-#tbl_products_cities {
-    min-width: 120px;
+.tbl_products_cities {
+    min-width: 90px;
 }
-#tbl_products_comm {
-    min-width: 50px;
+.tbl_products_comm {
+    min-width: 150px;
 }
 #tbl_auctions_tr_lot_0 {
     background: #CCC0D9;
@@ -1410,8 +1418,8 @@ max-height: 46px !important;
 .ienlarger {
 	float: left;
 	clear: none; /* Можно установить left или right по необходимости */
-	padding-bottom: 5px; /* Расстояние между миниатюрами. Лучше не трогать данное поле */
-	padding-right: 5px; /* Расстояние между миниатюрами и окружающим текстом */
+	padding-bottom: 2px; /* Расстояние между миниатюрами. Лучше не трогать данное поле */
+	padding-right: 2px; /* Расстояние между миниатюрами и окружающим текстом */
 }
 
 .ienlarger a { 
@@ -1427,8 +1435,8 @@ max-height: 46px !important;
 .ienlarger span img {
 	border: 1px solid #FFFFFF; /* Добавляем рамку вокруг изображения */
 	margin-top: 8px; /* /Сдвигаем текст вниз от изображения */
-        max-width: 600px;
-        max-height: 600px;
+        max-width: 500px;
+        max-height: 500px;
 }
 
 .ienlarger a span {  /* Для большого изображения и названия */
@@ -1455,13 +1463,14 @@ max-height: 46px !important;
 .ienlarger a:hover span { 
 	display:block;
 	top: -100px;  /*Большое изображение выскакивает вверх на 50px от миниатюры */
-	left: 100px;  /*Большое изображение выскакивает влево на 90px от миниатюры */
+	left: -530px;  /*Большое изображение выскакивает влево на 90px от миниатюры */
 	z-index: 100000000;
 /* Если добавить правило cursor:default;, то отключится курсор в виде руки на большом изображении */
 }
 
 .resize_thumb {
-	width: 85px; /* Вводим нужный размер миниатюры здесь */
+	width: 100px; /* Вводим нужный размер миниатюры здесь */
+	/*height : 100px;*/
 	height : auto;
 }
 
@@ -1542,4 +1551,69 @@ max-height: 46px !important;
 }
 .news-list .news-more {
     margin: 0 0 0 0;
+}
+.btnBlue {
+    box-sizing:content-box;
+    -moz-box-sizing:content-box;
+    -webkit-box-sizing:content-box;
+    line-height: 20px;
+    color:#fff;
+    text-transform:uppercase;
+    font-size: 12px;
+    font-weight:bold;
+    padding: 0 5px;
+    margin: 10px 5px;
+    background:#1792d6;
+    border:0;
+    display:inline-block;
+    transition:background 0.1s ease-in-out
+}
+.btnBlue:hover,.btnBlue:focus {
+    background:#f43c4a;
+    color:#fff;
+    text-decoration: none;
+}
+.tbl_products_contact {
+    text-align: left;
+}
+.tbl_products_contact span {
+    display: block;
+    padding: 4px 0 9px;
+}
+.tbl_products_contact a {
+    cursor: pointer;
+    text-decoration: none;
+}
+.tbl_products_contact_phone {
+    
+}
+.tbl_products_contact_phone b {
+    display: inline;
+    font-weight: normal;
+}
+.tbl_products_contact_phone span {
+    display: none;
+}
+.tbl_products_contact_phone a {
+    cursor: pointer;
+    text-decoration: none;
+}
+.record_number {
+    color: #999;
+    margin: 0 3px 10px 0;
+    white-space: nowrap;
+    text-align: right;
+}
+.middle {
+    vertical-aligment: middle;
+}
+.time_label {
+    font-weight: bold;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    background: #FF9070 none repeat scroll 0% 0%;
+    color: #333;
+    display: inline-block;
+    padding: 0 5px;
 }

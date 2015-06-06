@@ -84,22 +84,53 @@ function tzs_front_end_products_handler($atts) {
                 } else {
                     ?>
                     <div>
-                        <table id="tbl_products">
+                        <table  class="tbl_products">
                         <tr>
-                            <th id="tbl_products_id">Номер</th>
-                            <th id="tbl_products_img">Фото</th>
-                            <th id="tbl_products_dtc">Дата размещения</th>
-                            <th id="tbl_products_title">Описание товара</th>
-                            <th id="tbl_products_price">Стоимость товара</th>
-                            <th id="tbl_products_payment">Форма оплаты</th>
-                            <th id="tbl_products_cities">Город</th>
-                            <th id="tbl_products_comm">Комментарии</th>
+                            <th class="tbl_products_id">Номер<br/>время заявки</th>
+                            <th class="tbl_auctions_lot">Покупка<br/>Продажа</th>
+                            <th class="tbl_products_">Участник тендера</th>
+                            <th class="tbl_products_dtc">Период публикации</th>
+                            <th class="tbl_products_title">Описание товара</th>
+                            
+                            <th class="tbl_products_img">Фото</th>
+                            <th class="tbl_products_price">Цена<br/>Форма оплаты</th>
+                            <th class="tbl_products_cities">Место нахождения</th>
+                            <th class="tbl_products_comm">Контакты</th>
                         </tr>
                         <?php
                         foreach ( $res as $row ) {
+                            $user_info = tzs_get_user_meta($row->user_id);
                             ?>
-                        <tr rid="<?php echo $row->id;?>" id="tbl_auctions_tr_lot_1">
-                                <td><?php echo $row->id;?></td>
+                            <tr rid="<?php echo $row->id;?>" id="<?php echo $row->sale_or_purchase == 1 ? 'tbl_auctions_tr_lot_1' : 'tbl_auctions_tr_lot_0'; ?>">
+                                <td>
+                                    <div class="record_number">
+                                        <span class="middle">
+                                               № <?php echo $row->id;?>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="time_label" title="Время добавления">
+                                            <?php echo convert_time_only($row->created);?>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td><?php echo $row->sale_or_purchase == 1 ? 'Продажа' : 'Покупка'; ?></td>
+                                <td><?php
+                                    if ($row->fixed_or_tender == 1) {
+                                        echo 'Цена зафиксирована<br/>';?>
+                                    <a class="btnBlue" title="Купить товар">Купить</a>
+                                    <?php } else {
+                                        echo 'Тендерное предложение<br/>';?>
+                                        <a class="btnBlue">Предложить свою цену</a>
+                                    <?php }
+                                ?></td>
+                                <td class="tbl_products_dtc"><?php echo convert_date($row->created); ?><br/><?php echo convert_date($row->expiration); ?></td>
+                                <td class="tbl_products_title">
+                                    <div>
+                                        <?php echo trim($row->title);?>
+                                    </div>
+                                </td>
+                                
                                 <td>
                                     <?php
                                     if (strlen($row->image_id_lists) > 0) {
@@ -111,7 +142,7 @@ function tzs_front_end_products_handler($atts) {
                                                 <a href="#nogo">
                                                     <img src="<?php echo $attachment_info[0]; ?>" alt="thumb" class="resize_thumb">
                                                     <span>
-                                                        <?php echo htmlspecialchars($row->title); ?><br/>
+                                                        <?php echo trim($row->title); ?><br/>
                                                         <img src="<?php echo $attachment_info[0]; ?>" alt="large"/>
                                                     </span>
                                                 </a>
@@ -124,12 +155,37 @@ function tzs_front_end_products_handler($atts) {
                                     }
                                     ?>
                                 </td>
-                                <td><?php echo convert_date($row->created); ?></td>
-                                <td><?php echo htmlspecialchars($row->title);?></td>
-                                <td><?php echo $row->price." ".$GLOBALS['tzs_pr_curr'][$row->currency];?></td>
-                                <td><?php echo $GLOBALS['tzs_pr_payment'][$row->payment];?></td>
+                                
+                                <td><?php echo $row->price." ".$GLOBALS['tzs_pr_curr'][$row->currency];?><br/>
+                                <?php echo $GLOBALS['tzs_pr_payment'][$row->payment];?><br/>
+                                <?php echo $GLOBALS['tzs_pr_nds'][$row->nds];?>
+                                </td>
                                 <td><?php echo tzs_city_to_str($row->from_cid, $row->from_rid, $row->from_sid, $row->city_from);?></td>
-                                <td><?php echo htmlspecialchars($row->comment);?></td>
+                                <td>
+                                    <div class="tbl_products_contact">
+                                        <a href=""><?php echo $user_info['company'] != '' ? $user_info['company'] : $user_info['fio'];?></a>
+                                        <span><?php echo explode(',', $user_info['adress'])[0];?></span>
+                                        <?php 
+                                        //echo htmlspecialchars($row->comment);
+                                        if ($user_info['company'] != '') {
+                                            $phone_list = explode(';', $user_info['tel_fax']);
+                                        } else {
+                                            $phone_list = explode(';', $user_info['telephone']);
+                                        }
+                                        
+                                        for ($i=0;$i < count($phone_list);$i++) {
+                                            ?>
+                                        <div class="tbl_products_contact_phone" phone-user="<?php echo $row->user_id;?>">
+                                            <b><?php echo preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2)', $phone_list[$i]); ?></b>
+                                            <span><?php echo preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2) $3-$4-$5', $phone_list[$i]); ?></span>
+                                            <a onclick="showUserContacts(this, <?php echo $row->user_id;?>);">Показать</a>
+                                        </div>
+                                            <?php
+                                        }
+                                        ?>
+                                        
+                                    </div>
+                                </td>
                             </tr>
                             <?php
                         }
@@ -164,6 +220,12 @@ function tzs_front_end_products_handler($atts) {
                     }
                 ?>
 
+                function showUserContacts(obj, user_id) {
+                    var container = jQuery('div[phone-user="'+user_id+'"]');
+                    container.find('a, b').hide();
+                    container.find('span').show();
+                }
+
                 function showSearchDialog() {
                         doSearchDialog('products', post, null);
                         //doSearchDialog('auctions', post, null);
@@ -173,7 +235,7 @@ function tzs_front_end_products_handler($atts) {
                         jQuery('#tbl_products').on('click', 'td', function(e) {  
                                 var nonclickable = 'true' == e.delegateTarget.rows[0].cells[this.cellIndex].getAttribute('nonclickable');
                                 var id = this.parentNode.getAttribute("rid");
-                                if (!nonclickable)
+                                if (!nonclickable && (this.cellIndex != 8))
                                         document.location = "/account/view-product/?id="+id;
                         });
                         hijackLinks(post);
