@@ -119,7 +119,7 @@ $GLOBALS['tzs_pr_nds'] = array(
 	1 => 'в т.ч. НДС',
 );
 
-$GLOBALS['tzs_au_unit'] = array(
+$GLOBALS['tzs_pr_unit'] = array(
 	0 => '',
 	1 => 'шт',
 	2 => 'м<sup>2</sup>',

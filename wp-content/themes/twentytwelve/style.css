@@ -820,78 +820,92 @@ input[type=text], input[type=password], select {
 	width: 135px;
 }
 
-.tbl_products {
+#tbl_products {
 	width: 100%;
+	max-width: 1000px;
 	border: 0;
 	margin: 0;
 	padding: 0;
 	float: left;
 }
-.tbl_products th {
-	background: #a3bfd4;
-	border-radius: 5px 5px 0 0;
+#tbl_products #tbl_products_filter th {
+    background: #457EC1;
+}
+#tbl_products th {
+	background: #0B5792;
+        /*a3bfd4;*/
+	/*border-radius: 5px 5px 0 0;*/
 	text-align: center;
 	color: #fff;
 	font-weight: normal;
-	height: 55px;
+	/*height: 55px;*/
 	border: 0;
 	margin: 0;
 	padding: 0 5px;
 	font-size: 14px;
 }
-.tbl_products td {
-        /*font-size: 13px;*/
+#tbl_products td {
+        font-family: Verdana, Tahoma, Sans-serif;
+        font-size: 12px;
 	text-align: center;
         vertical-align: top;
 	/*border-bottom: 1px solid #a3bfd4;*/
         border: 1px solid #CDE;
 	min-height: 55px;
 	margin: 0;
-	padding: 5px 0 0 0;
+	padding: 0;
 }
-.tbl_products tr:hover {
+#tbl_products tr:hover {
 	background: #e8e8e8;
 	cursor: pointer;
 }
-.tbl_products td img {
-    padding: 5px;	
+#tbl_products td div {
+    padding: 5px 5px;	
+}
+#tbl_products td img {
+    padding: 0px;	
     /*width: 75px;
     height: 75px;*/
 }
-.tbl_products_id {
-    min-width: 65px;
+#tbl_products_id {
+    min-width: 60px;
 }
-.tbl_products_img {
+#tbl_products_sale {
+    min-width: 50px;
+}
+#tbl_products_cost {
+    /*min-width: 85px;*/
+}
+#tbl_products_img {
     min-width: 100px;
 }
-.tbl_products_dtc {
+#tbl_products_dtc {
     min-width: 70px;
-    font-weight: bold;
 }
-.tbl_products_title {
+#tbl_products_title {
     min-width: 200px;
 }
-.tbl_products_title div {
+#tbl_products_title div {
     padding: 0 2px;
     text-align: left !important;
 }
-.tbl_products_price {
+#tbl_products_price {
     min-width: 90px;
 }
-.tbl_products_payment {
+#tbl_products_payment {
     min-width: 80px;
 }
-.tbl_products_cities {
-    min-width: 90px;
+#tbl_products_cities {
+    min-width: 80px;
 }
-.tbl_products_comm {
+#tbl_products_comm {
     min-width: 150px;
 }
 #tbl_auctions_tr_lot_0 {
-    background: #CCC0D9;
+    /*background: #CCC0D9;*/
 }
 #tbl_auctions_tr_lot_1 {
-    background: #FBD4B4;
+    /*background: #FBD4B4;*/
 }
 #tbl_auctions_lot {
     min-width: 50px;
@@ -1418,8 +1432,8 @@ max-height: 46px !important;
 .ienlarger {
 	float: left;
 	clear: none; /* Можно установить left или right по необходимости */
-	padding-bottom: 2px; /* Расстояние между миниатюрами. Лучше не трогать данное поле */
-	padding-right: 2px; /* Расстояние между миниатюрами и окружающим текстом */
+	padding-bottom: 1px; /* Расстояние между миниатюрами. Лучше не трогать данное поле */
+	padding-right: 1px; /* Расстояние между миниатюрами и окружающим текстом */
 }
 
 .ienlarger a { 
@@ -1463,7 +1477,7 @@ max-height: 46px !important;
 .ienlarger a:hover span { 
 	display:block;
 	top: -100px;  /*Большое изображение выскакивает вверх на 50px от миниатюры */
-	left: -530px;  /*Большое изображение выскакивает влево на 90px от миниатюры */
+	left: 110px;  /*Большое изображение выскакивает влево на 90px от миниатюры */
 	z-index: 100000000;
 /* Если добавить правило cursor:default;, то отключится курсор в виде руки на большом изображении */
 }
@@ -1556,17 +1570,20 @@ max-height: 46px !important;
     box-sizing:content-box;
     -moz-box-sizing:content-box;
     -webkit-box-sizing:content-box;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
     line-height: 20px;
     color:#fff;
     text-transform:uppercase;
-    font-size: 12px;
-    font-weight:bold;
-    padding: 0 5px;
-    margin: 10px 5px;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 8px;
+    margin: 30px 0 0 0;
     background:#1792d6;
     border:0;
     display:inline-block;
-    transition:background 0.1s ease-in-out
+    transition:background 0.1s ease-in-out;
 }
 .btnBlue:hover,.btnBlue:focus {
     background:#f43c4a;
@@ -1574,29 +1591,44 @@ max-height: 46px !important;
     text-decoration: none;
 }
 .tbl_products_contact {
+    color: #3C3D3D;
     text-align: left;
 }
 .tbl_products_contact span {
+    color: #B3B4B7;
     display: block;
     padding: 4px 0 9px;
 }
 .tbl_products_contact a {
+    color: #1792D6;
     cursor: pointer;
+    font-weight: bold;
     text-decoration: none;
 }
 .tbl_products_contact_phone {
-    
 }
 .tbl_products_contact_phone b {
     display: inline;
     font-weight: normal;
 }
 .tbl_products_contact_phone span {
+    color: #3C3D3D;
     display: none;
 }
 .tbl_products_contact_phone a {
+    color: #2F3133;
     cursor: pointer;
+    font-weight: normal;
     text-decoration: none;
+}
+.tbl_products_contact_phone a:hover {
+    color: #1792D6;
+    font-weight: normal;
+    text-decoration: none;
+}
+.tzs_au_contact_view_all {
+    display: none;
+    color: #f43c4a;
 }
 .record_number {
     color: #999;
@@ -1612,8 +1644,43 @@ max-height: 46px !important;
     border-radius: 4px;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
+    background: #F6D654 none repeat scroll 0% 0%;
+    color: #333;
+    display: inline-block;
+    padding: 0 5px;
+}
+.expired_label {
+    font-weight: bold;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
     background: #FF9070 none repeat scroll 0% 0%;
     color: #333;
     display: inline-block;
     padding: 0 5px;
+}
+.price_label {
+    /*font-weight: bold;*/
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    background: #4B86CA none repeat scroll 0% 0%; /*0B5792*/
+    color: #FFFFFF;
+    display: inline-block;
+    padding: 2px 8px;
+}
+.copies_label {
+    /*font-weight: bold;*/
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    background: #468847 none repeat scroll 0% 0%;
+    color: #FFFFFF;
+    display: inline-block;
+    padding: 1px 5px;
+}
+.title_text {
+    text-align: left;
+    vertical-align: top;
+    padding: 0 0 0 5px;
 }

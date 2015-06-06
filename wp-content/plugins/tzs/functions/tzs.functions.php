@@ -138,6 +138,10 @@ function convert_date($date) {
 	return date("d.m.Y", strtotime($date));
 }
 
+function convert_date_year2($date) {
+	return date("d.m.y", strtotime($date));
+}
+
 function convert_date_no_year($date) {
 	$cy = date("Y");
 	$dy = date("Y", strtotime($date));
