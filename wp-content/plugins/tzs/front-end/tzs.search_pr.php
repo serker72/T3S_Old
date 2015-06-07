@@ -89,6 +89,7 @@ function tzs_validate_pr_search_parameters() {
 	// get parameters from _POST
         $type_id = get_param_def('type_id', '0');
         $cur_type_id = get_param_def('cur_type_id', '0');
+        $rootcategory = get_param_def('rootcategory', '0');
         
 	$country_from = get_param_def('country_from', '0');
 	$region_from = get_param_def('region_from', '0');
@@ -153,6 +154,12 @@ function tzs_validate_pr_search_parameters() {
         
 	if (is_valid_num_zero($cur_type_id)) {
 		$cur_type_id = intval($cur_type_id);
+	} else {
+		array_push($errors, "Неверно выбрана категория");
+	}
+
+	if (is_valid_num_zero($rootcategory)) {
+		$rootcategory = intval($rootcategory);
 	} else {
 		array_push($errors, "Неверно выбрана категория");
 	}
@@ -231,6 +238,8 @@ function tzs_validate_pr_search_parameters() {
                     $res['type_id'] = $type_id;
             if ($cur_type_id > 0)
                     $res['cur_type_id'] = $cur_type_id;
+            if ($rootcategory > 0)
+                    $res['rootcategory'] = $rootcategory;
 
             if ($cityname_from_ids != null)
                     $res['cityname_from_ids'] = $cityname_from_ids;
@@ -279,8 +288,11 @@ function tzs_search_pr_parameters_to_sql($p, $pref) {
     if (isset($p['price_to']))
             $sql .= ' AND price <= '.$p['price_to'];
     
-    if (isset($p['type_id']) && ($p['type_id'] > 0))
+    if (isset($p['type_id']) && ($p['type_id'] > 0)) {
+        if ((isset($p['rootcategory']) == false) || ($p['rootcategory'] < 1)) {
             $sql .= ' AND type_id = '.$p['type_id'];
+        }
+    }
     
     
     if (isset($p['auction_type']) && ($p['auction_type'] > 0)) {
@@ -380,22 +392,18 @@ function tzs_search_pr_parameters_to_str($p) {
 	return $sql;
 }
 
-function tzs_front_end_search_pr_handler($atts) {
-    ob_start();
+function tzs_front_end_search_pr_form() {
     tzs_copy_get_to_post();
     $product_auction = get_param_def('product_auction', 'products');
     $pa_root_id = ($product_auction === 'auctions') ? ''.TZS_AU_ROOT_CATEGORY_PAGE_ID : ''.TZS_PR_ROOT_CATEGORY_PAGE_ID;
     ?>
-    <form name="search_pr_form" method="POST">
+    <form id="search_pr_form" name="search_pr_form" method="POST">
         <table name="search_param" border="0">
             <tr>
-                <th colspan="7"><?php if ($product_auction === 'auctions') { echo 'Тендеры'; } else { echo 'Товары и услуги'; } ?></th>
+                <th colspan="2">Укажите критерии поиска товаров и услуг</th>
             </tr>
             <tr>
-                <td width="10">&nbsp;</td>
-                <td>Категория:</td>
-                <td>&nbsp;</td>
-                <td colspan="3">
+                <td>Категория:<br>
                     <select name="type_id" <?php echo (isset($_POST['cur_type_id']) && ($_POST['cur_type_id'] === $pa_root_id)) ? '' : ' disabled="disabled"'; ?> >
                         <option value="0">все категории</option>
 			<option disabled>- - - - - - - -</option>
@@ -404,110 +412,69 @@ function tzs_front_end_search_pr_handler($atts) {
 			?>
                     </select>
                 </td>
-                <td width="10">&nbsp;</td>
-            </tr>
-            <tr>
-                <td width="10">&nbsp;</td>
-                <td>Местонахождение:</td>
-                <td>страна:</td>
-                <td colspan="3">
+                <td>Местонахождение: страна:<br>
                     <select name="country_from">
                         <?php
                             tzs_pr_build_countries('country_from');
 			?>
                     </select>
                 </td>
-                <td width="10">&nbsp;</td>
-            </tr>
             <tr>
-                <td> </td>
-                <td> </td>
-                <td>регион:</td>
-                <td colspan="3">
-                    <select name="region_from">
-                        <option>все области</option>
+                <td>Тип заявки:<br>
+                    <select name="auction_type">
+                        <option value="0" <?php if (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] == 0) echo 'selected="selected"'; ?> >Все</option>
+                        <option value="1" <?php if (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] == 1) echo 'selected="selected"'; ?> >Продажа</option>
+                        <option value="2" <?php if (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] == 2) echo 'selected="selected"'; ?> >Покупка</option>
                     </select>
                 </td>
-                <td> </td>
-            </tr>
-            <tr>
-                <td> </td>
-                <td> </td>
-                <td>город:</td>
-                <td colspan="3">
-                    <!--input autocomplete="city" type="text" name="cityname_from" value="<?php //echo_val('cityname_from'); ?>" size="25" autocomplete="off"-->
-                    <input type="text" name="cityname_from" value="<?php echo_val('cityname_from'); ?>" size="30">
+                <td>Местонахождение: регион:<br>
+                    <select name="region_from">
+                        <option value="0">все области</option>
+                    </select>
                 </td>
-                <td> </td>
             </tr>
             <tr>
-                <td> </td>
-                <td>Описание:</td>
-                <td> </td>
-                <td colspan="3">
+                <td>Описание:<br>
                     <input type="text" name="pr_title" value="<?php echo_val('pr_title'); ?>" size="30">
                 </td>
-                <td> </td>
+                <td>Местонахождение: город:<br>
+                    <input type="text" name="cityname_from" value="<?php echo_val('cityname_from'); ?>" size="30">
+                </td>
             </tr>
             <tr>
-                <td> </td>
-                <td>Стоимость:</td>
-                <td>от:</td>
-                <td>
+                <td>Стоимость: от:<br>
                     <input type="text" name="price_from" value="<?php echo_val('price_from'); ?>" size="10">
                 </td>
-                <td>до:</td>
-                <td>
+                <td>Стоимость: до:<br>
                     <input type="text" name="price_to" value="<?php echo_val('price_to'); ?>" size="10">
                 </td>
-                <td> </td>
             </tr>
             <tr>
-                <td> </td>
-                <td>Дата размещения:</td>
-                <td>от:</td>
-                <td>
+                <td>Дата размещения: от:<br>
                     <input type="text" name="data_from" value="<?php echo_val('data_from'); ?>" size="10">
                 </td>
-                <td>до:</td>
-                <td>
+                <td>Дата размещения: до:<br>
                     <input type="text" name="data_to" value="<?php echo_val('data_to'); ?>" size="10">
                 </td>
-                <td> </td>
             </tr>
-            <?php if ($product_auction === 'auctions') { ?>
-            <tr>
-                <td> </td>
-                <td>Тип тендера:</td>
-                <td> </td>
-                <td colspan="3">
-                    <select name="auction_type">
-                        <option value="0" <?php if (isset($_POST['auction_type']) && $_POST['auction_type'] == 0) echo 'selected="selected"'; ?> >Все</option>
-                        <option value="1" <?php if (isset($_POST['auction_type']) && $_POST['auction_type'] == 1) echo 'selected="selected"'; ?> >Продажа</option>
-                        <option value="2" <?php if (isset($_POST['auction_type']) && $_POST['auction_type'] == 2) echo 'selected="selected"'; ?> >Покупка</option>
-                    </select>
-                </td>
-                <td> </td>
-            </tr>
-            <tr>
-                <td> </td>
-                <td>Ставка:</td>
-                <td>от:</td>
-                <td>
-                    <input type="text" name="rate_from" value="<?php echo_val('rate_from'); ?>" size="10">
-                </td>
-                <td>до:</td>
-                <td>
-                    <input type="text" name="rate_to" value="<?php echo_val('rate_to'); ?>" size="10">
-                </td>
-                <td> </td>
-            </tr>
-            <?php } ?>
         </table>
     </form>
+    <?php
+}
 
-                                        
-                                        
+function tzs_front_end_search_pr_handler($atts) {
+    ob_start();
+    
+    tzs_front_end_search_pr_form();
+    
+    $output = ob_get_contents();
+    ob_end_clean();
+	
+    return $output;
+}
+
+function aaaa () {
+?>
 	<script>
 		function doAjax(id, rid, to_el) {
 			jQuery(to_el).attr("disabled", "disabled");
@@ -554,12 +521,6 @@ function tzs_front_end_search_pr_handler($atts) {
 		});
 	</script>
 	
-    <?php
-	
-    $output = ob_get_contents();
-    ob_end_clean();
-	
-    return $output;
+<?php
 }
-
 ?>

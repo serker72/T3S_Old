@@ -1697,7 +1697,8 @@ max-height: 46px !important;
 }
 .dc-slick {
 width: 660px; /* Required to limit width of slick content */
-background: #0B5792; 
+/*background: #0B5792;*/ 
+background: #7f9db9;
 }
 .dc-slick .dc-slick-content {
 /*color: #000;*/

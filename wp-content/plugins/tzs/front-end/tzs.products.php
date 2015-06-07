@@ -1,5 +1,7 @@
 <?php
 
+include_once(TZS_PLUGIN_DIR.'/front-end/tzs.products_reload.php');
+
 function tzs_front_end_products_handler($atts) {
     // Определяем атрибуты 
     // [tzs-view-products rootcategory="1"] - указываем на странице раздела
@@ -42,12 +44,16 @@ function tzs_front_end_products_handler($atts) {
             echo $p_title;
             echo strlen($s_title) > 0 ?  ' * '. $s_title : '';
             ?></div>
+        
+            <div id="errors" class="errors">
+            </div>
 	<?php
 
+        
         $page = current_page_number();
 
 	?>
-	<a tag="page" id="realod_btn" href="<?php echo build_page_url($page); ?>">Обновить</a>
+            <a tag="page" id="realod_btn" href="<?php echo build_page_url($page); ?>">Обновить</a>
 	<?php
         
         global $wpdb;
@@ -78,136 +84,19 @@ function tzs_front_end_products_handler($atts) {
                     ?>
                     <div style="clear: both;"></div>
                     <div class="errors">
-                        <div id="info error">По Вашему запросу ничего не найдено.</div>
+                        <div id="info error">По Вашему запросу ничего не найдено.<br><?php echo $sql; ?></div>
                     </div>
                     <?php
                 } else {
     $product_auction = get_param_def('product_auction', 'products');
     $pa_root_id = ($product_auction === 'auctions') ? ''.TZS_AU_ROOT_CATEGORY_PAGE_ID : ''.TZS_PR_ROOT_CATEGORY_PAGE_ID;
                     ?>
+<!------------------------------------------------------------------------->                        
                     <div id="slick-1">
-<!------------------------------------------------------------------------->                        
-    <form name="search_pr_form" method="POST">
-        <table name="search_param" border="0">
-            <tr>
-                <th colspan="7"><?php if ($product_auction === 'auctions') { echo 'Тендеры'; } else { echo 'Товары и услуги'; } ?></th>
-            </tr>
-            <tr>
-                <td width="10">&nbsp;</td>
-                <td>Категория:</td>
-                <td>&nbsp;</td>
-                <td colspan="3">
-                    <select name="type_id" <?php echo (isset($_POST['cur_type_id']) && ($_POST['cur_type_id'] === $pa_root_id)) ? '' : ' disabled="disabled"'; ?> >
-                        <option value="0">все категории</option>
-			<option disabled>- - - - - - - -</option>
-                        <?php
-                            tzs_build_product_types('type_id', $pa_root_id);
-			?>
-                    </select>
-                </td>
-                <td width="10">&nbsp;</td>
-            </tr>
-            <tr>
-                <td width="10">&nbsp;</td>
-                <td>Местонахождение:</td>
-                <td>страна:</td>
-                <td colspan="3">
-                    <select name="country_from">
-                        <?php
-                            tzs_pr_build_countries('country_from');
-			?>
-                    </select>
-                </td>
-                <td width="10">&nbsp;</td>
-            </tr>
-            <tr>
-                <td> </td>
-                <td> </td>
-                <td>регион:</td>
-                <td colspan="3">
-                    <select name="region_from">
-                        <option>все области</option>
-                    </select>
-                </td>
-                <td> </td>
-            </tr>
-            <tr>
-                <td> </td>
-                <td> </td>
-                <td>город:</td>
-                <td colspan="3">
-                    <!--input autocomplete="city" type="text" name="cityname_from" value="<?php //echo_val('cityname_from'); ?>" size="25" autocomplete="off"-->
-                    <input type="text" name="cityname_from" value="<?php echo_val('cityname_from'); ?>" size="30">
-                </td>
-                <td> </td>
-            </tr>
-            <tr>
-                <td> </td>
-                <td>Описание:</td>
-                <td> </td>
-                <td colspan="3">
-                    <input type="text" name="pr_title" value="<?php echo_val('pr_title'); ?>" size="30">
-                </td>
-                <td> </td>
-            </tr>
-            <tr>
-                <td> </td>
-                <td>Стоимость:</td>
-                <td>от:</td>
-                <td>
-                    <input type="text" name="price_from" value="<?php echo_val('price_from'); ?>" size="10">
-                </td>
-                <td>до:</td>
-                <td>
-                    <input type="text" name="price_to" value="<?php echo_val('price_to'); ?>" size="10">
-                </td>
-                <td> </td>
-            </tr>
-            <tr>
-                <td> </td>
-                <td>Дата размещения:</td>
-                <td>от:</td>
-                <td>
-                    <input type="text" name="data_from" value="<?php echo_val('data_from'); ?>" size="10">
-                </td>
-                <td>до:</td>
-                <td>
-                    <input type="text" name="data_to" value="<?php echo_val('data_to'); ?>" size="10">
-                </td>
-                <td> </td>
-            </tr>
-            <?php if ($product_auction === 'auctions') { ?>
-            <tr>
-                <td> </td>
-                <td>Тип тендера:</td>
-                <td> </td>
-                <td colspan="3">
-                    <select name="auction_type">
-                        <option value="0" <?php if (isset($_POST['auction_type']) && $_POST['auction_type'] == 0) echo 'selected="selected"'; ?> >Все</option>
-                        <option value="1" <?php if (isset($_POST['auction_type']) && $_POST['auction_type'] == 1) echo 'selected="selected"'; ?> >Продажа</option>
-                        <option value="2" <?php if (isset($_POST['auction_type']) && $_POST['auction_type'] == 2) echo 'selected="selected"'; ?> >Покупка</option>
-                    </select>
-                </td>
-                <td> </td>
-            </tr>
-            <tr>
-                <td> </td>
-                <td>Ставка:</td>
-                <td>от:</td>
-                <td>
-                    <input type="text" name="rate_from" value="<?php echo_val('rate_from'); ?>" size="10">
-                </td>
-                <td>до:</td>
-                <td>
-                    <input type="text" name="rate_to" value="<?php echo_val('rate_to'); ?>" size="10">
-                </td>
-                <td> </td>
-            </tr>
-            <?php } ?>
-        </table>
-    </form>
-<!------------------------------------------------------------------------->                        
+                        <?php tzs_front_end_search_pr_form(); ?>
+                        <button id="pr_search_button" onclick="javascript:products_reload()">Поиск</button>
                     </div>
+<!------------------------------------------------------------------------->                        
                     <div>
                         <table  id="tbl_products">
                             <thead>
@@ -399,6 +288,8 @@ function tzs_front_end_products_handler($atts) {
         }
     }
 ////
+    //echo '<div>'.tzs_front_end_products_reload($p_id, $rootcategory).'</div>';
+/////
 	?>
         <script src="/wp-content/plugins/tzs/assets/js/search.js"></script>
         <script>
@@ -410,6 +301,9 @@ function tzs_front_end_products_handler($atts) {
                     }
                     if (!isset($_POST['type_id'])) {
                         echo "post[".tzs_encode2("type_id")."] = ".tzs_encode2($p_id).";\n";
+                    }
+                    if (!isset($_POST['rootcategory'])) {
+                        echo "post[".tzs_encode2("rootcategory")."] = ".tzs_encode2($rootcategory).";\n";
                     }
                     if (!isset($_POST['cur_type_id'])) {
                         echo "post[".tzs_encode2("cur_type_id")."] = ".tzs_encode2($p_id).";\n";
@@ -436,7 +330,79 @@ function tzs_front_end_products_handler($atts) {
                         doSearchDialog('products', post, null);
                         //doSearchDialog('auctions', post, null);
                 }
+                
+                function products_reload() {
+                    //var theForm = document.forms['search_pr_form'];
+                    //jQuery('form[name="search_pr_form"]').submit();
+                    fd = jQuery('form[name="search_pr_form"]').serialize();
+//                        data: "<?php //echo 'type_id='.$p_id.'&rootcategory='.$rootcategory; ?>",
+                    jQuery.ajax({
+                        url: "/wp-admin/admin-ajax.php?action=tzs_products_reload",
+                           // url: "/wp-content/plugins/tzs/functions/tzs.functions.php?action=add_bet",
+                        type: "POST",
+                        data: fd,
+                        dataType: 'json',
+                        success: function(data) {
+                            //alert('output_info='+data.output_info);
+                            //alert('output_error='+data.output_error);
+                            //alert(data);
+                            //alert('output_tbody='+data.output_tbody);
+                            //document.getElementById('search_info').innerHTML = data.output_error;
+                            //jQuery("#search_info").html(data.output_error);
+                            
+                            if (data.output_info !== 'undefined') {
+                                jQuery("#search_info").html(data.output_info);
+                            } else {
+                                jQuery("#search_info").html('');
+                            }
+                            
+                            if (data.output_error !== 'undefined') {
+                                jQuery("#errors").html(data.output_error);
+                                //jQuery("#errors").css('display', 'block');
+                            } else {
+                                jQuery("#errors").html('');
+                            }
+                            
+                            if (data.output_tbody !== 'undefined') {
+                                jQuery("#tbl_products tbody").html(data.output_tbody);
+                            } else {
+                                jQuery("#tbl_products tbody").html('');
+                            }
+                            
+                            if (data.output_pnav !== 'undefined') {
+                                jQuery("#pages_container").html(data.output_pnav);
+                            } else {
+                                jQuery("#pages_container").html('');
+                            }
+                            
+                            //dd = jQuery('#slick-1');
+                            //jQuery('#slick-1').slickClose();
+                            jQuery('.tab').click();
+                        },
+                        error: function(data) {
+                            //alert(data.responsetext);
+                            if (data.responsetext !== 'undefined') {
+                                jQuery("#errors").html(data.responsetext);
+                            } else {
+                                jQuery("#errors").html('');
+                            }
+                            
+                            dd = jQuery('#slick-1');
+                            jQuery('#slick-1').slickClose();
+                        }			
+                    });		   
+                }
 
+                // Create a hidden input element, and append it to the form:
+                function addHidden(theForm, key, value) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;//'name-as-seen-at-the-server';
+                    input.value = value;
+                    
+                    theForm.appendChild(input);
+                }
+                
                 jQuery(document).ready(function(){
                         jQuery('#tbl_products').on('click', 'td', function(e) {  
                                 var nonclickable = 'true' == e.delegateTarget.rows[0].cells[this.cellIndex].getAttribute('nonclickable');
@@ -444,16 +410,29 @@ function tzs_front_end_products_handler($atts) {
                                 if (!nonclickable && (this.cellIndex != 7))
                                         document.location = "/account/view-product/?id="+id;
                         });
+                        
+                        //
+                        var theForm = document.forms['search_pr_form'];
+                        addHidden(theForm, 'type_id', '<?php echo $p_id; ?>');
+                        addHidden(theForm, 'rootcategory', '<?php echo $rootcategory; ?>');
+                        addHidden(theForm, 'cur_type_id', '<?php echo $p_id; ?>');
+                        addHidden(theForm, 'cur_post_name', '<?php echo $p_name; ?>');
+                        
                         hijackLinks(post);
+                        
+                        /*jQuery('#pr_search_button').click(function(e) {
+                            alert('Test');
+                            products_reload();
+                        });*/
                         
                         ///
 	jQuery('#slick-1').dcSlick({
 			location: 'left',
 			align: 'top',
-			offset: '200px',
+			offset: '100px',
 			speed: 'slow',
 			tabText: 'Поиск',
-			autoClose: false
+			autoClose: true
 	});
                         
                 });

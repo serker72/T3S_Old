@@ -583,3 +583,16 @@ function tzs_post_category_nicename_single() {
 }
 // Добавим фильтр для 
 add_filter('single_template', 'tzs_post_category_nicename_single');
+
+/**
+ * 
+ */
+function tzs_products_reload() {
+    include_once(WP_PLUGIN_DIR . '/tzs/front-end/tzs.products_reload.php');
+    $output = tzs_front_end_products_reload();
+    //echo 'Test tzs_products_reload';
+    echo json_encode($output);
+    wp_die();
+}
+add_action("wp_ajax_tzs_products_reload", "tzs_products_reload");
+add_action("wp_ajax_nopriv_tzs_products_reload", "tzs_products_reload");
