@@ -831,6 +831,17 @@ input[type=text], input[type=password], select {
 #tbl_products #tbl_products_filter th {
     background: #457EC1;
 }
+#tbl_products #tbl_products_filter th input[type="text"] {
+    max-width: 20px;
+    max-height: 10px;
+    margin: 2px 0 2px 0;
+    /*display: inline-block;*/
+}
+#tbl_products #tbl_products_filter th input[type="checkbox"] {
+    max-width: 10px;
+    max-height: 10px;
+    margin: 2px 1px;
+}
 #tbl_products th {
 	background: #0B5792;
         /*a3bfd4;*/
@@ -868,7 +879,7 @@ input[type=text], input[type=password], select {
     height: 75px;*/
 }
 #tbl_products_id {
-    min-width: 60px;
+    min-width: 70px;
 }
 #tbl_products_sale {
     min-width: 50px;
@@ -1683,4 +1694,15 @@ max-height: 46px !important;
     text-align: left;
     vertical-align: top;
     padding: 0 0 0 5px;
+}
+.dc-slick {
+width: 660px; /* Required to limit width of slick content */
+background: #0B5792; 
+}
+.dc-slick .dc-slick-content {
+/*color: #000;*/
+}
+.dc-slick .tab {
+background: #0B5792; 
+color: #fff; 
 }

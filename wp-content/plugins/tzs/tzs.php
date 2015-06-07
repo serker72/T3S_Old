@@ -19,6 +19,7 @@ define( 'TZS_CITIES_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "cities" );
 define( 'TZS_CITY_IDS_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "city_ids" );
 // KSK - add table for products & auctions
 define( 'TZS_PRODUCTS_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "products" );
+define( 'TZS_PRODUCT_RATES_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "product_rates" );
 define( 'TZS_AUCTIONS_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "auctions" );
 define( 'TZS_AUCTION_RATES_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "auction_rates" );
 
