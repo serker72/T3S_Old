@@ -222,11 +222,20 @@
 	margin: 0 40px;
 	color: rgba(255, 255, 255, 0.5);
 }
+.errors {
+	background: #EAE1E1;
+	float: left;
+        margin: 0 5px 0 5px;
+	padding: 10px 10px 10px 30px;
+	border: 2px solid #E5AEAE;
+	box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.1);
+	border-radius: 5px;
+}
 #search_info {
 	background: #fff url('images/bottom.png') no-repeat top 11px left 8px;
 	float: left;
 	padding: 10px 10px 10px 30px;
-	margin: 10px 0;
+	/*margin: 0 0 0 67px;*/
 	box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.1);
 	border-radius: 5px;
 	text-decoration: none;
@@ -339,7 +348,7 @@
 	float: right;
 	background: #fff url('images/refresh.png') no-repeat top 11px left 8px;
 	padding: 10px 10px 10px 30px;
-	margin: 10px 0;
+	/*margin: 10px 0;*/
 	box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.1);
 	border-radius: 5px;
 	text-decoration: none;
@@ -641,12 +650,6 @@ input[disabled=disabled] {
 	color: red;
 }
 
-.errors {
-	background: #EAE1E1;
-	border: 2px solid #E5AEAE;
-	border-radius: 3px;
-	padding: 15px; 
-}
 .nameHeader {
 	background: rgba(0, 0, 0, 0.05);
 	padding: 10px;
@@ -841,6 +844,9 @@ input[type=text], input[type=password], select {
     max-width: 10px;
     max-height: 10px;
     margin: 2px 1px;
+}
+#tbl_products #tbl_products_search_status th {
+    background: #F7C83C;
 }
 #tbl_products th {
 	background: #0B5792;
@@ -1696,7 +1702,7 @@ max-height: 46px !important;
     padding: 0 0 0 5px;
 }
 .dc-slick {
-width: 660px; /* Required to limit width of slick content */
+width: 480px; /* Required to limit width of slick content */
 /*background: #0B5792;*/ 
 background: #7f9db9;
 }
@@ -1704,6 +1710,17 @@ background: #7f9db9;
 /*color: #000;*/
 }
 .dc-slick .tab {
-background: #0B5792; 
-color: #fff; 
+    background: #f7c83c url(images/search.png) no-repeat left 10px top 10px;
+    /*background: #FFBF00;*/
+    /*0B5792; */
+    color: #fff;
+    width: 55px;
+    text-align: right;
+}
+#search_pr_form td {
+    padding: 5px 10px;
+}
+#search_pr_form button {
+    min-width: 150px;
+    margin-left: 69px;
 }

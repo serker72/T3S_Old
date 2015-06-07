@@ -14,16 +14,44 @@ function tzs_front_end_products_handler($atts) {
 
     $p_id = get_the_ID();
     $p_title = the_title('', '', false);
-    
+
     // Если указан параметр rootcategory, то выводим все товары раздела
     // Иначе - товары категории
     if ($rootcategory === '1') {
-        $sql1 = ' AND type_id IN ('.tzs_build_product_types_id_str($p_id).')';
+        //$sql1 = ' AND type_id IN ('.tzs_build_product_types_id_str($p_id).')';
         $p_name = '';
     } else {
-        $sql1 = ' AND type_id='.$p_id;
+        //$sql1 = ' AND type_id='.$p_id;
         $p_name = get_post_field( 'post_name', $p_id );
     }
+
+    $page = current_page_number();
+
+	?>
+    <div>
+        <table id="pr_info" width="100%">
+            <tr>
+                <td width="60px"></td>
+                <td>
+                    <div id="search_info"><?php 
+                    echo $p_title;
+                    //echo strlen($s_title) > 0 ?  ' * '. $s_title : '';
+                    ?></div>
+                </td>
+                <td>
+                    <div id="errors" class="errors" style="float: left;">
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <button tag="page" id="realod_btn" onClick="javascript:products_reload()">Обновить</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+	<?php
+/*
     
     $sp = tzs_validate_pr_search_parameters();
     $errors = $sp['errors'];
@@ -32,7 +60,7 @@ function tzs_front_end_products_handler($atts) {
         print_errors($errors);
     
     ?>
-	<a href="javascript:showSearchDialog();" id="edit_search">Изменить параметры поиска</a>
+	<!--a href="javascript:showSearchDialog();" id="edit_search">Изменить параметры поиска</a-->
     <?php
     
     if (count($errors) == 0) {
@@ -90,13 +118,7 @@ function tzs_front_end_products_handler($atts) {
                 } else {
     $product_auction = get_param_def('product_auction', 'products');
     $pa_root_id = ($product_auction === 'auctions') ? ''.TZS_AU_ROOT_CATEGORY_PAGE_ID : ''.TZS_PR_ROOT_CATEGORY_PAGE_ID;
-                    ?>
-<!------------------------------------------------------------------------->                        
-                    <div id="slick-1">
-                        <?php tzs_front_end_search_pr_form(); ?>
-                        <button id="pr_search_button" onclick="javascript:products_reload()">Поиск</button>
-                    </div>
-<!------------------------------------------------------------------------->                        
+*/                    ?> 
                     <div>
                         <table  id="tbl_products">
                             <thead>
@@ -112,7 +134,7 @@ function tzs_front_end_products_handler($atts) {
                                     <th id="tbl_products_cities">Место нахождения</th>
                                     <th id="tbl_products_comm">Контакты</th>
                                 </tr>
-                                <!--tr id="tbl_products_filter">
+                                <tr id="tbl_products_filter">
                                     <form name="search_pr_form_new" method="POST">
                                         <th>
                                             <input type="radio" tag="cargo_trans_cargo" name="cargo_trans" value="cargo" <?php if (isset($_POST['cargo_trans']) && $_POST['cargo_trans'] == "cargo") echo 'checked="checked"'; ?> >№
@@ -145,10 +167,14 @@ function tzs_front_end_products_handler($atts) {
                                             <input type="text" name="cityname_from" value="<?php echo_val('cityname_from'); ?>">
                                         </th>
                                     </form>
-                                </tr-->
+                                </tr>
+                                <tr id="tbl_products_search_status">
+                                    <th colspan="8"></th>
+                                </tr>
                             </thead>
                             <tbody>
-                        <?php
+                        <?php 
+/*                        
                         foreach ( $res as $row ) {
                             $user_info = tzs_get_user_meta($row->user_id);
                             ?>
@@ -276,17 +302,25 @@ function tzs_front_end_products_handler($atts) {
                             </tr>
                             <?php
                         }
+ * 
+ */
                         ?>
                             </tbody>
                         </table>
                     </div>
+<!------------------------------------------------------------------------->                        
+                    <div id="slick-1">
+                        <?php tzs_front_end_search_pr_form(); ?>
+                        <!--button id="pr_search_button" onclick="javascript:products_reload()">Поиск</button-->
+                    </div>
+<!------------------------------------------------------------------------->                        
                 <?php
-                }
+//                }
 
-                build_pages_footer($page, $pages);
-            }
-        }
-    }
+                //build_pages_footer($page, $pages);
+//            }
+//        }
+//    }
 ////
     //echo '<div>'.tzs_front_end_products_reload($p_id, $rootcategory).'</div>';
 /////
@@ -331,24 +365,23 @@ function tzs_front_end_products_handler($atts) {
                         //doSearchDialog('auctions', post, null);
                 }
                 
-                function products_reload() {
-                    //var theForm = document.forms['search_pr_form'];
-                    //jQuery('form[name="search_pr_form"]').submit();
+                function products_reload(is_close_slick) {
+                    jQuery("#tbl_products tbody").html('');
+                    jQuery('#tbl_products_search_status th').html('Подождите...Выполняется операция поиска записей...');
+                    jQuery('.tab').click(); 
+                    
                     fd = jQuery('form[name="search_pr_form"]').serialize();
-//                        data: "<?php //echo 'type_id='.$p_id.'&rootcategory='.$rootcategory; ?>",
                     jQuery.ajax({
                         url: "/wp-admin/admin-ajax.php?action=tzs_products_reload",
-                           // url: "/wp-content/plugins/tzs/functions/tzs.functions.php?action=add_bet",
                         type: "POST",
                         data: fd,
                         dataType: 'json',
                         success: function(data) {
-                            //alert('output_info='+data.output_info);
-                            //alert('output_error='+data.output_error);
-                            //alert(data);
-                            //alert('output_tbody='+data.output_tbody);
-                            //document.getElementById('search_info').innerHTML = data.output_error;
-                            //jQuery("#search_info").html(data.output_error);
+                            if (data.output_tbody !== 'undefined') {
+                                jQuery("#tbl_products tbody").html(data.output_tbody);
+                            } else {
+                                jQuery("#tbl_products tbody").html('');
+                            }
                             
                             if (data.output_info !== 'undefined') {
                                 jQuery("#search_info").html(data.output_info);
@@ -363,21 +396,16 @@ function tzs_front_end_products_handler($atts) {
                                 jQuery("#errors").html('');
                             }
                             
-                            if (data.output_tbody !== 'undefined') {
-                                jQuery("#tbl_products tbody").html(data.output_tbody);
-                            } else {
-                                jQuery("#tbl_products tbody").html('');
-                            }
-                            
                             if (data.output_pnav !== 'undefined') {
                                 jQuery("#pages_container").html(data.output_pnav);
                             } else {
                                 jQuery("#pages_container").html('');
                             }
                             
-                            //dd = jQuery('#slick-1');
-                            //jQuery('#slick-1').slickClose();
-                            jQuery('.tab').click();
+                            jQuery('#tbl_products_search_status th').html('');
+                            if (is_close_slick === true) { 
+                                    //jQuery('.tab').click(); 
+                            }
                         },
                         error: function(data) {
                             //alert(data.responsetext);
@@ -387,10 +415,12 @@ function tzs_front_end_products_handler($atts) {
                                 jQuery("#errors").html('');
                             }
                             
-                            dd = jQuery('#slick-1');
-                            jQuery('#slick-1').slickClose();
+                            //jQuery('#tbl_products_search_status th').html('');
+                            //if (is_close_slick === true) { jQuery('.tab').click(); }
                         }			
                     });		   
+                    
+                    //jQuery('#tbl_products_search_status th').html('');
                 }
 
                 // Create a hidden input element, and append it to the form:
@@ -417,23 +447,23 @@ function tzs_front_end_products_handler($atts) {
                         addHidden(theForm, 'rootcategory', '<?php echo $rootcategory; ?>');
                         addHidden(theForm, 'cur_type_id', '<?php echo $p_id; ?>');
                         addHidden(theForm, 'cur_post_name', '<?php echo $p_name; ?>');
+                        addHidden(theForm, 'p_title', '<?php echo $p_title; ?>');
+                        jQuery('<tr><td>&nbsp;</td><td><button id="pr_search_button" onclick="javascript:products_reload()">Выполнить поиск</button></td></tr>').appendTo('#search_pr_form table');
                         
                         hijackLinks(post);
                         
-                        /*jQuery('#pr_search_button').click(function(e) {
-                            alert('Test');
-                            products_reload();
-                        });*/
+                        products_reload(false);
+                        
                         
                         ///
-	jQuery('#slick-1').dcSlick({
-			location: 'left',
-			align: 'top',
-			offset: '100px',
-			speed: 'slow',
-			tabText: 'Поиск',
-			autoClose: true
-	});
+                        jQuery('#slick-1').dcSlick({
+                            location: 'left',
+                            align: 'top',
+                            offset: '197px',
+                            speed: 'slow',
+                            tabText: 'Поиск',
+                            autoClose: false
+                        });
                         
                 });
         </script>

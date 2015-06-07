@@ -10,10 +10,13 @@ function tzs_front_end_products_reload() {
     
     $type_id = get_param_def('type_id', '0');
     $rootcategory = get_param_def('rootcategory', '0');
+    $cur_type_id = get_param_def('cur_type_id', '0');
+    $cur_post_name = get_param_def('cur_post_name', '');
+    $p_title = get_param_def('p_title', '');
     
 
     //$p_id = get_the_ID();
-    $p_title = the_title('', '', false);
+    //$p_title = the_title('', '', false);
     
     // Если указан параметр rootcategory, то выводим все товары раздела
     // Иначе - товары категории
@@ -53,7 +56,7 @@ function tzs_front_end_products_reload() {
         $sql = "SELECT COUNT(*) as cnt FROM ".TZS_PRODUCTS_TABLE." WHERE active=1 $sql1 $s_sql;";
         $res = $wpdb->get_row($sql);
         if (count($res) == 0 && $wpdb->last_error != null) {
-            $output_error .= print_error('Не удалось отобразить список товаров. Свяжитесь, пожалуйста, с администрацией сайта');
+            $output_error .= '<div>Не удалось отобразить список товаров. Свяжитесь, пожалуйста, с администрацией сайта.</div>';
         } else {
             $records = $res->cnt;
             $pages = ceil($records / $pp);
@@ -66,13 +69,10 @@ function tzs_front_end_products_reload() {
             $sql = "SELECT * FROM ".TZS_PRODUCTS_TABLE." WHERE active=1 $sql1 $s_sql ORDER BY created DESC LIMIT $from,$pp;";
             $res = $wpdb->get_results($sql);
             if (count($res) == 0 && $wpdb->last_error != null) {
-                $output_error .= print_error('Не удалось отобразить список товаров. Свяжитесь, пожалуйста, с администрацией сайта');
+                $output_error .= '<div>Не удалось отобразить список товаров. Свяжитесь, пожалуйста, с администрацией сайта.</div>';
             } else {
                 if (count($res) == 0) {
-                    $output_error .= '
-                    <div class="errors">
-                        <div id="info error">По Вашему запросу ничего не найдено.<br>'.$sql.'</div>
-                    </div>';
+                    $output_error .= '<div>По Вашему запросу ничего не найдено.</div>';
                 } else {
                     foreach ( $res as $row ) {
                         $user_info = tzs_get_user_meta($row->user_id);
