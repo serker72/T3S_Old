@@ -1,18 +1,283 @@
 <?php
 
-function tzs_front_end_products_reload() {
+/*
+ * Вывод одной строки таблицы в виде html
+ */
+
+function tzs_products_table_record_out($row) {
+    $user_info = tzs_get_user_meta($row->user_id);
+
+    $output_tbody = '<tr rid="'.$row->id.'" id="';
+
+    if ($row->sale_or_purchase == 1) { $output_tbody .= 'tbl_auctions_tr_lot_1'; } else { $output_tbody .= 'tbl_auctions_tr_lot_0'; }
+
+    $output_tbody .= '">
+            <td>
+                <div class="record_number">
+                    <span class="middle" title="Номер заявки">
+                           № '.$row->id.'
+                    </span>
+                </div>
+                <div>
+                    <span class="time_label" title="Время добавления">
+                        '.convert_time_only($row->created).'
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span title="Тип заявки">
+                        <strong>';
+
+    if ($row->sale_or_purchase == 1) { $output_tbody .= 'Продажа'; } else { $output_tbody .= 'Покупка'; }
+
+    $output_tbody .= '</strong>
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div>';
+
+                if ($row->fixed_or_tender == 1) {
+                    $output_tbody .= 'Цена зафиксирована<br/>
+                <a class="btnBlue" title="Купить товар по фиксированной цене">Купить</a>';
+                } else {
+                    $output_tbody .= 'Тендерное предложение<br/>
+                    <a class="btnBlue" title="Предложить свою цену за товар">Предложить свою цену</a>';
+                }
+
+    $output_tbody .= '</div>
+            </td>
+            <td>
+                <div>
+                    '.convert_date($row->created).'<br/>
+                    <span class="expired_label" title="Дата окончания публикации">
+                        '.convert_date($row->expiration).'
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div class="ienlarger">';
+
+                if (strlen($row->image_id_lists) > 0) {
+                    $main_image_id = $row->main_image_id;
+                    // Вначале выведем главное изображение
+                    $attachment_info = wp_get_attachment_image_src($main_image_id, 'full');
+                    if ($attachment_info !== false) {
+                            $output_tbody .= '<a href="#nogo">
+                                <img src="'.$attachment_info[0].'" alt="thumb" class="resize_thumb">
+                                <span>
+                                    '.trim($row->title).'<br/>
+                                    <img src="'.$attachment_info[0].'" alt="large"/>
+                                </span>
+                            </a>';
+                    }
+                }
+
+                $output_tbody .= '</div>
+                <div class="title_text">
+                    <span title="Краткое описание товара">
+                        '.trim($row->title).'
+                    </span>
+                </div>
+            </td>
+
+            <td>
+                <div>
+                    <span class="price_label" title="Цена товара">
+                        <strong>'.$row->price.'</strong> '.$GLOBALS['tzs_pr_curr'][$row->currency].'
+                    </span>
+                    <br>
+                    <span class="payment_label" title="Форма оплаты">
+                        '.$GLOBALS['tzs_pr_payment'][$row->payment].'<br/>
+                        '.$GLOBALS['tzs_pr_nds'][$row->nds].'
+                    </span>
+                    <br>
+                    <span class="copies_label" title="Количество товара">
+                        <strong>'.$row->copies.'</strong> '.$GLOBALS['tzs_pr_unit'][$row->unit].'
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    '.tzs_city_to_str($row->from_cid, $row->from_rid, $row->from_sid, $row->city_from).'
+                </div>
+            </td>
+            <td>
+                <div class="tbl_products_contact" title="Контактные данные ';
+    if ($row->sale_or_purchase == 1) { $output_tbody .= 'продавца'; } else { $output_tbody .= 'покупателя'; }
+
+    $output_tbody .= '">
+                    <a href="">';
+
+    if ($user_info['company'] != '') { $output_tbody .= $user_info['company']; } else { $output_tbody .= $user_info['fio']; }
+
+    $output_tbody .= '</a>
+                    <span>';
+
+    $meta=explode(',', $user_info['adress']); 
+    $output_tbody .= $meta[0].'</span>';
+    if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) {
+        $output_tbody .= '<div class="tzs_au_contact_view_all" phone-user-not-view="'.$row->user_id.'">Для просмотра контактов необходимо <a href="/account/login/">войти</a> или <a href="/account/registration/">зарегистрироваться</a></div>';
+    }
+
+    if ($user_info['company'] != '') {
+        $phone_list = explode(';', $user_info['tel_fax']);
+    } else {
+        $phone_list = explode(';', $user_info['telephone']);
+    }
+
+    for ($i=0;$i < count($phone_list);$i++) {
+        $output_tbody .= '<div class="tbl_products_contact_phone" phone-user="'.$row->user_id.'">
+        <b>'.preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2)', $phone_list[$i]).'</b>
+        <span>'.preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2) $3-$4-$5', $phone_list[$i]).'</span>
+        <a onclick="showUserContacts(this, '.$row->user_id.', ';
+
+        if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) { $output_tbody .= 'true'; } else { $output_tbody .= 'false'; }
+
+        $output_tbody .= ');">Показать</a>
+        </div>';
+    }
+
+    $output_tbody .= '</div>
+            </td>
+        </tr>';
+    
+    return $output_tbody;
+}
+
+function tzs_products_table_record_out1($row) {
+    $user_info = tzs_get_user_meta($row->user_id);
+    ?>
+    <tr rid="'.$row->id.'" id="<?php echo ($row->sale_or_purchase == 1) ? 'tbl_auctions_tr_lot_1' : 'tbl_auctions_tr_lot_0'; ?>">
+        <td>
+            <div class="record_number">
+                <span class="middle" title="Номер заявки">
+                       № <?php echo $row->id; ?>
+                </span>
+            </div>
+            <div>
+                <span class="time_label" title="Время добавления">
+                    <?php echo convert_time_only($row->created); ?>
+                </span>
+            </div>
+        </td>
+        <td>
+            <div>
+                <span title="Тип заявки">
+                    <strong><?php echo ($row->sale_or_purchase == 1) ? 'Продажа' : 'Покупка'; ?></strong>
+                </span>
+            </div>
+        </td>
+        <td>
+            <div>
+                <?php echo ($row->fixed_or_tender == 1) ? 'Цена зафиксирована<br/><a class="btnBlue" title="Купить товар по фиксированной цене">Купить</a>' : 'Тендерное предложение<br/><a class="btnBlue" title="Предложить свою цену за товар">Предложить свою цену</a>'; ?>
+            </div>
+        </td>
+        <td>
+            <div>
+                <?php echo convert_date($row->created); ?><br/>
+                <span class="expired_label" title="Дата окончания публикации">
+                    <?php echo convert_date($row->expiration); ?>
+                </span>
+            </div>
+        </td>
+        <td>
+            <div class="ienlarger">
+                <?php
+                if (strlen($row->image_id_lists) > 0) {
+                    $main_image_id = $row->main_image_id;
+                    // Вначале выведем главное изображение
+                    $attachment_info = wp_get_attachment_image_src($main_image_id, 'full');
+                    if ($attachment_info !== false) { ?>
+                            <a href="#nogo">
+                                <img src="<?php echo $attachment_info[0]; ?>" alt="thumb" class="resize_thumb">
+                                <span>
+                                    <?php echo trim($row->title); ?><br/>
+                                    <img src="<?php echo $attachment_info[0]; ?>" alt="large"/>
+                                </span>
+                            </a>
+                    <?php }
+                }
+                ?>
+            </div>
+            <div class="title_text">
+                <span title="Краткое описание товара">
+                    <?php echo trim($row->title); ?>
+                </span>
+            </div>
+        </td>
+        <td>
+            <div>
+                <span class="price_label" title="Цена товара">
+                    <strong><?php echo $row->price; ?></strong> <?php echo $GLOBALS['tzs_pr_curr'][$row->currency]; ?>
+                </span>
+                <br>
+                <span class="payment_label" title="Форма оплаты">
+                    <?php echo $GLOBALS['tzs_pr_payment'][$row->payment]; ?><br/>
+                    <?php echo $GLOBALS['tzs_pr_nds'][$row->nds]; ?>
+                </span>
+                <br>
+                <span class="copies_label" title="Количество товара">
+                    <strong><?php echo $row->copies; ?></strong> <?php echo $GLOBALS['tzs_pr_unit'][$row->unit]; ?>
+                </span>
+            </div>
+        </td>
+        <td>
+            <div>
+                <?php echo tzs_city_to_str($row->from_cid, $row->from_rid, $row->from_sid, $row->city_from); ?>
+            </div>
+        </td>
+        <td>
+            <div class="tbl_products_contact" title="Контактные данные <?php echo ($row->sale_or_purchase == 1) ? 'продавца' : 'покупателя'; ?>">
+                <a href=""><?php echo ($user_info['company'] != '') ? $user_info['company'] : $user_info['fio']; ?></a>
+                    <span>
+                        <?php $meta=explode(',', $user_info['adress']); echo $meta[0]; ?>
+                    </span>
+                <?php if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) { ?>
+                    <div class="tzs_au_contact_view_all" phone-user-not-view="<?php echo $row->user_id; ?>">
+                        Для просмотра контактов необходимо <a href="/account/login/">войти</a> или <a href="/account/registration/">зарегистрироваться</a>
+                    </div>
+                <?php }
+
+                if ($user_info['company'] != '') {
+                    $phone_list = explode(';', $user_info['tel_fax']);
+                } else {
+                    $phone_list = explode(';', $user_info['telephone']);
+                }
+
+                for ($i=0;$i < count($phone_list);$i++) { ?>
+                    <div class="tbl_products_contact_phone" phone-user="<?php echo $row->user_id; ?>">
+                        <b><?php echo preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2)', $phone_list[$i]); ?></b>
+                        <span><?php echo preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2) $3-$4-$5', $phone_list[$i]); ?></span>
+                        <a onclick="showUserContacts(this, <?php echo $row->user_id; ?>, <?php echo (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) ? 'true' : 'false'; ?>)">Показать</a>
+                    </div>
+                <?php } ?>
+
+            </div>
+        </td>
+    </tr>
+    <?php
+}
+
+/*
+ * Выборка данных на основании фильтра и формирование строк таблицы с данными
+ */
+function tzs_front_end_tables_reload() {
     // Возвращаемые переменные
     $output_info = '';
     $output_error = '';
     $output_tbody = '';
     $output_pnav = '';
+    $lastrecid = 0;
     
-    
+    $form_type = get_param_def('form_type', '');
     $type_id = get_param_def('type_id', '0');
     $rootcategory = get_param_def('rootcategory', '0');
     $cur_type_id = get_param_def('cur_type_id', '0');
     $cur_post_name = get_param_def('cur_post_name', '');
     $p_title = get_param_def('p_title', '');
+    $page = get_param_def('page', '1');
     
 
     //$p_id = get_the_ID();
@@ -21,10 +286,11 @@ function tzs_front_end_products_reload() {
     // Если указан параметр rootcategory, то выводим все товары раздела
     // Иначе - товары категории
     if ($rootcategory === '1') {
-        $sql1 = ' AND type_id IN ('.tzs_build_product_types_id_str($type_id).')';
+        $sql1 = ' AND type_id IN ('.tzs_build_product_types_id_str($cur_type_id).')';
         $p_name = '';
     } else {
-        $sql1 = ' AND type_id='.$type_id;
+        //$sql1 = ' AND type_id='.$type_id;
+        $sql1 = '';
         $p_name = get_post_field( 'post_name', $type_id );
     }
     
@@ -45,11 +311,11 @@ function tzs_front_end_products_reload() {
             $output_info .= ' * '. $s_title;
         }
         
-        $page = current_page_number();
+        //$page = current_page_number();
 
         global $wpdb;
 
-        $url = current_page_url();
+        //$url = current_page_url();
 
         $pp = TZS_RECORDS_PER_PAGE;
 
@@ -75,147 +341,36 @@ function tzs_front_end_products_reload() {
                     $output_error .= '<div>По Вашему запросу ничего не найдено.</div>';
                 } else {
                     foreach ( $res as $row ) {
-                        $user_info = tzs_get_user_meta($row->user_id);
-                            
-                        $output_tbody .= '<tr rid="'.$row->id.' id="';
-                        
-                        if ($row->sale_or_purchase == 1) { $output_tbody .= 'tbl_auctions_tr_lot_1'; } else { $output_tbody .= 'tbl_auctions_tr_lot_0'; }
-                        
-                        $output_tbody .= '">
-                                <td>
-                                    <div class="record_number">
-                                        <span class="middle" title="Номер заявки">
-                                               № '.$row->id.'
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <span class="time_label" title="Время добавления">
-                                            '.convert_time_only($row->created).'
-                                        </span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>
-                                        <span title="Тип заявки">
-                                            <strong>';
-                        
-                        if ($row->sale_or_purchase == 1) { $output_tbody .= 'Продажа'; } else { $output_tbody .= 'Покупка'; }
-                        
-                        $output_tbody .= '</strong>
-                                        </span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>';
-                                    
-                                    if ($row->fixed_or_tender == 1) {
-                                        $output_tbody .= 'Цена зафиксирована<br/>
-                                    <a class="btnBlue" title="Купить товар по фиксированной цене">Купить</a>';
-                                    } else {
-                                        $output_tbody .= 'Тендерное предложение<br/>
-                                        <a class="btnBlue" title="Предложить свою цену за товар">Предложить свою цену</a>';
-                                    }
-                                
-                        $output_tbody .= '</div>
-                                </td>
-                                <td>
-                                    <div>
-                                        '.convert_date($row->created).'<br/>
-                                        <span class="expired_label" title="Дата окончания публикации">
-                                            '.convert_date($row->expiration).'
-                                        </span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="ienlarger">';
-                                    
-                                    if (strlen($row->image_id_lists) > 0) {
-                                        $main_image_id = $row->main_image_id;
-                                        // Вначале выведем главное изображение
-                                        $attachment_info = wp_get_attachment_image_src($main_image_id, 'full');
-                                        if ($attachment_info !== false) {
-                                                $output_tbody .= '<a href="#nogo">
-                                                    <img src="'.$attachment_info[0].'" alt="thumb" class="resize_thumb">
-                                                    <span>
-                                                        '.trim($row->title).'<br/>
-                                                        <img src="'.$attachment_info[0].'" alt="large"/>
-                                                    </span>
-                                                </a>';
-                                        }
-                                    }
-                                    
-                                    $output_tbody .= '</div>
-                                    <div class="title_text">
-                                        <span title="Краткое описание товара">
-                                            '.trim($row->title).'
-                                        </span>
-                                    </div>
-                                </td>
-                                
-                                <td>
-                                    <div>
-                                        <span class="price_label" title="Цена товара">
-                                            <strong>'.$row->price.'</strong> '.$GLOBALS['tzs_pr_curr'][$row->currency].'
-                                        </span>
-                                        <br>
-                                        <span class="payment_label" title="Форма оплаты">
-                                            '.$GLOBALS['tzs_pr_payment'][$row->payment].'<br/>
-                                            '.$GLOBALS['tzs_pr_nds'][$row->nds].'
-                                        </span>
-                                        <br>
-                                        <span class="copies_label" title="Количество товара">
-                                            <strong>'.$row->copies.'</strong> '.$GLOBALS['tzs_pr_unit'][$row->unit].'
-                                        </span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>
-                                        '.tzs_city_to_str($row->from_cid, $row->from_rid, $row->from_sid, $row->city_from).'
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="tbl_products_contact" title="Контактные данные ';
-                        if ($row->sale_or_purchase == 1) { $output_tbody .= 'продавца'; } else { $output_tbody .= 'покупателя'; }
-                        
-                        $output_tbody .= '">
-                                        <a href="">';
-                                    
-                        if ($user_info['company'] != '') { $output_tbody .= $user_info['company']; } else { $output_tbody .= $user_info['fio']; }
-                        
-                        $output_tbody .= '</a>
-                                        <span>';
-                        
-                        $meta=explode(',', $user_info['adress']); 
-                        $output_tbody .= $meta[0].'</span>';
-                        if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) {
-                            $output_tbody .= '<div class="tzs_au_contact_view_all" phone-user-not-view="'.$row->user_id.'">Для просмотра контактов необходимо <a href="/account/login/">войти</a> или <a href="/account/registration/">зарегистрироваться</a></div>';
+                        if ($form_type === 'products') {
+                            $output_tbody .= tzs_products_table_record_out($row);
                         }
-                                        
-                        if ($user_info['company'] != '') {
-                            $phone_list = explode(';', $user_info['tel_fax']);
-                        } else {
-                            $phone_list = explode(';', $user_info['telephone']);
-                        }
-
-                        for ($i=0;$i < count($phone_list);$i++) {
-                            $output_tbody .= '<div class="tbl_products_contact_phone" phone-user="'.$row->user_id.'">
-                            <b>'.preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2)', $phone_list[$i]).'</b>
-                            <span>'.preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2) $3-$4-$5', $phone_list[$i]).'</span>
-                            <a onclick="showUserContacts(this, '.$row->user_id.', ';
-                            
-                            if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) { $output_tbody .= 'true'; } else { $output_tbody .= 'false'; }
-                            
-                            $output_tbody .= ');">Показать</a>
-                            </div>';
-                        }
-                                        
-                        $output_tbody .= '</div>
-                                </td>
-                            </tr>';
-                        }
+                        $lastrecid = $row->id;
+                    }
                 }
 
                 //build_pages_footer($page, $pages);
+                if ($pages > 1) {
+                    if ($page > 1) {
+                        $page0 = $page - 1;
+                        $output_pnav .= '<a tag="page" page="'.$page0.'" href="javascript:TblTbodyReload(false, '.$page0.')">« Предыдущая</a>&nbsp;';
+                    }
+                    
+                    $start = 1;
+                    $stop = $pages;
+                    
+                    for ($i = $start; $i <= $stop; $i++) {
+                        if ($i == $page) {
+                            $output_pnav .= '&nbsp;&nbsp;<span>'.$i.'</span>&nbsp;';
+                        } else {
+                            $output_pnav .= '&nbsp;&nbsp;<a tag="page" page="'.$i.'" href="javascript:TblTbodyReload(false, '.$i.')">'.$i.'</a>&nbsp;';
+                        }
+                    }
+                    
+                    if ($page < $pages) {
+                        $page1 = $page + 1;
+                        $output_pnav .= '&nbsp;&nbsp;<a tag="page" page="'.$page1.'" href="javascript:TblTbodyReload(false, '.$page1.')">Следующая »</a>';
+                    }
+                }
             }
         }
     }
@@ -225,12 +380,13 @@ function tzs_front_end_products_reload() {
         'output_error' => $output_error, 
         'output_tbody' => $output_tbody,
         'output_pnav' => $output_pnav,
+        'output_tbody_cnt' => count($res),
+        'lastrecid' => $lastrecid,
         'type_id' => $type_id,
         'rootcategory' => $rootcategory,
         'sql' => $sql,
         'sql1' => $sql1,
         's_sql' => $s_sql,
-        'cnt' => count($res),
     );
 
     //echo json_encode($output);

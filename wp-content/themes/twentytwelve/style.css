@@ -235,7 +235,7 @@
 	background: #fff url('images/bottom.png') no-repeat top 11px left 8px;
 	float: left;
 	padding: 10px 10px 10px 30px;
-	/*margin: 0 0 0 67px;*/
+	/*margin: 0 0 0 65px;*/
 	box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.1);
 	border-radius: 5px;
 	text-decoration: none;
@@ -889,6 +889,7 @@ input[type=text], input[type=password], select {
 }
 #tbl_products_sale {
     min-width: 50px;
+    /*max-width: 60px;*/
 }
 #tbl_products_cost {
     /*min-width: 85px;*/
@@ -1702,25 +1703,109 @@ max-height: 46px !important;
     padding: 0 0 0 5px;
 }
 .dc-slick {
-width: 480px; /* Required to limit width of slick content */
-/*background: #0B5792;*/ 
-background: #7f9db9;
+    width: 345px; /* Required to limit width of slick content */
+    background: #0B5792; 
+/*  background: #7f9db9;*/
+    /*background: #9C9C9C;*/
+    /*background: #bdbdbd;*/
 }
 .dc-slick .dc-slick-content {
 /*color: #000;*/
 }
 .dc-slick .tab {
-    background: #f7c83c url(images/search.png) no-repeat left 10px top 10px;
+    background: #f7c83c url(images/search.png) no-repeat left 15px top 2px;
     /*background: #FFBF00;*/
     /*0B5792; */
     color: #fff;
-    width: 55px;
+    width: 14px;
     text-align: right;
 }
-#search_pr_form td {
-    padding: 5px 10px;
+.search_pr_form th {
+    padding: 2px 0 5px 0;
 }
-#search_pr_form button {
-    min-width: 150px;
-    margin-left: 69px;
+.search_pr_form td {
+    padding: 0px 5px;
+    font-size: 12px;
+}
+.search_pr_form button {
+    /*min-width: 150px;*/
+    /*margin-left: 45px;*/
+}
+.search_pr_form td input {
+    width: 150px;
+    font-size: 12px;
+}
+.search_pr_form td select {
+    width: 160px;
+    font-size: 12px;
+}
+.search_pr_form td select option {
+    background: #fff; 
+}
+#pr_search_button {
+	float: left;
+	background: #f7c83c url(images/search.png) no-repeat left 10px top 10px;
+	padding: 10px 10px 10px 37px;
+	/*margin: 10px 12px 0 0;*/
+	border-radius: 5px;
+	text-decoration: none;
+	color: #FFFFFF;
+	/*font-size: 13px;*/
+        width: 160px;
+}
+#pr_search_button:hover {
+    background: #FFBF00 url(images/search.png) no-repeat left 10px top 10px;
+}
+#preloader {
+    display: none;
+    width: 200px;
+    height: 200px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    margin-left: -30px;
+    margin-top: -50px;
+    z-index: 2;
+    overflow: auto;
+}
+#preloader img {
+    width: 150px;
+    height: 150px;
+}
+.tbl_thead_search_text {
+    float: left;
+}
+.tbl_thead_search_button {
+    padding: 0 5px 5px 0;
+}
+.tbl_thead_search_button span {
+    /*display: block;*/
+    padding: 0 2px;
+}
+.tbl_thead_search_button a {
+    padding: 0 5px;
+}
+.tbl_thead_search_div {
+    display: none;
+    background: #0B5792; 
+    padding: 15px 15px;
+    float: left;
+    /*width: 250px;*/
+    overflow: visible;
+    border: 1px solid #000;
+    position: absolute;
+}
+.tbl_thead_search_div select option {
+    background: #fff; 
+}
+#tbl_thead_button_search {
+    background: #FFBF00 url(images/find-small.png) no-repeat left 0px top 2px;
+    font-size: 11px;
+    padding-left: 17px;
+}
+#tbl_thead_button_clear {
+    background: #FFBF00 url(images/gtk-cancel-small.png) no-repeat left 0px top 2px;
+    font-size: 11px;
+    padding-left: 17px;
 }

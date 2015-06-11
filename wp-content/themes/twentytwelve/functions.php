@@ -589,7 +589,7 @@ add_filter('single_template', 'tzs_post_category_nicename_single');
  */
 function tzs_products_reload() {
     include_once(WP_PLUGIN_DIR . '/tzs/front-end/tzs.products_reload.php');
-    $output = tzs_front_end_products_reload();
+    $output = tzs_front_end_tables_reload();
     //echo 'Test tzs_products_reload';
     echo json_encode($output);
     wp_die();

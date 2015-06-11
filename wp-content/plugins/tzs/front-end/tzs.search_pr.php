@@ -2,51 +2,6 @@
 
 //include_once(TZS_PLUGIN_DIR.'/functions/tzs.trade.functions.php');
 
-add_action( 'wp_ajax_tzs_pr_get_regions', 'tzs_pr_get_regions_callback' );
-add_action( 'wp_ajax_nopriv_tzs_pr_get_regions', 'tzs_pr_get_regions_callback' );
-
-function tzs_pr_get_regions_callback() {
-	$id = isset($_POST['id']) && is_numeric($_POST['id']) ? intval( $_POST['id'] ) : 0;
-	$rid = isset($_POST['rid']) && is_numeric($_POST['rid']) ? intval( $_POST['rid'] ) : 0;
-	if ($id <= 0) {
-		?>
-			<option value="0">все области</option>
-		<?php
-	} else {
-		global $wpdb;
-		
-		$sql = "SELECT * FROM ".TZS_REGIONS_TABLE." WHERE country_id=$id ORDER BY title_ru ASC;";
-		$res = $wpdb->get_results($sql);
-		if (count($res) == 0 && $wpdb->last_error != null) {
-			?>
-				<option value="0">все области</option>
-			<?php
-		} else {
-			?>
-				<option value="0">все области</option>
-			<?php
-			$found = false;
-			foreach ( $res as $row ) {
-				if (!$found) {
-					$found = true;
-					?>
-						<option disabled>- - - - - - - -</option>
-					<?php
-				}
-				$region_id = $row->region_id;
-				$title = $row->title_ru;
-				?>
-					<option value="<?php echo $region_id;?>" <?php
-						if ($rid == $region_id) {
-							echo 'selected="selected"';
-						}
-					?> ><?php echo $title;?></option>
-				<?php
-			}
-		}
-	}
-	die();
-}
 
 function tzs_pr_build_countries($name) {
 	global $wpdb;
@@ -86,7 +41,10 @@ function tzs_validate_pr_search_parameters() {
 	$errors = array();
 	$res = array();
 	
+    // Проверим защиту nonce
+    if (isset($_POST['type_id_nonce']) && wp_verify_nonce($_POST['type_id_nonce'], 'type_id')) {
 	// get parameters from _POST
+        $form_type = get_param_def('form_type', '');
         $type_id = get_param_def('type_id', '0');
         $cur_type_id = get_param_def('cur_type_id', '0');
         $rootcategory = get_param_def('rootcategory', '0');
@@ -244,6 +202,9 @@ function tzs_validate_pr_search_parameters() {
             if ($cityname_from_ids != null)
                     $res['cityname_from_ids'] = $cityname_from_ids;
 	}
+    } else {
+	array_push($errors, "Проверка формы не пройдена. Свяжитесь, пожалуйста, с администрацией сайта.");
+    }
 	
 	$res['errors'] = $errors;
 	return $res;
@@ -396,21 +357,25 @@ function tzs_front_end_search_pr_form() {
     tzs_copy_get_to_post();
     $product_auction = get_param_def('product_auction', 'products');
     $pa_root_id = ($product_auction === 'auctions') ? ''.TZS_AU_ROOT_CATEGORY_PAGE_ID : ''.TZS_PR_ROOT_CATEGORY_PAGE_ID;
+    $p_id = get_the_ID();
     ?>
-    <form id="search_pr_form" name="search_pr_form" method="POST">
+    <form class="search_pr_form" id="search_pr_form" name="search_pr_form" method="POST">
         <table name="search_param" border="0">
             <tr>
                 <th colspan="2">Укажите критерии поиска товаров и услуг</th>
             </tr>
             <tr>
                 <td>Категория:<br>
-                    <select name="type_id" <?php echo (isset($_POST['cur_type_id']) && ($_POST['cur_type_id'] === $pa_root_id)) ? '' : ' disabled="disabled"'; ?> >
+                    <!--select name="type_id" <?php //echo (isset($_POST['cur_type_id']) && ($_POST['cur_type_id'] === $pa_root_id)) ? '' : ' disabled="disabled"'; ?> -->
+                    <!--select name="type_id" <?php //echo (isset($_POST['rootcategory']) && ($_POST['rootcategory'] === '1')) ? '' : ' disabled="disabled"'; ?> -->
+                      <select name="type_id" <?php echo ($p_id == $pa_root_id) ? '' : ' disabled="disabled"'; ?> >
                         <option value="0">все категории</option>
 			<option disabled>- - - - - - - -</option>
                         <?php
                             tzs_build_product_types('type_id', $pa_root_id);
 			?>
                     </select>
+                    <?php wp_nonce_field( 'type_id', 'type_id_nonce' ); ?>
                 </td>
                 <td>Местонахождение: страна:<br>
                     <select name="country_from">
@@ -421,7 +386,7 @@ function tzs_front_end_search_pr_form() {
                 </td>
             <tr>
                 <td>Тип заявки:<br>
-                    <select name="auction_type">
+                    <select name="sale_or_purchase">
                         <option value="0" <?php if (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] == 0) echo 'selected="selected"'; ?> >Все</option>
                         <option value="1" <?php if (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] == 1) echo 'selected="selected"'; ?> >Продажа</option>
                         <option value="2" <?php if (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] == 2) echo 'selected="selected"'; ?> >Покупка</option>
@@ -434,11 +399,31 @@ function tzs_front_end_search_pr_form() {
                 </td>
             </tr>
             <tr>
-                <td>Описание:<br>
-                    <input type="text" name="pr_title" value="<?php echo_val('pr_title'); ?>" size="30">
+                <td>Участник тендера:<br>
+                    <select name="fixed_or_tender">
+                        <option value="0" <?php if (isset($_POST['fixed_or_tender']) && $_POST['fixed_or_tender'] == 0) echo 'selected="selected"'; ?> >Все предложения</option>
+                        <option value="1" <?php if (isset($_POST['fixed_or_tender']) && $_POST['fixed_or_tender'] == 1) echo 'selected="selected"'; ?> >Цена зафиксирована</option>
+                        <option value="2" <?php if (isset($_POST['fixed_or_tender']) && $_POST['fixed_or_tender'] == 2) echo 'selected="selected"'; ?> >Тендерное предложение</option>
+                    </select>
                 </td>
                 <td>Местонахождение: город:<br>
                     <input type="text" name="cityname_from" value="<?php echo_val('cityname_from'); ?>" size="30">
+                </td>
+            </tr>
+            <tr>
+                <td>Форма оплаты:<br>
+                    <select name="payment">
+                        <option value="0" <?php if (isset($_POST['payment']) && $_POST['payment'] == 0) echo 'selected="selected"'; ?> >Любая</option>
+                        <option value="1" <?php if (isset($_POST['payment']) && $_POST['payment'] == 1) echo 'selected="selected"'; ?> >Наличная</option>
+                        <option value="2" <?php if (isset($_POST['payment']) && $_POST['payment'] == 2) echo 'selected="selected"'; ?> >Безналичная</option>
+                    </select>
+                </td>
+                <td>НДС:<br>
+                    <select name="nds">
+                        <option value="0" <?php if (isset($_POST['nds']) && $_POST['nds'] == 0) echo 'selected="selected"'; ?> >Все</option>
+                        <option value="1" <?php if (isset($_POST['nds']) && $_POST['nds'] == 1) echo 'selected="selected"'; ?> >Без НДС</option>
+                        <option value="1" <?php if (isset($_POST['nds']) && $_POST['nds'] == 2) echo 'selected="selected"'; ?> >Включая НДС</option>
+                    </select>
                 </td>
             </tr>
             <tr>
@@ -455,6 +440,14 @@ function tzs_front_end_search_pr_form() {
                 </td>
                 <td>Дата размещения: до:<br>
                     <input type="text" name="data_to" value="<?php echo_val('data_to'); ?>" size="10">
+                    <input type="hidden" name="form_type" value="products" />
+                </td>
+            </tr>
+            <tr>
+                <td>Описание:<br>
+                    <input type="text" name="pr_title" value="<?php echo_val('pr_title'); ?>" size="30">
+                </td>
+                <td>&nbsp;
                 </td>
             </tr>
         </table>
