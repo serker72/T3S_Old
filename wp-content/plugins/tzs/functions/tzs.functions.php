@@ -518,4 +518,47 @@ function tzs_print_user_table_ed($user_id) {
 <?php
 }
 
+function tzs_get_regions() {
+	$id = isset($_POST['id']) && is_numeric($_POST['id']) ? intval( $_POST['id'] ) : 0;
+	$rid = isset($_POST['rid']) && is_numeric($_POST['rid']) ? intval( $_POST['rid'] ) : 0;
+	if ($id <= 0) {
+		?>
+			<option value="0">все области</option>
+		<?php
+	} else {
+		global $wpdb;
+		
+		$sql = "SELECT * FROM ".TZS_REGIONS_TABLE." WHERE country_id=$id ORDER BY title_ru ASC;";
+		$res = $wpdb->get_results($sql);
+		if (count($res) == 0 && $wpdb->last_error != null) {
+			?>
+				<option value="0">все области</option>
+			<?php
+		} else {
+			?>
+				<option value="0">все области</option>
+			<?php
+			$found = false;
+			foreach ( $res as $row ) {
+				if (!$found) {
+					$found = true;
+					?>
+						<option disabled>- - - - - - - -</option>
+					<?php
+				}
+				$region_id = $row->region_id;
+				$title = $row->title_ru;
+				?>
+					<option value="<?php echo $region_id;?>" <?php
+						if ($rid == $region_id) {
+							echo 'selected="selected"';
+						}
+					?> ><?php echo $title;?></option>
+				<?php
+			}
+		}
+	}
+	//wp_die();
+}
+
 ?>

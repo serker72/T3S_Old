@@ -48,6 +48,10 @@ function tzs_validate_pr_search_parameters() {
         $type_id = get_param_def('type_id', '0');
         $cur_type_id = get_param_def('cur_type_id', '0');
         $rootcategory = get_param_def('rootcategory', '0');
+        $sale_or_purchase = get_param_def('sale_or_purchase', '0');
+        $fixed_or_tender = get_param_def('fixed_or_tender', '0');
+        $payment = get_param_def('payment', '0');
+        $nds = get_param_def('nds', '0');
         
 	$country_from = get_param_def('country_from', '0');
 	$region_from = get_param_def('region_from', '0');
@@ -128,6 +132,30 @@ function tzs_validate_pr_search_parameters() {
 		array_push($errors, "Неверно выбран тип тендера");
 	}
         
+	if (is_valid_num_zero($sale_or_purchase)) {
+		$sale_or_purchase = intval($sale_or_purchase);
+	} else {
+		array_push($errors, "Неверно выбран тип заявки");
+	}
+        
+	if (is_valid_num_zero($fixed_or_tender)) {
+		$fixed_or_tender = intval($fixed_or_tender);
+	} else {
+		array_push($errors, "Неверно выбран тип тендера");
+	}
+        
+	if (is_valid_num_zero($payment)) {
+		$payment = intval($payment);
+	} else {
+		array_push($errors, "Неверно выбран форма оплаты");
+	}
+        
+	if (is_valid_num_zero($nds)) {
+		$nds = intval($nds);
+	} else {
+		array_push($errors, "Неверно выбран НДС");
+	}
+        
 	if ($cityname_from != null && strlen($cityname_from) == 0) {
 		$cityname_from = null;
 	}
@@ -198,6 +226,14 @@ function tzs_validate_pr_search_parameters() {
                     $res['cur_type_id'] = $cur_type_id;
             if ($rootcategory > 0)
                     $res['rootcategory'] = $rootcategory;
+            if ($sale_or_purchase > 0)
+                    $res['sale_or_purchase'] = $sale_or_purchase;
+            if ($fixed_or_tender > 0)
+                    $res['fixed_or_tender'] = $fixed_or_tender;
+            if ($payment > 0)
+                    $res['payment'] = $payment;
+            if ($nds > 0)
+                    $res['nds'] = $nds;
 
             if ($cityname_from_ids != null)
                     $res['cityname_from_ids'] = $cityname_from_ids;
@@ -249,11 +285,29 @@ function tzs_search_pr_parameters_to_sql($p, $pref) {
     if (isset($p['price_to']))
             $sql .= ' AND price <= '.$p['price_to'];
     
+    // Type_Id
     if (isset($p['type_id']) && ($p['type_id'] > 0)) {
-        if ((isset($p['rootcategory']) == false) || ($p['rootcategory'] < 1)) {
-            $sql .= ' AND type_id = '.$p['type_id'];
+        if (isset($p['cur_type_id']) && ($p['cur_type_id'] > 0)) {
+            if ($p['type_id'] !== $p['cur_type_id']) {
+                $sql .= ' AND type_id = '.$p['type_id'];
+            }
+        //if ((isset($p['rootcategory']) == false) || ($p['rootcategory'] < 1)) {
+        //    $sql .= ' AND type_id = '.$p['type_id'];
+        //}
         }
     }
+
+    if (isset($p['sale_or_purchase']))
+            $sql .= ' AND sale_or_purchase = '.$p['sale_or_purchase'];
+
+    if (isset($p['fixed_or_tender']))
+            $sql .= ' AND fixed_or_tender = '.$p['fixed_or_tender'];
+
+    if (isset($p['payment']))
+            $sql .= ' AND payment = '.$p['payment'];
+
+    if (isset($p['nds']))
+            $sql .= ' AND nds = '.$p['nds'];
     
     
     if (isset($p['auction_type']) && ($p['auction_type'] > 0)) {
@@ -466,54 +520,4 @@ function tzs_front_end_search_pr_handler($atts) {
     return $output;
 }
 
-function aaaa () {
-?>
-	<script>
-		function doAjax(id, rid, to_el) {
-			jQuery(to_el).attr("disabled", "disabled");
-			jQuery(to_el).html('<option value=\"0\">Загрузка</option>');
-			
-			var data = {
-				'action': 'tzs_pr_get_regions',
-				'id': id,
-				'rid': rid
-			};
-			
-			jQuery.post(ajax_url, data, function(response) {
-				jQuery(to_el).html(response);
-				jQuery(to_el).removeAttr("disabled");
-				enableDisable(to_el);
-			}).fail(function() {
-				jQuery(to_el).html("<option value='0'>все области(!)</option>");
-				jQuery(to_el).removeAttr("disabled");
-				enableDisable(to_el);
-			});
-		}
-		
-		function enableDisable(obj) {
-			if (jQuery(obj).children().length <= 1) {
-				jQuery(obj).attr("disabled", "disabled");
-			} else {
-				jQuery(obj).removeAttr("disabled");
-			}
-		}
-	
-		function onCountryFromSelected() {
-			var rid = <?php echo isset($_POST["region_from"]) ? $_POST["region_from"] : 0; ?>;
-			doAjax(jQuery('[name=country_from]').val(), rid, jQuery('[name=region_from]'));
-		}
-		
-		jQuery(document).ready(function() {
-			jQuery('[name=country_from]').change(function() {
-				onCountryFromSelected();
-			});
-			onCountryFromSelected();
-			jQuery.datepicker.setDefaults(jQuery.datepicker.regional['ru']);
-			jQuery("[name=data_from]" ).datepicker({ dateFormat: "dd.mm.yy" });
-			jQuery("[name=data_to]" ).datepicker({ dateFormat: "dd.mm.yy" });
-		});
-	</script>
-	
-<?php
-}
 ?>

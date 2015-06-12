@@ -1,55 +1,5 @@
 <?php
 
-//include_once(TZS_PLUGIN_DIR.'/front-end/tzs.TblTbodyReload.php');
-
-////////
-add_action( 'wp_ajax_tzs_pr_get_regions', 'tzs_pr_get_regions_callback' );
-add_action( 'wp_ajax_nopriv_tzs_pr_get_regions', 'tzs_pr_get_regions_callback' );
-
-function tzs_pr_get_regions_callback() {
-	$id = isset($_POST['id']) && is_numeric($_POST['id']) ? intval( $_POST['id'] ) : 0;
-	$rid = isset($_POST['rid']) && is_numeric($_POST['rid']) ? intval( $_POST['rid'] ) : 0;
-	if ($id <= 0) {
-		?>
-			<option value="0">все области</option>
-		<?php
-	} else {
-		global $wpdb;
-		
-		$sql = "SELECT * FROM ".TZS_REGIONS_TABLE." WHERE country_id=$id ORDER BY title_ru ASC;";
-		$res = $wpdb->get_results($sql);
-		if (count($res) == 0 && $wpdb->last_error != null) {
-			?>
-				<option value="0">все области</option>
-			<?php
-		} else {
-			?>
-				<option value="0">все области</option>
-			<?php
-			$found = false;
-			foreach ( $res as $row ) {
-				if (!$found) {
-					$found = true;
-					?>
-						<option disabled>- - - - - - - -</option>
-					<?php
-				}
-				$region_id = $row->region_id;
-				$title = $row->title_ru;
-				?>
-					<option value="<?php echo $region_id;?>" <?php
-						if ($rid == $region_id) {
-							echo 'selected="selected"';
-						}
-					?> ><?php echo $title;?></option>
-				<?php
-			}
-		}
-	}
-	wp_die();
-}
-
-//////////
 
 function tzs_front_end_products_handler($atts) {
     // Определяем атрибуты 
@@ -77,13 +27,13 @@ function tzs_front_end_products_handler($atts) {
     $page = current_page_number();
 
 	?>
-    <div>
+    <!--div>
         <table id="pr_info" width="100%">
             <tr>
                 <td width="65px"></td>
                 <td>
                     <div id="search_info"><?php 
-                    echo $p_title;
+                    //echo $p_title;
                     //echo strlen($s_title) > 0 ?  ' * '. $s_title : '';
                     ?></div>
                 </td>
@@ -98,7 +48,7 @@ function tzs_front_end_products_handler($atts) {
                 </td>
             </tr>
         </table>
-    </div>
+    </div-->
 <!------------------------------------------------------------------------->                        
     <div>
         <table  id="tbl_products">
@@ -126,14 +76,14 @@ function tzs_front_end_products_handler($atts) {
                         </div>
                             <div id="tbl_thead_search_div_1" class="tbl_thead_search_div">
                                 Категория:<br>
-                              <select name="type_id" <?php echo ($p_id == $pa_root_id) ? '' : ' disabled="disabled"'; ?> >
+                              <select name="type_id" <?php echo ($rootcategory === '1') ? '' : ' disabled="disabled"'; ?> >
                                 <option value="0">все категории</option>
                                 <option disabled>- - - - - - - -</option>
                                 <?php
-                                    tzs_build_product_types('type_id', $pa_root_id);
+                                    tzs_build_product_types('type_id', TZS_PR_ROOT_CATEGORY_PAGE_ID);
                                 ?>
                             </select>
-                            <?php wp_nonce_field( 'type_id', 'type_id_nonce' ); ?>
+                            <?php //wp_nonce_field( 'type_id', 'type_id_nonce' ); ?>
                             </div>
                     </th>
                     <th>
@@ -267,32 +217,12 @@ function tzs_front_end_products_handler($atts) {
 /////
     ?>
     <script>
-        var post = [];
-        <?php
-            echo "// POST dump here\n";
-            foreach ($_POST as $key => $value) {
-                echo "post[".tzs_encode2($key)."] = ".tzs_encode2($value).";\n";
-            }
-            if (!isset($_POST['type_id'])) {
-                echo "post[".tzs_encode2("type_id")."] = ".tzs_encode2($p_id).";\n";
-            }
-            if (!isset($_POST['rootcategory'])) {
-                echo "post[".tzs_encode2("rootcategory")."] = ".tzs_encode2($rootcategory).";\n";
-            }
-            if (!isset($_POST['cur_type_id'])) {
-                echo "post[".tzs_encode2("cur_type_id")."] = ".tzs_encode2($p_id).";\n";
-            }
-            if (!isset($_POST['cur_post_name']) && ($p_name !== '')) {
-                echo "post[".tzs_encode2("cur_post_name")."] = ".tzs_encode2($p_name).";\n";
-            }
-        ?>
-
         function doAjax(id, rid, to_el) {
             jQuery(to_el).attr("disabled", "disabled");
             jQuery(to_el).html('<option value=\"0\">Загрузка</option>');
 
             var data = {
-                    'action': 'tzs_pr_get_regions',
+                    'action': 'tzs_regions_reload',
                     'id': id,
                     'rid': rid
             };
@@ -397,37 +327,79 @@ function tzs_front_end_products_handler($atts) {
         }
         
         //
-        function Form1ToFormCopy() {
-            //jQuery('#search_pr_form1').find(':input').each(function(indx){
-            jQuery('[name=search_pr_form1]').find(':input').each(function(indx){
-            //jQuery('form#search_pr_form1.search_pr_form').find(':input').each(function(indx){
-                if ((jQuery(this).val() > 0) || (jQuery(this).val().length > 0)) {
-                    field_name  = jQuery(this).attr("name");
-                    jQuery('name=search_pr_form').find(field_name).val(jQuery(this).val());
+        function onForm1Change() {
+            onCountryFromSelected();
+            onTypeIdSelected();
+            onSaleOrPurchaseSelected();
+            onFixedOrTenderSelected();
+            onDataFromSelected();
+            onPrTitleSelected();
+            onPriceFromSelected();
+        }
+        
+        function FormToFormCopy(form_to, form_from) {
+            if ((form_to !== undefined) && (form_to !== '') && (form_from !== undefined) && (form_from !== '')) {
+                var elem = document.getElementsByName(form_to)[0].elements;
+                for (i=0;i < elem.length;i++) {
+                    if ((elem[i].type == 'text') || (elem[i].type == 'select-one')) {
+                        console.log(form_to + " before: " + elem[i].tagName + " " + elem[i].type + " " + elem[i].name + " " + elem[i].value);
+                        var elem1 = document.getElementsByName(form_from)[0].elements.namedItem(elem[i].name);
+                        console.log(form_from + " before: " + elem1.tagName + " " + elem1.type + " " + elem1.name + " " + elem1.value);
+                        
+                        switch (elem[i].type) {
+                            case 'select-one': {
+                                if (elem[i].value > 0) { elem1.value = elem[i].value; }
+                                else if (elem1.value > 0) { elem[i].value = elem1.value; }
+                                break;
+                            }
+                            
+                            case 'text': {
+                                if (elem[i].value.length > 0) { elem1.value = elem[i].value; }
+                                else if (elem1.value.length > 0) { elem[i].value = elem1.value;}
+                                break;
+                            }
+                        }
+                        
+                        console.log(form_to + " after: " + elem[i].tagName + " " + elem[i].type + " " + elem[i].name + " " + elem[i].value);
+                        console.log(form_from + " after: " + elem1.tagName + " " + elem1.type + " " + elem1.name + " " + elem1.value);
+                    }
                 }
-            });
+                
+                onForm1Change();
+            }
+        }
+        
+        function FormClear(form_name) {
+            if ((form_name !== undefined) && (form_name !== '')) {
+                var elem = document.getElementsByName(form_name)[0].elements;
+                document.getElementsByName(form_name)[0].reset();
+                onForm1Change();
+                return false;
+            }
         }
         
         function onTblTheadButtonSearchClick() {
-            Form1ToFormCopy();
+            tblTHeadShowForm('', '.tbl_thead_search_div');
+            FormToFormCopy("search_pr_form1", "search_pr_form");
             TblTbodyReload(false, <?php echo isset($_POST['page']) ? $_POST['page'] : '1';?>);
+            // Для исключения повторного обновления страницы - return false
+            return false;
         }
         
         function onTblTheadButtonClearClick() {
-            //alert('onTblTheadButtonClearClick');
-            //jQuery('[name=search_pr_form1]').trigger('reset');
-            //jQuery('form[name="search_pr_form"]').find(':input').not(':button, :submit, :reset, :hidden').each(function(indx){
-            //jQuery('form[name="search_pr_form"]').find('input[type=text]').each(function(indx){
-            //    jQuery(this).attr("value", "");
-            //});
-            //jQuery('form[name="search_pr_form1"]').find('input[type=text]').val("");
-            jQuery(".search_pr_form input[type=text]").val("");
-                //.removeAttr('checked')
-                //.removeAttr('selected');
-                alert('onTblTheadButtonClearClick1');
-            //Form1ToFormCopy();
-            //TblTbodyReload(false, <?php //echo isset($_POST['page']) ? $_POST['page'] : '1';?>);
-            //return false;
+            FormClear("search_pr_form1");
+            FormClear("search_pr_form");
+            TblTbodyReload(false, <?php echo isset($_POST['page']) ? $_POST['page'] : '1';?>);
+            // Для исключения повторного обновления страницы - return false
+            return false;
+        }
+        
+        function onTblSearchButtonClick() {
+            tblTHeadShowForm('', '.tbl_thead_search_div');
+            FormToFormCopy("search_pr_form1", "search_pr_form");
+            TblTbodyReload(true, <?php echo isset($_POST['page']) ? $_POST['page'] : '1';?>);
+            // Для исключения повторного обновления страницы - return false
+            return false;
         }
         
         function TblTbodyReload(is_close_slick, page) {
@@ -447,25 +419,28 @@ function tzs_front_end_products_handler($atts) {
 
             fd = jQuery('form[name="search_pr_form"]').serialize();
             jQuery.ajax({
-                url: "/wp-admin/admin-ajax.php?action=tzs_products_reload",
+                url: "/wp-admin/admin-ajax.php?action=tzs_tables_reload",
                 type: "POST",
                 data: fd,
                 dataType: 'json',
                 success: function(data) {
-                    if (data.output_tbody !== 'undefined') {
+                    if ((data.output_tbody !== 'undefined') && (data.output_tbody !== '')) {
                         jQuery("#tbl_products tbody").html(data.output_tbody);
                     }
 
-                    if (data.output_info !== 'undefined') {
-                        jQuery("#search_info").html(data.output_info);
+                    if ((data.output_info !== 'undefined') && (data.output_info !== '')) {
+                        //jQuery("#search_info").html(data.output_info);
                     }
 
-                    if (data.output_error !== 'undefined') {
-                        jQuery("#errors").html(data.output_error);
+                    if ((data.output_error !== 'undefined') && (data.output_error !== '')) {
+                        //jQuery("#errors").html(data.output_error);
                         //jQuery("#errors").css('display', 'block');
+                        var td_count = tbl_products.rows[1].cells.length;
+                        var o_err = '<tr><td colspan="' + td_count + '"><div class="tbl_tbody_errors">' + data.output_error + '</div></td><\tr>';
+                        jQuery("#tbl_products tbody").html(o_err);
                     }
 
-                    if (data.output_pnav !== 'undefined') {
+                    if ((data.output_pnav !== 'undefined') && (data.output_pnav !== '')) {
                         jQuery("#pages_container").html(data.output_pnav);
                     }
 
@@ -501,12 +476,11 @@ function tzs_front_end_products_handler($atts) {
         }
 
         function tblTHeadShowForm(div_id, div_class) {
-                //jQuery(div_id).toggle();
-            if (jQuery(div_id).is(':visible')) {
+            if ((div_id !== undefined) && (div_id !== '') && (jQuery(div_id).is(':visible'))) {
                 jQuery(div_class).css('display', 'none');
             } else {
                 jQuery(div_class).css('display', 'none');
-                jQuery(div_id).css('display', 'block');
+                if ((div_id !== undefined) && (div_id !== '')) { jQuery(div_id).css('display', 'block'); }
             }
         }
 
@@ -527,10 +501,12 @@ function tzs_front_end_products_handler($atts) {
                 addHidden(theForm, 'cur_type_id', '<?php echo $p_id; ?>');
                 addHidden(theForm, 'cur_post_name', '<?php echo $p_name; ?>');
                 addHidden(theForm, 'p_title', '<?php echo $p_title; ?>');
-                jQuery('<tr><td>&nbsp;</td><td><button id="pr_search_button" onclick="javascript:TblTbodyReload()">Поиск</button></td></tr>').appendTo('.search_pr_form table');
+                jQuery('<tr><td>&nbsp;</td><td><button type="button" id="pr_search_button" onclick="javascript:onTblSearchButtonClick();">Поиск</button></td></tr>').appendTo('.search_pr_form table');
 
                 //
                 jQuery('[name=country_from]').change(function() { onCountryFromSelected(); });
+                //var elem = document.getElementsByName('search_pr_form')[0].elements.namedItem('country_from');
+                //elem.onchange(function() { onCountryFromSelected(); });
                 jQuery('[name=cityname_from]').change(function() { onCityNameFromSelected(); });
                 jQuery('[name=type_id]').change(function() { onTypeIdSelected(); });
                 jQuery('[name=sale_or_purchase]').change(function() { onSaleOrPurchaseSelected(); });
@@ -543,13 +519,7 @@ function tzs_front_end_products_handler($atts) {
                 jQuery('[name=payment]').change(function() { onPriceFromSelected(); });
                 jQuery('[name=nds]').change(function() { onPriceFromSelected(); });
                 //
-                onCountryFromSelected();
-                onTypeIdSelected();
-                onSaleOrPurchaseSelected();
-                onFixedOrTenderSelected();
-                onDataFromSelected();
-                onPrTitleSelected();
-                onPriceFromSelected();
+                onForm1Change();
                 //
                 jQuery.datepicker.setDefaults(jQuery.datepicker.regional['ru']);
                 jQuery("[name=data_from]").datepicker({ dateFormat: "dd.mm.yy" });

@@ -585,14 +585,26 @@ function tzs_post_category_nicename_single() {
 add_filter('single_template', 'tzs_post_category_nicename_single');
 
 /**
- * 
+ * Загрузка данных в таблицу с помощью Ajax
  */
-function tzs_products_reload() {
-    include_once(WP_PLUGIN_DIR . '/tzs/front-end/tzs.products_reload.php');
+function tzs_tables_reload() {
+    include_once(WP_PLUGIN_DIR . '/tzs/front-end/tzs.tables_reload.php');
     $output = tzs_front_end_tables_reload();
     //echo 'Test tzs_products_reload';
     echo json_encode($output);
     wp_die();
 }
-add_action("wp_ajax_tzs_products_reload", "tzs_products_reload");
-add_action("wp_ajax_nopriv_tzs_products_reload", "tzs_products_reload");
+add_action("wp_ajax_tzs_tables_reload", "tzs_tables_reload");
+add_action("wp_ajax_nopriv_tzs_tables_reload", "tzs_tables_reload");
+
+
+/**
+ * Загрузка данных регионов в select с помощью Ajax
+ */
+function tzs_regions_reload() {
+    include_once(WP_PLUGIN_DIR . '/tzs/functions/tzs.functions.php');
+    tzs_get_regions();
+    wp_die();
+}
+add_action("wp_ajax_tzs_regions_reload", "tzs_regions_reload");
+add_action("wp_ajax_nopriv_tzs_regions_reload", "tzs_regions_reload");
