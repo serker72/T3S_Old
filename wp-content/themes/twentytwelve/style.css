@@ -1602,6 +1602,7 @@ max-height: 46px !important;
     border:0;
     display:inline-block;
     transition:background 0.1s ease-in-out;
+    width: 127px;
 }
 .btnBlue:hover,.btnBlue:focus {
     background:#f43c4a;

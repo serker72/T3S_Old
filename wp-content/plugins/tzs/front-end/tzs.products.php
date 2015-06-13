@@ -53,7 +53,6 @@ function tzs_front_end_products_handler($atts) {
     <div>
         <table  id="tbl_products">
             <thead>
-    <form class="search_pr_form" name="search_pr_form1" method="POST">
                 <tr>
                     <th id="tbl_products_id">Номер<br/>время заявки</th>
                     <th id="tbl_products_sale">
@@ -69,6 +68,7 @@ function tzs_front_end_products_handler($atts) {
                     <th id="tbl_products_comm">Контакты</th>
                 </tr>
                 <tr>
+    <form class="search_pr_form" name="search_pr_form1" method="POST">
                     <th>
                         <div id="tbl_thead_search_button_1" class="tbl_thead_search_button" title="Фильтр по категории">
                                 <img chk="1" src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px">
@@ -113,6 +113,7 @@ function tzs_front_end_products_handler($atts) {
                                     <option value="2" <?php if (isset($_POST['fixed_or_tender']) && $_POST['fixed_or_tender'] == 2) echo 'selected="selected"'; ?> >Тендерное предложение</option>
                                 </select>
                             </div>
+                    </th>
                     <th>
                         <div id="tbl_thead_search_button_4" class="tbl_thead_search_button" title="Фильтр по периоду публикации">
                                 <img chk="1" src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px">
@@ -185,8 +186,8 @@ function tzs_front_end_products_handler($atts) {
                             <button type="button" id="tbl_thead_button_search" onclick="javascript:onTblTheadButtonSearchClick();" title="Выполнить поиск по текущим условиям фильтра">Искать</button>
                         </div>
                     </th>
-                </tr>
     </form>
+                </tr>
             </thead>
             <tbody>
             </tbody>

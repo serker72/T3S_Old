@@ -5,7 +5,11 @@ include_once(TZS_PLUGIN_DIR.'/front-end/tzs.trade.images.php');
 
         
 function tzs_print_product_form($errors, $edit=false) {
-    $d = date("d.m.Y");
+    //$d = date("d.m.Y");
+    // Добавим 7 дней к текущей дате
+    $dt = new DateTime();
+    date_add($dt, date_interval_create_from_date_string('8 days'));
+    $d = date_format($dt, "d.m.Y");
 
     if(isset($_GET['spis'])) echo "<a id='edit_search' href='/account/my-products/'>Назад к списку</a> <div style='clear: both'></div>";
     else echo "<button id='edit_search'  onclick='history.back()'>Назад к списку</button> <div style='clear: both'></div>";
@@ -48,6 +52,20 @@ function tzs_print_product_form($errors, $edit=false) {
             <?php wp_nonce_field( 'pr_type_id', 'pr_type_id_nonce' ); ?>
         </div>
         <div class="pr_edit_form_line">
+            <label for="pr_sale_or_purchase">Тип заявки</label>
+            <select name="pr_sale_or_purchase">
+                <option value="1" <?php if (isset($_POST['pr_sale_or_purchase']) && $_POST['pr_sale_or_purchase'] == 1) echo 'selected="selected"'; ?> >Продажа</option>
+                <option value="2" <?php if (isset($_POST['pr_sale_or_purchase']) && $_POST['pr_sale_or_purchase'] == 2) echo 'selected="selected"'; ?> >Покупка</option>
+            </select>
+        </div>
+        <div class="pr_edit_form_line">
+            <label for="pr_fixed_or_tender">Участник тендера</label>
+            <select name="pr_fixed_or_tender">
+                <option value="1" <?php if (isset($_POST['pr_fixed_or_tender']) && $_POST['pr_fixed_or_tender'] == 1) echo 'selected="selected"'; ?> >Цена зафиксирована</option>
+                <option value="2" <?php if (isset($_POST['pr_fixed_or_tender']) && $_POST['pr_fixed_or_tender'] == 2) echo 'selected="selected"'; ?> >Тендерное предложение</option>
+            </select>
+        </div>
+        <div class="pr_edit_form_line">
             <label for="pr_title">Наименование</label>
             <input type="text" id="pr_edit_text_big" name="pr_title" size="135" maxlength="255" value="<?php echo_val('pr_title'); ?>">
         </div>
@@ -76,6 +94,23 @@ function tzs_print_product_form($errors, $edit=false) {
         <div class="pr_edit_form_line">
             <label for="pr_copies">Количество</label>
             <input type="number" id="" name="pr_copies" size="2" value="<?php echo_val('pr_copies'); ?>" min="0">
+            <select for="pr_copies" name="pr_unit">
+            <?php
+                foreach ($GLOBALS['tzs_pr_unit'] as $key => $val) {
+                        echo '<option value="'.$key.'" ';
+                        if ($val == '')
+                                $val = '-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-';
+                        if (isset($_POST['pr_unit']) && $_POST['pr_unit'] == $key && $key != 0) {
+                                echo 'selected="selected"';
+                        }
+                        if ($key == 0) {
+                                echo 'disabled="disabled"';
+                        }
+                        //echo '>'.htmlspecialchars($val).'</option>\n';
+                        echo '>'.$val.'</option>\n';
+                }
+            ?>
+            </select>
         </div>
         <div class="pr_edit_form_line">
             <label for="pr_price">Стоимость</label>
