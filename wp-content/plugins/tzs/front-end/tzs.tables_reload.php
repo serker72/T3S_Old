@@ -3,8 +3,8 @@
 /*
  * Вывод одной строки таблицы в виде html
  */
-function tzs_products_table_record_out($row) {
-    $user_info = tzs_get_user_meta($row->user_id);
+function tzs_products_table_record_out($row, $form_type) {
+//    $user_info = tzs_get_user_meta($row->user_id);
 
     $output_tbody = '<tr rid="'.$row->id.'" id="';
 
@@ -102,8 +102,11 @@ function tzs_products_table_record_out($row) {
                     '.tzs_city_to_str($row->from_cid, $row->from_rid, $row->from_sid, $row->city_from).'
                 </div>
             </td>
-            <td>
-                <div class="tbl_products_contact" title="Контактные данные ';
+            <td>';
+                
+    $output_tbody .= tzs_print_user_contacts($row, $form_type);
+/*    
+    $output_tbody .= '<div class="tbl_products_contact" title="Контактные данные ';
     if ($row->sale_or_purchase == 1) { $output_tbody .= 'продавца'; } else { $output_tbody .= 'покупателя'; }
 
     $output_tbody .= '">
@@ -138,8 +141,9 @@ function tzs_products_table_record_out($row) {
         </div>';
     }
 
-    $output_tbody .= '</div>
-            </td>
+    $output_tbody .= '</div>';
+  */
+    $output_tbody .= '        </td>
         </tr>';
     
     return $output_tbody;
@@ -148,8 +152,8 @@ function tzs_products_table_record_out($row) {
 /*
  * Вывод одной строки таблицы в виде html
  */
-function tzs_tr_sh_table_record_out($row) {
-    $user_info = tzs_get_user_meta($row->user_id);
+function tzs_tr_sh_table_record_out($row, $form_type) {
+//    $user_info = tzs_get_user_meta($row->user_id);
 
     $type = trans_types_to_str($row->trans_type, $row->tr_type);
     
@@ -212,53 +216,22 @@ function tzs_tr_sh_table_record_out($row) {
                 <div>'.$type.'
                 </div>
             </td>
-            <td>
-                <div>
-                </div>
+            <td>';
+                
+    
+    $cost = tzs_cost_to_str($row->cost, true);
+
+    $output_tbody .= '<div>'.$cost[0].'</div>
             </td>
             <td>
-                <div>
-                </div>
+                <div>'.$cost[1].'</div>
             </td>
             <td>
-                <div>
-                </div>
+                <div>'.$row->comment.'</div>
             </td>
-            <td>
-                <div>
-                </div>
+            <td>'.tzs_print_user_contacts($row, $form_type).'
             </td>
         </tr>';
-/*    
-				?>
-				<tr rid="<?php echo $row->id;?>">
-				<td><?php echo $row->id;?></td>
-				<td><b><?php echo convert_date_no_year($row->time); ?></b><br/><?php echo convert_time_only($row->time);?></td>
-				<td><?php echo convert_date_no_year($row->tr_date_from);?><br/><?php echo convert_date_no_year($row->tr_date_to);?></td>
-				<td>
-					<?php echo tzs_city_to_str($row->from_cid, $row->from_rid, $row->from_sid, $row->tr_city_from);?><br/><?php echo tzs_city_to_str($row->to_cid, $row->to_rid, $row->to_sid, $row->tr_city_to);?>
-					<?php if ($row->distance > 0) {?>
-						<br/>
-						<?php echo tzs_make_distance_link($row->distance, false, array($row->tr_city_from, $row->tr_city_to)); ?>
-					<?php } ?>
-				</td>
-				
-				<?php if ($row->tr_weight > 0) {?>
-					<td><?php echo remove_decimal_part($row->tr_weight);?> т</td>
-				<?php } else {?>
-					<td>&nbsp;</td>
-				<?php }?>
-				
-				<?php if ($row->tr_volume > 0) {?>
-					<td><?php echo remove_decimal_part($row->tr_volume);?> м³</td>
-				<?php } else {?>
-					<td>&nbsp;</td>
-				<?php }?>
-				
-				<td><?php echo $type;?></td>
-				<td><?php echo tzs_cost_to_str($row->cost);?></td>
-				<td><?php echo htmlspecialchars($row->comment);?></td>
-*/
     
     return $output_tbody;
 }
@@ -310,18 +283,21 @@ function tzs_front_end_tables_reload() {
         case 'products': {
             $table_name = TZS_PRODUCTS_TABLE;
             $table_error_msg = 'товаров';
+            $table_order_by = 'created';
             break;
         }
 
         case 'trucks': {
             $table_name = TZS_TRUCK_TABLE;
             $table_error_msg = 'транспорта';
+            $table_order_by = 'time';
             break;
         }
 
         case 'shipments': {
             $table_name = TZS_SHIPMENT_TABLE;
             $table_error_msg = 'грузов';
+            $table_order_by = 'time';
             break;
         }        
         
@@ -370,7 +346,7 @@ function tzs_front_end_tables_reload() {
                     $page = $pages;
 
             $from = ($page-1) * $pp;
-            $sql = "SELECT * FROM ".$table_name." WHERE active=1 $sql1 $s_sql ORDER BY created DESC LIMIT $from,$pp;";
+            $sql = "SELECT * FROM ".$table_name." WHERE active=1 $sql1 $s_sql ORDER BY ".$table_order_by." DESC LIMIT $from,$pp;";
             $res = $wpdb->get_results($sql);
             if (count($res) == 0 && $wpdb->last_error != null) {
                 $output_error .= '<div>Не удалось отобразить список '.$table_error_msg.'. Свяжитесь, пожалуйста, с администрацией сайта.</div>';
@@ -380,9 +356,9 @@ function tzs_front_end_tables_reload() {
                 } else {
                     foreach ( $res as $row ) {
                         if ($form_type === 'products') {
-                            $output_tbody .= tzs_products_table_record_out($row);
+                            $output_tbody .= tzs_products_table_record_out($row, $form_type);
                         } else {
-                            $output_tbody .= tzs_tr_sh_table_record_out($row);
+                            $output_tbody .= tzs_tr_sh_table_record_out($row, $form_type);
                         }
                         
                         $lastrecid = $row->id;
