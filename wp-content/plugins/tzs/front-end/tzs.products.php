@@ -13,7 +13,6 @@ function tzs_front_end_products_handler($atts) {
 
     $p_id = get_the_ID();
     $p_title = the_title('', '', false);
-    //$form_type = get_param_def('form_type', '');
 
     // Если указан параметр rootcategory, то выводим все товары раздела
     // Иначе - товары категории
@@ -25,35 +24,36 @@ function tzs_front_end_products_handler($atts) {
         $p_name = get_post_field( 'post_name', $p_id );
     }
 
-    //$page = current_page_number();
-
-	?>
-    <!--div>
-        <table id="pr_info" width="100%">
-            <tr>
-                <td width="65px"></td>
-                <td>
-                    <div id="search_info"><?php 
-                    //echo $p_title;
-                    //echo strlen($s_title) > 0 ?  ' * '. $s_title : '';
-                    ?></div>
-                </td>
-                <td>
-                    <div id="errors" class="errors" style="float: left;">
-                    </div>
-                </td>
-                <td>
-                    <div>
-                        <button tag="page" id="realod_btn" onClick="javascript:TblTbodyReload()">Обновить</button>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div-->
+    ?>
 <!------------------------------------------------------------------------->                        
     <div>
         <table  id="tbl_products">
             <thead>
+    <form class="search_pr_form" id="search_pr_form2" name="search_pr_form1" method="POST">
+                <tr id="tbl_thead_records_per_page">
+                    <th colspan="4">
+                        <?php if ($rootcategory === '1') { ?>
+                            Категория товаров:
+                            <select name="type_id" <?php echo ($rootcategory === '1') ? '' : ' disabled="disabled"'; ?> >
+                                <option value="0">все категории</option>
+                                <option disabled>- - - - - - - -</option>
+                            <?php
+                                tzs_build_product_types('type_id', TZS_PR_ROOT_CATEGORY_PAGE_ID);
+                            ?>
+                            </select>
+                        <?php } ?>
+                    </th>
+                    <th></th>
+                    <th colspan="3">
+                        Количество записей на странице:
+                        <select name="records_per_page" style="width: 50px;">
+                            <option value="5" <?php if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 5) || (TZS_RECORDS_PER_PAGE == 5)) echo 'selected="selected"'; ?> >5</option>
+                            <option value="10" <?php if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 10) || (TZS_RECORDS_PER_PAGE == 10)) echo 'selected="selected"'; ?> >10</option>
+                            <option value="15" <?php if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 15) || (TZS_RECORDS_PER_PAGE == 15)) echo 'selected="selected"'; ?> >15</option>
+                            <option value="20" <?php if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 20) || (TZS_RECORDS_PER_PAGE == 20)) echo 'selected="selected"'; ?> >20</option>
+                        </select><br>
+                    </th>
+                </tr>
                 <tr>
                     <th id="tbl_products_id">Номер<br/>время заявки</th>
                     <th id="tbl_products_sale">Покупка<br/>Продажа</th>
@@ -65,23 +65,22 @@ function tzs_front_end_products_handler($atts) {
                     <th id="tbl_products_comm">Контакты</th>
                 </tr>
                 <tr>
-    <form class="search_pr_form" id="search_pr_form2" name="search_pr_form1" method="POST">
                     <th>
-                        <div id="tbl_thead_search_button_1" class="tbl_thead_search_button" title="Фильтр по категории">
-                                <img chk="1" src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px">
+                        <!--div id="tbl_thead_search_button_1" class="tbl_thead_search_button" title="Фильтр по категории">
+                                <img chk="1" src="<?php //echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px">
                                 <a href="JavaScript:tblTHeadShowForm('#tbl_thead_search_div_1', '.tbl_thead_search_div');"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/navigate-down.png" width="16px" height="16px"></a>
                         </div>
                             <div id="tbl_thead_search_div_1" class="tbl_thead_search_div">
                                 Категория:<br>
-                              <select name="type_id" <?php echo ($rootcategory === '1') ? '' : ' disabled="disabled"'; ?> >
+                              <select name="type_id" <?php //echo ($rootcategory === '1') ? '' : ' disabled="disabled"'; ?> >
                                 <option value="0">все категории</option>
                                 <option disabled>- - - - - - - -</option>
                                 <?php
-                                    tzs_build_product_types('type_id', TZS_PR_ROOT_CATEGORY_PAGE_ID);
+                                    //tzs_build_product_types('type_id', TZS_PR_ROOT_CATEGORY_PAGE_ID);
                                 ?>
                             </select>
                             <?php //wp_nonce_field( 'type_id', 'type_id_nonce' ); ?>
-                            </div>
+                            </div-->
                     </th>
                     <th>
                         <div id="tbl_thead_search_button_2" class="tbl_thead_search_button" title="Фильтр по типу заявок">
@@ -186,8 +185,8 @@ function tzs_front_end_products_handler($atts) {
                             <!--button type="button" id="tbl_thead_button_search" onclick="javascript:onTblTheadButtonSearchClick();" title="Выполнить поиск по текущим условиям фильтра">Искать</button-->
                         </div>
                     </th>
-    </form>
                 </tr>
+    </form>
             </thead>
             <tbody>
             </tbody>
@@ -208,67 +207,21 @@ function tzs_front_end_products_handler($atts) {
         ?>
     </div>
 <!------------------------------------------------------------------------->                        
-                <?php
-//                }
-
-                //build_pages_footer($page, $pages);
-//            }
-//        }
-//    }
-////
-    //echo '<div>'.tzs_front_end_TblTbodyReload($p_id, $rootcategory).'</div>';
-/////
-    ?>
+    <script src="/wp-content/plugins/tzs/assets/js/table_reload.js"></script>
+    
     <script>
         var SearchFormVisible = false;
         
-        function doAjax(id, rid, to_el) {
-            jQuery(to_el).attr("disabled", "disabled");
-            jQuery(to_el).html('<option value=\"0\">Загрузка</option>');
-
-            var data = {
-                    'action': 'tzs_regions_reload',
-                    'id': id,
-                    'rid': rid
-            };
-
-            jQuery.post(ajax_url, data, function(response) {
-                    jQuery(to_el).html(response);
-                    jQuery(to_el).removeAttr("disabled");
-                    enableDisable(to_el);
-            }).fail(function(response) {
-                    jQuery(to_el).html("<option value='0'>все области(!)</option>");
-                    jQuery(to_el).removeAttr("disabled");
-                    enableDisable(to_el);
-            });
-        }
-
-        function enableDisable(obj) {
-                if (jQuery(obj).children().length <= 1) {
-                        jQuery(obj).attr("disabled", "disabled");
-                } else {
-                        jQuery(obj).removeAttr("disabled");
-                }
-        }
 
         function onCountryFromSelected() {
             var rid = <?php echo isset($_POST["region_from"]) ? $_POST["region_from"] : 0; ?>;
             doAjax(jQuery('[name=country_from]').val(), rid, jQuery('[name=region_from]'));
         }
         
-        function showUserContacts(obj, user_id, is_hide) {
-            var container = jQuery('div[phone-user="'+user_id+'"]');
-            var container1 = jQuery('div[phone-user-not-view="'+user_id+'"]');
-
-            if (is_hide) {
-                container.hide();
-                container1.show();
-            } else {
-                container.find('a, b').hide();
-                container.find('span').show();
-            }
+        function onCountryToSelected() {
+            var rid = <?php echo isset($_POST["region_to"]) ? $_POST["region_to"] : 0; ?>;
+            doAjax(jQuery('[name=country_to]').val(), rid, jQuery('[name=region_to]'));
         }
-        
         //
         function onForm1Change() {
             if (jQuery('[name=type_id]').val() > 0) {
@@ -313,73 +266,11 @@ function tzs_front_end_products_handler($atts) {
             }
         }
         
-/*        function FormToFormCopy(form_from, form_to) {
-            var curdate = new Date();
-            //console.log("FormToFormCopy: run on " + curdate.toString() + ', form_from=' + form_from + ', form_to=' + form_to);
-            if ((form_from !== undefined) && (form_from !== '') && (form_to !== undefined) && (form_to !== '')) {
-                var elem = document.getElementsByName(form_from)[0].elements;
-                for (i=0;i < elem.length;i++) {
-                    if ((elem[i].type == 'text') || (elem[i].type == 'select-one')) {
-                        //console.log(form_from + " before: " + elem[i].tagName + " " + elem[i].type + " " + elem[i].name + " " + elem[i].value);
-                        var elem1 = document.getElementsByName(form_to)[0].elements.namedItem(elem[i].name);
-                        //console.log(form_to + " before: " + elem1.tagName + " " + elem1.type + " " + elem1.name + " " + elem1.value);
-                        
-                        switch (elem[i].type) {
-                            case 'select-one': {
-                                if (elem[i].value > 0) { 
-                                    elem1.value = elem[i].value; 
-                                    //console.log("Update " + form_to + '.' + elem1.name + " new value: " + elem[i].value);
-                                }
-                                else if (elem1.value > 0) { 
-                                    elem[i].value = elem1.value; 
-                                    //console.log("Update " + form_from + '.' + elem[i].name + " new value: " + elem1.value);
-                                }
-                                break;
-                            }
-                            
-                            case 'text': {
-                                if (elem[i].value.length > 0) { 
-                                    elem1.value = elem[i].value; 
-                                    //console.log("Update " + form_to + '.' + elem1.name + " new value: " + elem[i].value);
-                                }
-                                else if (elem1.value.length > 0) { 
-                                    elem[i].value = elem1.value;
-                                    //console.log("Update " + form_from + '.' + elem[i].name + " new value: " + elem1.value);
-                                }
-                                break;
-                            }
-                        }
-                        
-                        //console.log(form_from + " after: " + elem[i].tagName + " " + elem[i].type + " " + elem[i].name + " " + elem[i].value);
-                        //console.log(form_to + " after: " + elem1.tagName + " " + elem1.type + " " + elem1.name + " " + elem1.value);
-                    }
-                }
-                
-                onForm1Change();
-            }
-        }
-*/        
-        function FormClear(form_name) {
-            if ((form_name !== undefined) && (form_name !== '')) {
-                var elem = document.getElementsByName(form_name)[0].elements;
-                for (i=0;i < elem.length;i++) {
-                    if ((elem[i].type == 'text') || (elem[i].type == 'select-one')) {
-                        //console.log(form_name + " before: " + elem[i].tagName + " " + elem[i].type + " " + elem[i].name + " " + elem[i].value);
-                        if (elem[i].type == 'text') { elem[i].value = ''; }
-                        else { elem[i].value = 0; }
-                        //console.log(form_name + " after: " + elem[i].tagName + " " + elem[i].type + " " + elem[i].name + " " + elem[i].value);
-                    }
-                }
-                //console.log(form_name + " reset");
-                //return false;
-            }
-        }
-        
         function onTblTheadButtonSearchClick() {
             tblTHeadShowForm('', '.tbl_thead_search_div');
             if (SearchFormVisible) { tblTHeadShowSearchForm(); }
             //FormToFormCopy("search_pr_form1", "search_pr_form");
-            TblTbodyReload(false, <?php echo isset($_POST['page']) ? $_POST['page'] : '1';?>);
+            TblTbodyReload(<?php echo isset($_POST['page']) ? $_POST['page'] : '1';?>);
             // Для исключения повторного обновления страницы - return false
             //return false;
         }
@@ -390,7 +281,7 @@ function tzs_front_end_products_handler($atts) {
             onForm1Change();
             tblTHeadShowForm('', '.tbl_thead_search_div');
             if (SearchFormVisible) { tblTHeadShowSearchForm(); }
-            TblTbodyReload(false, <?php echo isset($_POST['page']) ? $_POST['page'] : '1';?>);
+            TblTbodyReload(<?php echo isset($_POST['page']) ? $_POST['page'] : '1';?>);
             // Для исключения повторного обновления страницы - return false
             //return false;
         }
@@ -398,99 +289,11 @@ function tzs_front_end_products_handler($atts) {
         function onTblSearchButtonClick() {
             tblTHeadShowForm('', '.tbl_thead_search_div');
             //FormToFormCopy("search_pr_form", "search_pr_form1");
-            TblTbodyReload(true, <?php echo isset($_POST['page']) ? $_POST['page'] : '1';?>);
+            TblTbodyReload(<?php echo isset($_POST['page']) ? $_POST['page'] : '1';?>);
             // Скроем форму
             tblTHeadShowSearchForm();
             // Для исключения повторного обновления страницы - return false
             //return false;
-        }
-        
-        function TblTbodyReload(is_close_slick, page) {
-            if (is_close_slick === true) { jQuery('.tab').click(); }
-            
-            if (page !== undefined) { addHidden("[name=search_pr_form]", 'page', page); }
-
-            // Очистим
-            //jQuery("#errors").html('');
-            //jQuery("#search_info").html('');
-            jQuery("#tbl_products tbody").html('');
-            jQuery("#pages_container").html('');
-
-            jQuery('#preloader').fadeIn('fast');
-            //jQuery('#preloader').show();
-            //jQuery('#tbl_products_search_status th').html('Подождите...Выполняется операция поиска записей...');
-
-            fd = jQuery('form[name="search_pr_form"]').serialize();
-            jQuery.ajax({
-                url: "/wp-admin/admin-ajax.php?action=tzs_tables_reload",
-                type: "POST",
-                data: fd,
-                dataType: 'json',
-                success: function(data) {
-                    if ((data.output_tbody !== 'undefined') && (data.output_tbody !== '')) {
-                        jQuery("#tbl_products tbody").html(data.output_tbody);
-                    }
-
-                    if ((data.output_info !== 'undefined') && (data.output_info !== '')) {
-                        //jQuery("#search_info").html(data.output_info);
-                    }
-
-                    if ((data.output_error !== 'undefined') && (data.output_error !== '')) {
-                        //jQuery("#errors").html(data.output_error);
-                        //jQuery("#errors").css('display', 'block');
-                        var td_count = tbl_products.rows[1].cells.length;
-                        var o_err = '<tr><td colspan="' + td_count + '"><div class="tbl_tbody_errors">' + data.output_error + '</div></td><\tr>';
-                        jQuery("#tbl_products tbody").html(o_err);
-                    }
-
-                    if ((data.output_pnav !== 'undefined') && (data.output_pnav !== '')) {
-                        jQuery("#pages_container").html(data.output_pnav);
-                    }
-
-                    jQuery('#preloader').fadeOut('fast');
-                },
-                error: function(data) {
-                    if (data.responsetext !== 'undefined') {
-                        jQuery("#errors").html(data.responsetext);
-                    }
-
-                    jQuery('#preloader').fadeOut('fast');
-                }			
-            });		   
-        }
-
-        // Create a hidden input element, and append it to the form:
-        function addHidden(theForm, key, value) {
-            if (jQuery(theForm).find('input[type=hidden]').is('[name='+key+']') == false) {
-                var input = jQuery('<input type="hidden"/>');
-                jQuery(input).attr('name', key);
-                jQuery(input).attr('value', value);
-                jQuery(theForm).append(input);                        
-            }
-            else {
-                jQuery(theForm+' [name='+key+']').attr('value', value);
-            }
-        }
-
-        function tblTHeadShowForm(div_id, div_class) {
-            if ((div_id !== undefined) && (div_id !== '') && (jQuery(div_id).is(':visible'))) {
-                jQuery(div_class).css('display', 'none');
-            } else {
-                jQuery(div_class).css('display', 'none');
-                if ((div_id !== undefined) && (div_id !== '')) { jQuery(div_id).css('display', 'block'); }
-            }
-        }
-
-        function onFormFieldChange(eventObject) {
-            var curdate = new Date();
-            //console.log("onFormFieldChange: run on " + curdate.toString() + ', this.name=' + this.name);
-            var fid = eventObject.target.id;
-            var fname = eventObject.target.name;
-            var fval = eventObject.target.value;
-            //console.log('id='+fid+', name='+fname+', val='+fval);
-            //console.log(eventObject);
-            jQuery('[name=' + fname +  ']').attr('value', fval);
-            onForm1Change();
         }
         
         function tblTHeadShowSearchForm() {
@@ -500,27 +303,9 @@ function tzs_front_end_products_handler($atts) {
         }
 
         
-        function setFormFielsdChangeHandler(form_name) {
-            var curdate = new Date();
-            //console.log("setFormFielsdChangeHandler: run on " + curdate.toString() + ', form_name=' + form_name);
-            if ((form_name !== undefined) && (form_name !== '')) {
-                var elem = document.getElementsByName(form_name)[0].elements;
-                for (i=0;i < elem.length;i++) {
-                    if ((elem[i].type == 'text') || (elem[i].type == 'select-one')) {
-                        if (elem[i].name !== 'country_from') {
-                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onFormFieldChange(eventObject); });
-                        } else {
-                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onCountryFromSelected(); onFormFieldChange(eventObject); });
-                        }
-                        //console.log("Set onChange " + form_name + "." + elem[i].name);
-                    }
-                }
-                
-                onForm1Change();
-            }
-        }
-
+        // Функция, отрабатывающая после готовности HTML-документа
         jQuery(document).ready(function(){
+                // Установим обработчик "клика" в строках таблицы
                 jQuery('#tbl_products').on('click', 'td', function(e) {  
                         var nonclickable = 'true' == e.delegateTarget.rows[0].cells[this.cellIndex].getAttribute('nonclickable');
                         var id = this.parentNode.getAttribute("rid");
@@ -528,15 +313,27 @@ function tzs_front_end_products_handler($atts) {
                                 document.location = "/account/view-product/?id="+id;
                 });
 
+                // Создадми скрытые поля для формы
                 var theForm = "#search_pr_form1";
                 //addHidden(theForm, 'type_id', '<?php echo $p_id; ?>');
                 addHidden(theForm, 'rootcategory', '<?php echo $rootcategory; ?>');
                 addHidden(theForm, 'cur_type_id', '<?php echo $p_id; ?>');
                 addHidden(theForm, 'cur_post_name', '<?php echo $p_name; ?>');
                 addHidden(theForm, 'p_title', '<?php echo $p_title; ?>');
+                addHidden(theForm, 'records_per_page', '<?php echo isset($_POST['records_per_page']) ? $_POST['records_per_page'] : TZS_RECORDS_PER_PAGE; ?>');
+                
+                // Установим размеры для выезжающей панели с формой
+                jQuery(".slide_panel").css({
+                    'width': '360px',
+                    'left': '-420px'
+                });
 
                 // Устанавливаем обработчики событий 
                 setFormFielsdChangeHandler('search_pr_form');
+                jQuery('[name=records_per_page]').change(function(eventObject) {
+                    addHidden(theForm, 'records_per_page', eventObject.target.value);
+                    TblTbodyReload(1); 
+                });
                 onForm1Change();
                 //
                 jQuery.datepicker.setDefaults(jQuery.datepicker.regional['ru']);
@@ -544,20 +341,14 @@ function tzs_front_end_products_handler($atts) {
                 jQuery("[name=data_to]").datepicker({ dateFormat: "dd.mm.yy" });
 
 
-                TblTbodyReload(false, 1);
+                // Скроем форму
+                if (SearchFormVisible) { tblTHeadShowSearchForm(); }
+                // Обновим тело таблицы
+                TblTbodyReload(1);
 
                 //hijackLinks(post);
 
                 ///
-/*                jQuery('#slick-1').dcSlick({
-                    location: 'left',
-                    align: 'top',
-                    offset: '120px',
-                    speed: 'slow',
-                    tabText: '',
-                    autoClose: false
-                });
-*/
         });
     </script>
     <?php

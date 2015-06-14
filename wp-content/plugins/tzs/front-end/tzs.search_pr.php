@@ -287,13 +287,12 @@ function tzs_search_pr_parameters_to_sql($p, $pref) {
     
     // Type_Id
     if (isset($p['type_id']) && ($p['type_id'] > 0)) {
+        if ((isset($p['rootcategory']) == false) || ($p['rootcategory'] < 1)) {
+            $sql .= ' AND type_id = '.$p['type_id'];
+        }
+    } else {
         if (isset($p['cur_type_id']) && ($p['cur_type_id'] > 0)) {
-            if ($p['type_id'] !== $p['cur_type_id']) {
-                $sql .= ' AND type_id = '.$p['type_id'];
-            }
-        //if ((isset($p['rootcategory']) == false) || ($p['rootcategory'] < 1)) {
-        //    $sql .= ' AND type_id = '.$p['type_id'];
-        //}
+                $sql .= ' AND type_id = '.$p['cur_type_id'];
         }
     }
 
@@ -476,7 +475,7 @@ function tzs_front_end_search_pr_form() {
                     <select name="nds">
                         <option value="0" <?php if (isset($_POST['nds']) && $_POST['nds'] == 0) echo 'selected="selected"'; ?> >Все</option>
                         <option value="1" <?php if (isset($_POST['nds']) && $_POST['nds'] == 1) echo 'selected="selected"'; ?> >Без НДС</option>
-                        <option value="1" <?php if (isset($_POST['nds']) && $_POST['nds'] == 2) echo 'selected="selected"'; ?> >Включая НДС</option>
+                        <option value="2" <?php if (isset($_POST['nds']) && $_POST['nds'] == 2) echo 'selected="selected"'; ?> >Включая НДС</option>
                     </select>
                 </td>
             </tr>

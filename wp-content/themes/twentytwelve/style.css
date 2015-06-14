@@ -1780,6 +1780,16 @@ max-height: 46px !important;
     /*width: 32px;*/
     /*height: 32px;*/
 }
+/*.tbl_thead_records_per_page {*/
+#tbl_products #tbl_thead_records_per_page th {
+    background: #F0F0F0;
+    color: #000;
+    vertical-align: middle;
+    /*text-align: right;*/
+}
+#tbl_products #tbl_thead_records_per_page th select {
+/*    width: 50px;*/
+}
 .tbl_thead_search_text {
     float: left;
 }
@@ -1802,6 +1812,7 @@ max-height: 46px !important;
     overflow: visible;
     border: 1px solid #000;
     position: absolute;
+    z-index: 1000000;
 }
 .tbl_thead_search_div select option {
     background: #fff; 

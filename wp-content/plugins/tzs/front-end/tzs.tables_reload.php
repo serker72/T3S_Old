@@ -163,6 +163,7 @@ function tzs_front_end_tables_reload() {
     $cur_post_name = get_param_def('cur_post_name', '');
     $p_title = get_param_def('p_title', '');
     $page = get_param_def('page', '1');
+    $records_per_page = get_param_def('records_per_page', ''.TZS_RECORDS_PER_PAGE);
     
 
     //$p_id = get_the_ID();
@@ -202,7 +203,7 @@ function tzs_front_end_tables_reload() {
 
         //$url = current_page_url();
 
-        $pp = TZS_RECORDS_PER_PAGE;
+        $pp = floatval($records_per_page);
 
         $sql = "SELECT COUNT(*) as cnt FROM ".TZS_PRODUCTS_TABLE." WHERE active=1 $sql1 $s_sql;";
         $res = $wpdb->get_row($sql);
@@ -237,7 +238,7 @@ function tzs_front_end_tables_reload() {
                 if ($pages > 1) {
                     if ($page > 1) {
                         $page0 = $page - 1;
-                        $output_pnav .= '<a tag="page" page="'.$page0.'" href="javascript:TblTbodyReload(false, '.$page0.')">« Предыдущая</a>&nbsp;';
+                        $output_pnav .= '<a tag="page" page="'.$page0.'" href="javascript:TblTbodyReload('.$page0.')">« Предыдущая</a>&nbsp;';
                     }
                     
                     $start = 1;
@@ -247,13 +248,13 @@ function tzs_front_end_tables_reload() {
                         if ($i == $page) {
                             $output_pnav .= '&nbsp;&nbsp;<span>'.$i.'</span>&nbsp;';
                         } else {
-                            $output_pnav .= '&nbsp;&nbsp;<a tag="page" page="'.$i.'" href="javascript:TblTbodyReload(false, '.$i.')">'.$i.'</a>&nbsp;';
+                            $output_pnav .= '&nbsp;&nbsp;<a tag="page" page="'.$i.'" href="javascript:TblTbodyReload('.$i.')">'.$i.'</a>&nbsp;';
                         }
                     }
                     
                     if ($page < $pages) {
                         $page1 = $page + 1;
-                        $output_pnav .= '&nbsp;&nbsp;<a tag="page" page="'.$page1.'" href="javascript:TblTbodyReload(false, '.$page1.')">Следующая »</a>';
+                        $output_pnav .= '&nbsp;&nbsp;<a tag="page" page="'.$page1.'" href="javascript:TblTbodyReload('.$page1.')">Следующая »</a>';
                     }
                 }
             }

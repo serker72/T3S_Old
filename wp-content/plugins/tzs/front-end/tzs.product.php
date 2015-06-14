@@ -141,7 +141,7 @@ function tzs_print_product_form($errors, $edit=false) {
                         echo '<option value="'.$key.'" ';
                         if ($val == '')
                                 $val = '-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-';
-                        if (isset($_POST['tzs_pr_payment']) && $_POST['tzs_pr_payment'] == $key) { // && $key != 0
+                        if (isset($_POST['pr_payment']) && $_POST['pr_payment'] == $key) { // && $key != 0
                                 echo 'selected="selected"';
                         }
                         if ($key == 0) {
@@ -151,6 +151,11 @@ function tzs_print_product_form($errors, $edit=false) {
                         echo '>'.$val.'</option>\n';
                 }
             ?>
+            </select>
+            <select name="pr_nds">
+                <option value="0" <?php if (isset($_POST['pr_nds']) && $_POST['pr_nds'] == 0) echo 'selected="selected"'; ?> disabled="disabled">---------------</option>
+                <option value="1" <?php if (isset($_POST['pr_nds']) && $_POST['pr_nds'] == 1) echo 'selected="selected"'; ?> >Без НДС</option>
+                <option value="2" <?php if (isset($_POST['pr_nds']) && $_POST['pr_nds'] == 2) echo 'selected="selected"'; ?> >Включая НДС</option>
             </select>
         </div>
         <div class="pr_edit_form_line">
@@ -215,9 +220,11 @@ function tzs_edit_product($id) {
 	$pr_title = get_param('pr_title');
 	$pr_description = get_param('pr_description');
 	$pr_copies = get_param_def('pr_copies','0');
+	$pr_unit = get_param_def('pr_unit','0');
 	$pr_currency = get_param_def('pr_currency','0');
 	$pr_price = get_param_def('pr_price','0');
 	$pr_payment = get_param_def('pr_payment','0');
+	$pr_nds = get_param_def('pr_nds','0');
 	$pr_city_from = get_param('pr_city_from');
 	$pr_comment = get_param('pr_comment');
 	$pr_expiration = get_param('pr_expiration');
@@ -260,12 +267,20 @@ function tzs_edit_product($id) {
             array_push($errors, "Неверно задано количество экземпляров товара");
 	}
         
+	if (!is_valid_num_zero($pr_unit)) {
+            array_push($errors, "Неверно задана единица измерения количества экземпляров товара");
+	}
+        
 	if (!is_valid_num_zero($pr_currency)) {
             array_push($errors, "Неверно задана валюта");
 	}
         
 	if (!is_valid_num_zero($pr_payment)) {
             array_push($errors, "Неверно задана форма оплаты");
+	}
+        
+	if (!is_valid_num_zero($pr_nds)) {
+            array_push($errors, "Неверно задан переключатель наличия НДС");
 	}
         
 	if (!is_valid_num_zero($pr_price)) {
@@ -294,10 +309,10 @@ function tzs_edit_product($id) {
 
         if ($id == 0) {
                 $sql = $wpdb->prepare("INSERT INTO ".TZS_PRODUCTS_TABLE.
-                        " (type_id, user_id, title, description, copies, currency, price, payment, city_from, from_cid, from_rid, from_sid, created, comment, last_edited, active, expiration)".
-                        " VALUES (%d, %d, %s, %s, %d, %d, %f, %d, %s, %d, %d, %d, now(), %s, NULL, %d, %s);",
-                        intval($pr_type_id), $user_id, stripslashes_deep($pr_title), stripslashes_deep($pr_description), intval($pr_copies), intval($pr_currency), floatval($pr_price), intval($pr_payment), stripslashes_deep($pr_city_from),
-                        $from_info["country_id"],$from_info["region_id"],$from_info["city_id"], stripslashes_deep($pr_comment), intval($pr_active), $pr_expiration);
+                        " (type_id, user_id, title, description, copies, unit, currency, price, payment, nds, city_from, from_cid, from_rid, from_sid, created, comment, last_edited, active, expiration)".
+                        " VALUES (%d, %d, %s, %s, %d, %d, %d, %f, %d, %d, %s, %d, %d, %d, now(), %s, NULL, %d, %s);",
+                        intval($pr_type_id), $user_id, stripslashes_deep($pr_title), stripslashes_deep($pr_description), intval($pr_copies), intval($pr_unit), intval($pr_currency), floatval($pr_price), intval($pr_payment), intval($pr_nds),
+                        stripslashes_deep($pr_city_from), $from_info["country_id"],$from_info["region_id"],$from_info["city_id"], stripslashes_deep($pr_comment), intval($pr_active), $pr_expiration);
 
                 if (false === $wpdb->query($sql)) {
                         array_push($errors, "Не удалось опубликовать Ваш товар/услугу. Свяжитесь, пожалуйста, с администрацией сайта");
@@ -315,10 +330,10 @@ function tzs_edit_product($id) {
                 }
         } else {
                 $sql = $wpdb->prepare("UPDATE ".TZS_PRODUCTS_TABLE." SET ".
-                        " last_edited=now(), type_id=%d, title=%s, description=%s, copies=%d, currency=%d, price=%d, payment=%f, ".
+                        " last_edited=now(), type_id=%d, title=%s, description=%s, copies=%d, unit=%d, currency=%d, price=%f, payment=%d, nds=%d, ".
                         " city_from=%s, from_cid=%d, from_rid=%d, from_sid=%d, comment=%s, active=%d, expiration=%s".
                         " WHERE id=%d AND user_id=%d;", 
-                        intval($pr_type_id), stripslashes_deep($pr_title), stripslashes_deep($pr_description), intval($pr_copies), intval($pr_currency), floatval($pr_price), intval($pr_payment), 
+                        intval($pr_type_id), stripslashes_deep($pr_title), stripslashes_deep($pr_description), intval($pr_copies), intval($pr_unit), intval($pr_currency), floatval($pr_price), intval($pr_payment), intval($pr_nds), 
                         stripslashes_deep($pr_city_from), $from_info["country_id"],$from_info["region_id"],$from_info["city_id"], stripslashes_deep($pr_comment), intval($pr_active), $pr_expiration,
                         $id, $user_id);
 
