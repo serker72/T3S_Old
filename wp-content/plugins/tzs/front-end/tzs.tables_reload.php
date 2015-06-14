@@ -146,6 +146,19 @@ function tzs_products_table_record_out($row) {
 }
 
 /*
+ * Вывод одной строки таблицы в виде html
+ */
+function tzs_tr_sh_table_record_out($row) {
+    $user_info = tzs_get_user_meta($row->user_id);
+
+    $output_tbody = '<tr rid="'.$row->id.'" id="';
+
+    if ($row->sale_or_purchase == 1) { $output_tbody .= 'tbl_auctions_tr_lot_1'; } else { $output_tbody .= 'tbl_auctions_tr_lot_0'; }
+    
+    return $output_tbody;
+}
+
+/*
  * Выборка данных на основании фильтра и формирование строк таблицы с данными
  */
 function tzs_front_end_tables_reload() {
@@ -180,17 +193,51 @@ function tzs_front_end_tables_reload() {
         $p_name = get_post_field( 'post_name', $type_id );
     }
     
-    $sp = tzs_validate_pr_search_parameters();
+    if ($form_type === 'products') {
+        $sp = tzs_validate_pr_search_parameters();
+    } else {
+        $sp = tzs_validate_search_parameters();
+    }
+    
     $errors = $sp['errors'];
-	
+
+    switch ($form_type) {
+        case 'products': {
+            $table_name = TZS_PRODUCTS_TABLE;
+            $table_error_msg = 'товаров';
+            break;
+        }
+
+        case 'trucks': {
+            $table_name = TZS_TRUCK_TABLE;
+            $table_error_msg = 'транспорта';
+            break;
+        }
+
+        case 'shipments': {
+            $table_name = TZS_SHIPMENT_TABLE;
+            $table_error_msg = 'грузов';
+            break;
+        }        
+        
+        default: {
+            array_push($errors, "Неверно указан тип формы");
+        }
+    }
+    
     if (count($errors) > 0) {
         $output_error = print_errors($errors);
     }
         
     
     if (count($errors) == 0) {
-	$s_sql = tzs_search_pr_parameters_to_sql($sp, '');
-	$s_title = tzs_search_pr_parameters_to_str($sp);
+        if ($form_type === 'products') {
+            $s_sql = tzs_search_pr_parameters_to_sql($sp, '');
+            $s_title = tzs_search_pr_parameters_to_str($sp);
+        } else {
+            $s_sql = tzs_search_parameters_to_sql($sp, 'tr');
+            $s_title = tzs_search_parameters_to_str($sp);
+        }
 	
 	$output_info = $p_title;
         if (strlen($s_title) > 0) {
@@ -205,10 +252,10 @@ function tzs_front_end_tables_reload() {
 
         $pp = floatval($records_per_page);
 
-        $sql = "SELECT COUNT(*) as cnt FROM ".TZS_PRODUCTS_TABLE." WHERE active=1 $sql1 $s_sql;";
+        $sql = "SELECT COUNT(*) as cnt FROM ".$table_name." WHERE active=1 $sql1 $s_sql;";
         $res = $wpdb->get_row($sql);
         if (count($res) == 0 && $wpdb->last_error != null) {
-            $output_error .= '<div>Не удалось отобразить список товаров. Свяжитесь, пожалуйста, с администрацией сайта.</div>';
+            $output_error .= '<div>Не удалось отобразить список '.$table_error_msg.'. Свяжитесь, пожалуйста, с администрацией сайта.</div>';
         } else {
             $records = $res->cnt;
             $pages = ceil($records / $pp);
@@ -218,10 +265,10 @@ function tzs_front_end_tables_reload() {
                     $page = $pages;
 
             $from = ($page-1) * $pp;
-            $sql = "SELECT * FROM ".TZS_PRODUCTS_TABLE." WHERE active=1 $sql1 $s_sql ORDER BY created DESC LIMIT $from,$pp;";
+            $sql = "SELECT * FROM ".$table_name." WHERE active=1 $sql1 $s_sql ORDER BY created DESC LIMIT $from,$pp;";
             $res = $wpdb->get_results($sql);
             if (count($res) == 0 && $wpdb->last_error != null) {
-                $output_error .= '<div>Не удалось отобразить список товаров. Свяжитесь, пожалуйста, с администрацией сайта.</div>';
+                $output_error .= '<div>Не удалось отобразить список '.$table_error_msg.'. Свяжитесь, пожалуйста, с администрацией сайта.</div>';
             } else {
                 if (count($res) == 0) {
                     $output_error .= '<div>По Вашему запросу ничего не найдено.</div>';
@@ -229,12 +276,15 @@ function tzs_front_end_tables_reload() {
                     foreach ( $res as $row ) {
                         if ($form_type === 'products') {
                             $output_tbody .= tzs_products_table_record_out($row);
+                        } else {
+                            $output_tbody .= tzs_tr_sh_table_record_out($row);
                         }
+                        
                         $lastrecid = $row->id;
                     }
                 }
 
-                //build_pages_footer($page, $pages);
+                // Пагинация
                 if ($pages > 1) {
                     if ($page > 1) {
                         $page0 = $page - 1;
