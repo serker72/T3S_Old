@@ -1881,3 +1881,6 @@ max-height: 46px !important;
     position: absolute; /*обязательное свойство*/
     z-index: 1000000;
 }
+.denys{
+    background: black;
+}
