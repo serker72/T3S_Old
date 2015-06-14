@@ -919,6 +919,38 @@ input[type=text], input[type=password], select {
 #tbl_products_comm {
     min-width: 150px;
 }
+#tbl_trucks_id {
+    min-width: 60px;
+}
+#tbl_trucks_path {
+    min-width: 140px;
+}
+#tbl_trucks_dtc {
+    min-width: 60px;
+}
+#tbl_trucks_wv {
+    min-width: 60px;
+}
+#tbl_trucks_tc {
+    min-width: 100px;
+}
+#tbl_trucks_ttr {
+    min-width: 100px;
+}
+#tbl_trucks_cost {
+    min-width: 60px;
+}
+#tbl_trucks_payment {
+    min-width: 70px;
+}
+#tbl_trucks_comm {
+    min-width: 80px;
+}
+#tbl_trucks_cont {
+    min-width: 150px;
+}
+
+
 #tbl_auctions_tr_lot_0 {
     /*background: #CCC0D9;*/
 }

@@ -59,7 +59,7 @@ function tzs_front_end_products_handler($atts) {
                     <th id="tbl_products_sale">Покупка<br/>Продажа</th>
                     <th id="tbl_products_cost">Участник тендера</th>
                     <th id="tbl_products_dtc">Период публикации</th>
-                    <th id="tbl_products_title">Описание и фото товара</th>
+                    <th id="tbl_products_title">Название, описание и фото товара</th>
                     <th id="tbl_products_price">Цена<br/>Форма оплаты<br/>Кол-во</th>
                     <th id="tbl_products_cities">Место нахождения</th>
                     <th id="tbl_products_comm">Контакты</th>
