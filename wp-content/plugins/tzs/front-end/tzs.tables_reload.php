@@ -151,9 +151,114 @@ function tzs_products_table_record_out($row) {
 function tzs_tr_sh_table_record_out($row) {
     $user_info = tzs_get_user_meta($row->user_id);
 
-    $output_tbody = '<tr rid="'.$row->id.'" id="';
+    $type = trans_types_to_str($row->trans_type, $row->tr_type);
+    
+    $output_tbody = '<tr rid="'.$row->id.'">';
 
-    if ($row->sale_or_purchase == 1) { $output_tbody .= 'tbl_auctions_tr_lot_1'; } else { $output_tbody .= 'tbl_auctions_tr_lot_0'; }
+    $output_tbody .= '
+            <td>
+                <div class="record_number">
+                    <span class="middle" title="Номер заявки">
+                           № '.$row->id.'
+                    </span>
+                </div>
+                <div>
+                    <span class="time_label" title="Время добавления">
+                        '.convert_date($row->time).'
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div>'.tzs_city_to_str($row->from_cid, $row->from_rid, $row->from_sid, $row->tr_city_from);?><br/><?php echo tzs_city_to_str($row->to_cid, $row->to_rid, $row->to_sid, $row->tr_city_to);
+    
+    if ($row->distance > 0) {
+        $output_tbody .= '<br/>'.tzs_make_distance_link($row->distance, false, array($row->tr_city_from, $row->tr_city_to));
+    }
+
+    $output_tbody .= '
+                </div>
+            </td>
+            <td>
+                <div>
+                    '.convert_date($row->tr_date_from).'<br/>
+                    <span class="expired_label" title="Дата окончания публикации">
+                        '.convert_date($row->tr_date_to).'
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div>';
+    
+    if ($row->tr_weight > 0) {
+        $output_tbody .= remove_decimal_part($row->tr_weight).' т<br>';
+    }
+
+    if ($row->tr_volume > 0) {
+        $output_tbody .= remove_decimal_part($row->tr_volume).' м³';
+    }
+
+    $output_tbody .= '        </div>
+            </td>
+            <td>
+                <div>';
+    
+    if (isset($GLOBALS['tzs_sh_types'][$row->sh_type])) {
+        $output_tbody .= $GLOBALS['tzs_tr_types'][$row->sh_type];
+    }
+                    
+    $output_tbody .= '        </div>
+            </td>
+            <td>
+                <div>'.$type.'
+                </div>
+            </td>
+            <td>
+                <div>
+                </div>
+            </td>
+            <td>
+                <div>
+                </div>
+            </td>
+            <td>
+                <div>
+                </div>
+            </td>
+            <td>
+                <div>
+                </div>
+            </td>
+        </tr>';
+/*    
+				?>
+				<tr rid="<?php echo $row->id;?>">
+				<td><?php echo $row->id;?></td>
+				<td><b><?php echo convert_date_no_year($row->time); ?></b><br/><?php echo convert_time_only($row->time);?></td>
+				<td><?php echo convert_date_no_year($row->tr_date_from);?><br/><?php echo convert_date_no_year($row->tr_date_to);?></td>
+				<td>
+					<?php echo tzs_city_to_str($row->from_cid, $row->from_rid, $row->from_sid, $row->tr_city_from);?><br/><?php echo tzs_city_to_str($row->to_cid, $row->to_rid, $row->to_sid, $row->tr_city_to);?>
+					<?php if ($row->distance > 0) {?>
+						<br/>
+						<?php echo tzs_make_distance_link($row->distance, false, array($row->tr_city_from, $row->tr_city_to)); ?>
+					<?php } ?>
+				</td>
+				
+				<?php if ($row->tr_weight > 0) {?>
+					<td><?php echo remove_decimal_part($row->tr_weight);?> т</td>
+				<?php } else {?>
+					<td>&nbsp;</td>
+				<?php }?>
+				
+				<?php if ($row->tr_volume > 0) {?>
+					<td><?php echo remove_decimal_part($row->tr_volume);?> м³</td>
+				<?php } else {?>
+					<td>&nbsp;</td>
+				<?php }?>
+				
+				<td><?php echo $type;?></td>
+				<td><?php echo tzs_cost_to_str($row->cost);?></td>
+				<td><?php echo htmlspecialchars($row->comment);?></td>
+*/
     
     return $output_tbody;
 }
