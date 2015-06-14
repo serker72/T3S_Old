@@ -413,7 +413,7 @@ function tzs_front_end_search_pr_form() {
     $pa_root_id = ($product_auction === 'auctions') ? ''.TZS_AU_ROOT_CATEGORY_PAGE_ID : ''.TZS_PR_ROOT_CATEGORY_PAGE_ID;
     $p_id = get_the_ID();
     ?>
-    <form class="search_pr_form" id="search_pr_form" name="search_pr_form" method="POST">
+    <form class="search_pr_form" id="search_pr_form1" name="search_pr_form" method="POST">
         <table name="search_param" border="0">
             <tr>
                 <th colspan="2">Укажите критерии поиска товаров и услуг</th>
@@ -422,7 +422,7 @@ function tzs_front_end_search_pr_form() {
                 <td>Категория:<br>
                     <!--select name="type_id" <?php //echo (isset($_POST['cur_type_id']) && ($_POST['cur_type_id'] === $pa_root_id)) ? '' : ' disabled="disabled"'; ?> -->
                     <!--select name="type_id" <?php //echo (isset($_POST['rootcategory']) && ($_POST['rootcategory'] === '1')) ? '' : ' disabled="disabled"'; ?> -->
-                      <select name="type_id" <?php echo ($p_id == $pa_root_id) ? '' : ' disabled="disabled"'; ?> >
+                    <select name="type_id" <?php echo ($p_id == $pa_root_id) ? '' : ' disabled="disabled"'; ?> >
                         <option value="0">все категории</option>
 			<option disabled>- - - - - - - -</option>
                         <?php
@@ -501,7 +501,12 @@ function tzs_front_end_search_pr_form() {
                 <td>Описание:<br>
                     <input type="text" name="pr_title" value="<?php echo_val('pr_title'); ?>" size="30">
                 </td>
-                <td>&nbsp;
+                <td>
+                    <div style="text-align:right; vertical-aligment: middle;">
+                        <a href="JavaScript:tblTHeadShowSearchForm();" title="Скрыть форму изменения условий поиска"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/search-1.png" width="24px" height="24px"></a>&nbsp;&nbsp;
+                        <a href="javascript:onTblTheadButtonClearClick();" title="Очистить все условия фильтра"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/eraser.png" width="24px" height="24px"></a>&nbsp;&nbsp;
+                        <a href="javascript:onTblSearchButtonClick();" title="Выполнить поиск по текущим условиям фильтра"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/find-1.png" width="24px" height="24px"></a>
+                    </div>
                 </td>
             </tr>
         </table>

@@ -4,7 +4,7 @@
 	<title><?php wp_title( '|', true, 'right' ); ?></title>
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=latin,cyrillic" rel="stylesheet" type="text/css">
         <link href="/wp-content/themes/twentytwelve/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/wp-content/themes/twentytwelve/css/dcslick.css" rel="stylesheet" type="text/css"/>
+        <!--link href="/wp-content/themes/twentytwelve/css/dcslick.css" rel="stylesheet" type="text/css"/-->
 	<?php wp_head(); ?>
 	<!--script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 	<script src="https://jquery-ui.googlecode.com/svn-history/r3982/trunk/ui/i18n/jquery.ui.datepicker-ru.js"></script-->
@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="/ui/jquery-ui.css">
 	<link rel="stylesheet" type="text/css" href="../info/tooltip.css"/>
         <script src="/wp-content/themes/twentytwelve/js/bootstrap.min.js"></script>
-        <script src="/wp-content/themes/twentytwelve/js/jquery.slick.js" type="text/javascript"></script>
+        <!--script src="/wp-content/themes/twentytwelve/js/jquery.slick.js" type="text/javascript"></script-->
 	<script>
 		var ajax_url = '<?php echo admin_url('admin-ajax.php'); ?>';
 	</script>

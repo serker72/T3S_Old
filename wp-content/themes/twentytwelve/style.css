@@ -1760,20 +1760,25 @@ max-height: 46px !important;
 }
 #preloader {
     display: none;
-    width: 200px;
-    height: 200px;
+    /*width: 60px;*/
+    /*height: 60px;*/
     position: fixed;
+    padding: 10px 10px;
     top: 50%;
     left: 50%;
     text-align: center;
-    margin-left: -30px;
-    margin-top: -50px;
-    z-index: 2;
+    /*margin-left: -30px;*/
+    /*margin-top: -50px;*/
+    z-index: 2000000;
     overflow: auto;
+    background: #000;
+    border-radius: 10px;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
 }
 #preloader img {
-    width: 150px;
-    height: 150px;
+    /*width: 32px;*/
+    /*height: 32px;*/
 }
 .tbl_thead_search_text {
     float: left;
@@ -1820,4 +1825,16 @@ max-height: 46px !important;
     box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     width: 98%;
+}
+
+.slide_panel {
+    color: #ffffff;
+    padding: 2px 10px;
+    width: 360px;
+    background: #0B5792; 
+    border: 2px solid #000;
+    top: 20px;
+    left: -420px;
+    position: absolute; /*обязательное свойство*/
+    z-index: 1000000;
 }
