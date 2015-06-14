@@ -944,7 +944,7 @@ input[type=text], input[type=password], select {
     min-width: 70px;
 }
 #tbl_trucks_comm {
-    min-width: 80px;
+    min-width: 85px;
 }
 #tbl_trucks_cont {
     min-width: 150px;
