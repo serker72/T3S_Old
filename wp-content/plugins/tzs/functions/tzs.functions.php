@@ -344,16 +344,17 @@ function tzs_make_distance_link($distance, $meters, $city) {
 	return '<a class="distance_link" href=\'javascript:'.$url.';\'>'.tzs_convert_distance_to_str($distance, $meters).'</a>';
 }
 
-function tzs_cost_to_str($cost_str) {
+function tzs_cost_to_str($cost_str, $split_flag = false) {
 	$cost = json_decode($cost_str, true);
 	$str = '';
+	$str1 = '';
 	if (isset($cost['set_price']) && $cost['set_price'] == 1) {
 		if (isset($cost['price'])) {
-			$str .= $cost['price'];
-			$str .= ' ';
+			$str1 .= $cost['price'];
+			$str1 .= ' ';
 		}
 		if (isset($cost['cost_curr']) && isset($GLOBALS['tzs_curr'][$cost['cost_curr']])) {
-			$str .= $GLOBALS['tzs_curr'][$cost['cost_curr']];
+			$str1 .= $GLOBALS['tzs_curr'][$cost['cost_curr']];
 		}
 		if (isset($cost['payment'])) {
 			switch ($cost['payment']) {
@@ -406,11 +407,11 @@ function tzs_cost_to_str($cost_str) {
 			$str .= 'торг';
 		}
 	} else {
-		if (strlen($str) > 0) $str .= ', ';
-		$str .= "договорная";
+		if (strlen($str1) > 0) $str1 .= ', ';
+		$str1 .= "договорная";
 		if (isset($cost['price_query'])) {
-			if (strlen($str) > 0) $str .= ', ';
-			$str .= 'запрос цены';
+			if (strlen($str1) > 0) $str1 .= ', ';
+			$str1 .= 'запрос цены';
 		}
 	}
 	return $str;
