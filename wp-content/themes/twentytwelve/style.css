@@ -923,22 +923,22 @@ input[type=text], input[type=password], select {
     min-width: 60px;
 }
 #tbl_trucks_path {
-    min-width: 140px;
+    min-width: 120px;
 }
 #tbl_trucks_dtc {
     min-width: 60px;
 }
 #tbl_trucks_wv {
-    min-width: 60px;
+    min-width: 50px;
 }
 #tbl_trucks_tc {
-    min-width: 100px;
+    min-width: 85px;
 }
 #tbl_trucks_ttr {
-    min-width: 100px;
+    min-width: 90px;
 }
 #tbl_trucks_cost {
-    min-width: 60px;
+    min-width: 70px;
 }
 #tbl_trucks_payment {
     min-width: 70px;
@@ -1765,9 +1765,10 @@ max-height: 46px !important;
     /*min-width: 150px;*/
     /*margin-left: 45px;*/
 }
-.search_pr_form td input {
+.search_pr_form td input[type="text"] {
     width: 150px;
     font-size: 12px;
+    margin-bottom: 5px;
 }
 .search_pr_form td select {
     width: 160px;
@@ -1775,6 +1776,14 @@ max-height: 46px !important;
 }
 .search_pr_form td select option {
     background: #fff; 
+}
+.search_pr_form td input[type="checkbox"] {
+    margin: 0 0;
+    padding: 0 0 0 5px;
+}
+.search_pr_form td i {
+    color: #F5C034;
+    font-weight: bold;
 }
 #pr_search_button {
 	float: left;
@@ -1844,11 +1853,16 @@ max-height: 46px !important;
     overflow: visible;
     border: 1px solid #000;
     position: absolute;
-    z-index: 1000000;
+    z-index: 100000000;
 }
 .tbl_thead_search_div select option {
     background: #fff; 
 }
+.tbl_thead_search_div span i {
+    color: #F5C034;
+    font-weight: bold;
+}
+
 #tbl_thead_button_search {
     background: #FFBF00 url(images/find-small.png) no-repeat left 0px top 2px;
     font-size: 11px;
@@ -1883,4 +1897,28 @@ max-height: 46px !important;
 }
 .denys{
     background: black;
+}
+label.switch {
+    width: 16px; /* Ширина рисунка */
+    height: 16px; /* Высота рисунка */
+    padding: 0 0;
+    margin: 0 0;
+    vertical-align: bottom;
+    display: block; /* Блочный элемент */
+    position: relative; /* Относительное позиционирование */    
+}
+label.switch input[type="checkbox"] {
+    padding: 0 0;
+    margin: 0 0;
+    vertical-align: top;
+}
+label.switch input[type="checkbox"] + span.switch {
+    position: absolute; /* Абсолютное позиционирование */
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: #0B5792 url(images/checkbox_sprite.png) no-repeat; /* Фоновый рисунок */
+    cursor: pointer; /* Курсор в виде руки */
+}
+label.switch input[type="checkbox"]:checked + span.switch  	{
+    background-position: 0 -16px;
 }

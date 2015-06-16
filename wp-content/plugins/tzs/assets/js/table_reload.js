@@ -94,10 +94,13 @@
             if ((form_name !== undefined) && (form_name !== '')) {
                 var elem = document.getElementsByName(form_name)[0].elements;
                 for (i=0;i < elem.length;i++) {
-                    if ((elem[i].type == 'text') || (elem[i].type == 'select-one')) {
+                    if ((elem[i].type == 'text') || (elem[i].type == 'select-one') || (elem[i].type === 'checkbox') || (elem[i].type === 'radio')) {
                         //console.log(form_name + " before: " + elem[i].tagName + " " + elem[i].type + " " + elem[i].name + " " + elem[i].value);
                         if (elem[i].type == 'text') { elem[i].value = ''; }
+                        //else if ((elem[i].type == 'checkbox') || (elem[i].type === 'radio')) { elem[i].checked = false; }
                         else { elem[i].value = 0; }
+                        
+                        //elem[i].change();
                         //console.log(form_name + " after: " + elem[i].tagName + " " + elem[i].type + " " + elem[i].name + " " + elem[i].value);
                     }
                 }
@@ -134,9 +137,14 @@
             var fid = eventObject.target.id;
             var fname = eventObject.target.name;
             var fval = eventObject.target.value;
+            var ftype = eventObject.target.type;
             //console.log('id='+fid+', name='+fname+', val='+fval);
             //console.log(eventObject);
-            jQuery('[name=' + fname +  ']').attr('value', fval);
+            if ((ftype === 'checkbox') || (ftype === 'radio')) {
+                //jQuery('[name=' + fname + ']').prop('checked', jQuery('[name=' + fname + ']').is(':checked'));
+            } else {
+                jQuery('[name=' + fname + ']').attr('value', fval);
+            }
             onForm1Change();
         }
         
@@ -146,11 +154,19 @@
             if ((form_name !== undefined) && (form_name !== '')) {
                 var elem = document.getElementsByName(form_name)[0].elements;
                 for (i=0;i < elem.length;i++) {
-                    if ((elem[i].type == 'text') || (elem[i].type == 'select-one')) {
-                        if (elem[i].name !== 'country_from') {
+                    if ((elem[i].type == 'text') || (elem[i].type == 'select-one') || (elem[i].type == 'checkbox')) {
+                        if (elem[i].name === 'country_from') {
                             jQuery('[name='+elem[i].name+']').change(function(eventObject) { onCountryFromSelected(); onFormFieldChange(eventObject); });
-                        } else if (elem[i].name !== 'country_to') {
+                        } else if (elem[i].name === 'country_to') {
                             jQuery('[name='+elem[i].name+']').change(function(eventObject) { onCountryToSelected(); onFormFieldChange(eventObject); });
+                        } else if (elem[i].name === 'cargo_city_from') {
+                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onCityFromSelected(); onFormFieldChange(eventObject); });
+                        } else if (elem[i].name === 'cargo_cityname_from') {
+                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onCityNameFromChanged(); onFormFieldChange(eventObject); });
+                        } else if (elem[i].name === 'cargo_city_to') {
+                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onCityToSelected(); onFormFieldChange(eventObject); });
+                        } else if (elem[i].name === 'cargo_city_from_radius_check') {
+                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onCityFromRadiusSelected(); onFormFieldChange(eventObject); });
                         } else {
                             jQuery('[name='+elem[i].name+']').change(function(eventObject) { onFormFieldChange(eventObject); });
                         }
@@ -203,12 +219,15 @@
                     jQuery('#preloader').fadeOut('fast');
                 },
                 error: function(data) {
-                    if (data.responsetext !== 'undefined') {
-                        jQuery("#errors").html(data.responsetext);
+                    if (data.responseText !== 'undefined') {
+                        //jQuery("#errors").html(data.responsetext);
+                        var td_count = tbl_products.rows[1].cells.length;
+                        var o_err = '<tr><td colspan="' + td_count + '"><div class="tbl_tbody_errors">' + data.responseText + '</div></td><\tr>';
+                        jQuery("#tbl_products tbody").html(o_err);
                     }
 
                     jQuery('#preloader').fadeOut('fast');
                 }			
-            });		   
+            });
         }
 

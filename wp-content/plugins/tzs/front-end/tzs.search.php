@@ -1,85 +1,5 @@
 <?php
 
-add_action( 'wp_ajax_tzs_get_regions', 'tzs_get_regions_callback' );
-add_action( 'wp_ajax_nopriv_tzs_get_regions', 'tzs_get_regions_callback' );
-
-function tzs_get_regions_callback() {
-	$id = isset($_POST['id']) && is_numeric($_POST['id']) ? intval( $_POST['id'] ) : 0;
-	$rid = isset($_POST['rid']) && is_numeric($_POST['rid']) ? intval( $_POST['rid'] ) : 0;
-	if ($id <= 0) {
-		?>
-			<option value="0">все области</option>
-		<?php
-	} else {
-		global $wpdb;
-		
-		$sql = "SELECT * FROM ".TZS_REGIONS_TABLE." WHERE country_id=$id ORDER BY title_ru ASC;";
-		$res = $wpdb->get_results($sql);
-		if (count($res) == 0 && $wpdb->last_error != null) {
-			?>
-				<option value="0">все области</option>
-			<?php
-		} else {
-			?>
-				<option value="0">все области</option>
-			<?php
-			$found = false;
-			foreach ( $res as $row ) {
-				if (!$found) {
-					$found = true;
-					?>
-						<option disabled>- - - - - - - -</option>
-					<?php
-				}
-				$region_id = $row->region_id;
-				$title = $row->title_ru;
-				?>
-					<option value="<?php echo $region_id;?>" <?php
-						if ($rid == $region_id) {
-							echo 'selected="selected"';
-						}
-					?> ><?php echo $title;?></option>
-				<?php
-			}
-		}
-	}
-	die();
-}
-
-function tzs_build_countries($name) {
-	global $wpdb;
-	
-	$sql = "SELECT * FROM ".TZS_COUNTRIES_TABLE." ORDER BY FIELD(code, 'BY', 'RU', 'UA') DESC, title_ru ASC;";
-	$res = $wpdb->get_results($sql);
-	if (count($res) == 0 && $wpdb->last_error != null) {
-		// do nothink
-	} else {
-		?>
-			<option value="0">все страны</option>
-			<option disabled>- - - - - - - -</option>
-		<?php
-		$counter = 0;
-		foreach ( $res as $row ) {
-			$country_id = $row->country_id;
-			$title = $row->title_ru;
-			?>
-				<option value="<?php echo $country_id;?>" <?php
-					if ((isset($_POST[$name]) && $_POST[$name] == $country_id)) {
-						echo 'selected="selected"';
-					}
-				?>
-				><?php echo $title;?></option>
-			<?php
-			if ($counter == 2) {
-				?>
-					<option disabled>- - - - - - - -</option>
-				<?php
-			}
-			$counter++;
-		}
-	}
-}
-
 function tzs_print_weight($name) {
 	tzs_print_array_options($GLOBALS['tzs_weight_enum'], 'т', $name);
 }
@@ -115,6 +35,7 @@ function tzs_validate_search_parameters() {
 	$volume_to = get_param_def('volume_to', '0');
 	
 	$trans_type = get_param_def('trans_type', '0');
+	$sh_type = get_param_def('sh_type', '0');
         
         $cargo_city_from_radius_check = isset($_POST['cargo_city_from_radius_check']);
         $cargo_city_from_radius_value = get_param_def('cargo_city_from_radius_value', 0);
@@ -205,6 +126,12 @@ function tzs_validate_search_parameters() {
 		array_push($errors, "Неверно выбран тип транспорта");
 	}
 	
+	if (is_valid_num_zero($sh_type)) {
+		$sh_type = intval($sh_type);
+	} else {
+		array_push($errors, "Неверно выбран тип груза");
+	}
+	
 	$cargo_cityname_from_ids = null;
 	if ($cargo_cityname_from != null && count($errors) == 0) {
 		$r = tzs_city_to_ids($cargo_cityname_from, $region_from, $country_from);
@@ -264,6 +191,8 @@ function tzs_validate_search_parameters() {
 			$res['volume_to'] = $volume_to;
 		if ($trans_type > 0)
 			$res['trans_type'] = $trans_type;
+		if ($sh_type > 0)
+			$res['sh_type'] = $sh_type;
 		if ($cargo_cityname_from_ids != null)
 			$res['cargo_cityname_from_ids'] = $cargo_cityname_from_ids;
 		if ($cargo_cityname_to_ids != null)
@@ -336,6 +265,8 @@ function tzs_search_parameters_to_sql($p, $pref) {
 		$sql .= ' AND '.$pref.'_volume <= '.$p['volume_to'];
 	if (isset($p['trans_type']))
 		$sql .= ' AND trans_type = '.$p['trans_type'];
+	if (isset($p['sh_type']))
+		$sql .= ' AND sh_type = '.$p['sh_type'];
 	return $sql;
 }
 
@@ -414,290 +345,162 @@ function tzs_search_parameters_to_str($p) {
 			$sql .= ', ';
 		$sql .= "тип транспорта: $type";
 	}
+	
+	if (isset($p['sh_type'])) {
+		$type = isset($GLOBALS['tzs_sh_types'][$p['sh_type']]) ? $GLOBALS['tzs_sh_types'][$p['sh_type']] : "?";
+		if (strlen($sql) > 0)
+			$sql .= ', ';
+		$sql .= "тип груза: $type";
+	}
 	return $sql;
 }
+
+/*
+ * Вывод формы поиска транспорта/груза
+ */
+function tzs_front_end_search_tr_form($form_type) {
+    tzs_copy_get_to_post();
+    ?>
+    <form class="search_pr_form" id="search_pr_form1" name="search_pr_form" method="POST">
+        <table name="search_param" border="0">
+            <tr>
+                <th colspan="2">Укажите критерии поиска <?php echo ($form_type === 'transport') ? 'транспорта' : 'грузов';?></th>
+            </tr>
+            <tr>
+                <td>Пункт погрузки: страна:<br>
+                    <select name="country_from">
+                        <?php
+                            tzs_build_countries('country_from');
+			?>
+                    </select>
+                    <?php wp_nonce_field( 'country_from">', 'type_country_from">' ); ?>
+                </td>
+                <td>Пункт выгрузки: страна:<br>
+                    <select name="country_to">
+                        <?php
+                            tzs_build_countries('country_to');
+			?>
+                    </select>
+                </td>
+            <tr>
+                <td>Пункт погрузки: регион:<br>
+                    <select name="region_from">
+                                <option>все области</option>
+                    </select>
+                </td>
+                <td>Пункт выгрузки: регион:<br>
+                    <select name="region_to">
+                                <option>все области</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Пункт погрузки:&nbsp;<input type="checkbox" name="cargo_city_from" value="" <?php if (isset($_POST['cargo_city_from'])) echo 'checked="checked"'; ?>/><br>
+                    <input type="text" name="cargo_cityname_from" value="<?php echo_val('cityname_from'); ?>" size="10">
+                </td>
+                <td>Пункт выгрузки:&nbsp;<input type="checkbox" name="cargo_city_to" value="" <?php if (isset($_POST['cargo_city_to'])) echo 'checked="checked"'; ?>/><br>
+                    <input type="text" name="cargo_cityname_to" value="<?php echo_val('cargo_cityname_to'); ?>" size="10">
+                </td>
+            </tr>
+            <tr>
+                <td>Пункт загрузки в радиусе<sup>*</sup>:&nbsp;<input type="checkbox" name="cargo_city_from_radius_check" value="" <?php if (isset($_POST['cargo_city_from_radius_check'])) echo 'checked="checked"'; ?>/><br>
+                    <select name="cargo_city_from_radius_value">
+                        <?php
+                            foreach ($GLOBALS['tzs_city_from_radius_value'] as $key => $val) {
+                                echo '<option value="'.$key.'" ';
+                                if ((isset($_POST['cargo_city_from_radius_value']) && $_POST['cargo_city_from_radius_value'] == $key) || (!isset($_POST['cargo_city_from_radius_value']) && $key == 0)) {
+                                    echo 'selected="selected"';
+                                }
+                                echo '>'.htmlspecialchars($val).'</option>';
+                            }
+                        ?>
+                    </select>
+                </td>
+                <td>Тип груза:<br>
+                    <select name="sh_type">
+                        <?php
+                            foreach ($GLOBALS['tzs_sh_types_search'] as $key => $val) {
+                                    echo '<option value="'.$key.'" ';
+                                    if ((isset($_POST['sh_type']) && $_POST['sh_type'] == $key) || (!isset($_POST['sh_type']) && $key == 0)) {
+                                            echo 'selected="selected"';
+                                    }
+                                    echo '>'.htmlspecialchars($val).'</option>';
+                            }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" >
+                    <i><sup>*</sup>Для выбора радиуса укажите страну и город пункта загрузки.</i>
+                </td>
+            </tr>
+            <tr>
+                <td>Дата погрузки:<br>
+                    <input type="text" name="data_from" value="<?php echo_val('data_from'); ?>" size="10">
+                </td>
+                <td>Дата выгрузки:<br>
+                    <input type="text" name="data_to" value="<?php echo_val('data_to'); ?>" size="10">
+                </td>
+            </tr>
+            <tr>
+                <td>Масса: от:<br>
+                    <select name="weight_from">
+                            <?php tzs_print_weight('weight_from'); ?>
+                    </select>
+                </td>
+                <td>Масса: до:<br>
+                    <select name="weight_to">
+                            <?php tzs_print_weight('weight_to'); ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Объем: от:<br>
+                    <select name="volume_from">
+                            <?php tzs_print_volume('volume_from'); ?>
+                    </select>
+                </td>
+                <td>Объем: до:<br>
+                    <select name="volume_to">
+                            <?php tzs_print_volume('volume_to'); ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Тип транспорта:<br>
+                    <select name="trans_type">
+                        <?php
+                            foreach ($GLOBALS['tzs_tr_types_search'] as $key => $val) {
+                                    echo '<option value="'.$key.'" ';
+                                    if ((isset($_POST['trans_type']) && $_POST['trans_type'] == $key) || (!isset($_POST['trans_type']) && $key == 0)) {
+                                            echo 'selected="selected"';
+                                    }
+                                    echo '>'.htmlspecialchars($val).'</option>';
+                            }
+                        ?>
+                    </select>
+                </td>
+                <td>
+                    <div style="text-align:right; vertical-aligment: middle;">
+                        <a href="JavaScript:tblTHeadShowSearchForm();" title="Скрыть форму изменения условий поиска"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/search-1.png" width="24px" height="24px"></a>&nbsp;&nbsp;
+                        <a href="javascript:onTblTheadButtonClearClick();" title="Очистить все условия фильтра"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/eraser.png" width="24px" height="24px"></a>&nbsp;&nbsp;
+                        <a href="javascript:onTblSearchButtonClick();" title="Выполнить поиск по текущим условиям фильтра"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/find-1.png" width="24px" height="24px"></a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <?php
+}
+
 
 function tzs_front_end_search_handler($atts) {
 	ob_start();
 	tzs_copy_get_to_post();
 	$following = isset($_POST['following']);
-	?>
-	<form name="search_form" method="POST">
-	<table name="cargo_or_trans">
-		<tr>
-			<?php if ($following) {?>
-				<td><input type="radio" tag="cargo_trans_following" name="cargo_trans" value="following" checked="checked" disabled="disabled" > Попутные грузы </td>
-				<td>&nbsp;</td>
-			<?php } else {?>
-				<td><input type="radio" tag="cargo_trans_cargo" name="cargo_trans" value="cargo" <?php if (isset($_POST['cargo_trans']) && $_POST['cargo_trans'] == "cargo") echo 'checked="checked"'; ?> > Грузы </td>
-				<td><input type="radio" tag="cargo_trans_transport" name="cargo_trans" value="transport" <?php if (isset($_POST['cargo_trans']) && $_POST['cargo_trans'] == "transport") echo 'checked="checked"'; ?> > Транспорт </td>
-			<?php }?>
-		</tr>
-	</table>
-	<table name="search_param" border=1>
-		<tr>
-			<td>Откуда:</td>
-			<td> </td>
-			<td>Куда:</td>
-			<td> </td>
-			<td>Дата:</td>
-			<td> </td>
-			<td>Масса:</td>
-			<td> </td>
-			<td>Объем:</td>
-		</tr>
-		<tr>
-			<td>
-				<select name="country_from">
-					<?php
-						tzs_build_countries('country_from');
-					?>
-				</select>
-			</td>
-			<td> </td>
-			<td>
-				<select name="country_to">
-					<?php
-						tzs_build_countries('country_to');
-					?>
-				</select>
-			</td>
-			<td>с</td>
-			<td>
-				<input type="text" name="data_from" value="<?php echo_val('data_from'); ?>" size="5">
-			</td>
-			<td>от</td>
-			<td>
-				<select name="weight_from">
-					<?php tzs_print_weight('weight_from'); ?>
-				</select>
-			</td>
-			<td>от</td>
-			<td>
-				<select name="volume_from">
-					<?php tzs_print_volume('volume_from'); ?>
-				</select>
-			</td>
-		</tr>
-		
-		<tr>
-			<td>
-			    <select name="region_from">
-					<option>все области</option>
-				</select>
-			</td>
-			<td> </td>
-			<td>
-				<select name="region_to">
-					<option>все области</option>
-				</select>
-			</td>
-			<td>по</td>
-			<td>
-				<input type="text" name="data_to" value="<?php echo_val('data_to'); ?>" size="5">
-			</td>
-			<td>до</td>
-			<td>
-				<select name="weight_to">
-					<?php tzs_print_weight('weight_to'); ?>
-				</select>
-			</td>
-			<td>до</td>
-			<td>
-				<select name="volume_to">
-					<?php tzs_print_volume('volume_to'); ?>
-				</select>
-			</td>
-		</tr>
-		
-		<tr>
-			<td><input type="checkbox" name="cargo_city_from" value="" <?php if (isset($_POST['cargo_city_from'])) echo 'checked="checked"'; ?>/>Указать город</td>
-			<td></td>
-			<td><input type="checkbox" name="cargo_city_to" value="" <?php if (isset($_POST['cargo_city_to'])) echo 'checked="checked"'; ?>/>Указать город</td>
-			<td></td>
-			<td>Тип транспорта:</td>
-			<td colspan="4">
-				<select name="trans_type">
-					<?php
-						foreach ($GLOBALS['tzs_tr_types_search'] as $key => $val) {
-							echo '<option value="'.$key.'" ';
-							if ((isset($_POST['trans_type']) && $_POST['trans_type'] == $key) || (!isset($_POST['trans_type']) && $key == 0)) {
-								echo 'selected="selected"';
-							}
-							echo '>'.htmlspecialchars($val).'</option>';
-						}
-					?>
-				</select>
-			</td>
-		</tr>
-		
-		<tr>
-			<td><input type="text" name="cargo_cityname_from" value="<?php echo_val('cargo_cityname_from'); ?>" size="10"></td>
-			<td></td>
-			<td><input type="text" name="cargo_cityname_to" value="<?php echo_val('cargo_cityname_to'); ?>" size="10"></td>
-		</tr>
-<!-- KSK Add form field for search from radius -->
-		<tr>
-                    <td><input type="checkbox" name="cargo_city_from_radius_check" value="" <?php if (isset($_POST['cargo_city_from_radius_check'])) echo 'checked="checked"'; ?>/>Пункт загрузки в радиусе<sup>*</sup></td>
-                    <td></td>
-                    <td colspan="7">
-                        <select name="cargo_city_from_radius_value">
-                            <?php
-                                foreach ($GLOBALS['tzs_city_from_radius_value'] as $key => $val) {
-                                    echo '<option value="'.$key.'" ';
-                                    if ((isset($_POST['cargo_city_from_radius_value']) && $_POST['cargo_city_from_radius_value'] == $key) || (!isset($_POST['cargo_city_from_radius_value']) && $key == 0)) {
-                                        echo 'selected="selected"';
-                                    }
-                                    echo '>'.htmlspecialchars($val).'</option>';
-				}
-                            ?>
-			</select>
-                    </td>
-		</tr>
-		<tr>
-                    <td colspan="9"><i><sup>*</sup>Для активации выбора радиуса укажите страну и город для пункта загрузки.</i></td>
-		</tr>
-	</table>
-	</form>
-	
-	<script>
-		function doAjax(id, rid, to_el) {
-			jQuery(to_el).attr("disabled", "disabled");
-			jQuery(to_el).html('<option value=\"0\">Загрузка</option>');
-			
-			var data = {
-				'action': 'tzs_get_regions',
-				'id': id,
-				'rid': rid
-			};
-			
-			jQuery.post(ajax_url, data, function(response) {
-				jQuery(to_el).html(response);
-				jQuery(to_el).removeAttr("disabled");
-				enableDisable(to_el);
-			}).fail(function() {
-				jQuery(to_el).html("<option value='0'>все области(!)</option>");
-				jQuery(to_el).removeAttr("disabled");
-				enableDisable(to_el);
-			});
-		}
-		
-		function enableDisable(obj) {
-			if (jQuery(obj).children().length <= 1) {
-				jQuery(obj).attr("disabled", "disabled");
-			} else {
-				jQuery(obj).removeAttr("disabled");
-			}
-		}
-	
-		function onCountryFromSelected() {
-			var rid = <?php echo isset($_POST["region_from"]) ? $_POST["region_from"] : 0; ?>;
-			doAjax(jQuery('[name=country_from]').val(), rid, jQuery('[name=region_from]'));
-                        
-                            if (jQuery('[name=cargo_cityname_from]').val().length > 2 && jQuery('[name=country_from]').val() > 0) {
-				jQuery('[name=cargo_city_from_radius_check]').removeAttr('disabled');
-                                
-                                if (jQuery('[name=cargo_city_from_radius_check]').is(':checked')) {
-                                    jQuery('[name=cargo_city_from_radius_value]').removeAttr('disabled');
-                                } else {
-                                    jQuery('[name=cargo_city_from_radius_value]').attr('disabled', 'disabled');
-                                }
-                            } else {
-                                jQuery('[name=cargo_city_from_radius_check]').prop('checked', false);
-				jQuery('[name=cargo_city_from_radius_check]').attr('disabled', 'disabled');
-				jQuery('[name=cargo_city_from_radius_value]').attr('disabled', 'disabled');
-                            }
-		}
-		
-		function onCountryToSelected() {
-			var rid = <?php echo isset($_POST["region_to"]) ? $_POST["region_to"] : 0; ?>;
-			doAjax(jQuery('[name=country_to]').val(), rid, jQuery('[name=region_to]'));
-		}
-		
-		function onCityFromSelected() {
-			if (jQuery('[name=cargo_city_from]').is(':checked')) {
-				jQuery('[name=cargo_cityname_from]').removeAttr('disabled');
-                                
-                            if (jQuery('[name=cargo_cityname_from]').val().length > 2 && jQuery('[name=country_from]').val() > 0) {
-				jQuery('[name=cargo_city_from_radius_check]').removeAttr('disabled');
-                                
-                                if (jQuery('[name=cargo_city_from_radius_check]').is(':checked')) {
-                                    jQuery('[name=cargo_city_from_radius_value]').removeAttr('disabled');
-                                } else {
-                                    jQuery('[name=cargo_city_from_radius_value]').attr('disabled', 'disabled');
-                                }
-                            } else {
-                                jQuery('[name=cargo_city_from_radius_check]').prop('checked', false);
-				jQuery('[name=cargo_city_from_radius_check]').attr('disabled', 'disabled');
-				jQuery('[name=cargo_city_from_radius_value]').attr('disabled', 'disabled');
-                            }
-			} else {
-				jQuery('[name=cargo_cityname_from]').attr('disabled', 'disabled');
-                                
-                                jQuery('[name=cargo_city_from_radius_check]').prop('checked', false);
-				jQuery('[name=cargo_city_from_radius_check]').attr('disabled', 'disabled');
-				jQuery('[name=cargo_city_from_radius_value]').attr('disabled', 'disabled');
-			}
-		}
-		
-		function onCityToSelected() {
-			if (jQuery('[name=cargo_city_to]').is(':checked')) {
-				jQuery('[name=cargo_cityname_to]').removeAttr('disabled');
-			} else {
-				jQuery('[name=cargo_cityname_to]').attr('disabled', 'disabled');
-			}
-		}
-		
-		function onCityNameFromChanged() {
-			if (jQuery('[name=cargo_cityname_from]').val().length > 2 && jQuery('[name=country_from]').val() > 0) {
-				jQuery('[name=cargo_city_from_radius_check]').removeAttr('disabled');
-			} else {
-                                jQuery('[name=cargo_city_from_radius_check]').prop('checked', false);
-				jQuery('[name=cargo_city_from_radius_check]').attr('disabled', 'disabled');
-				jQuery('[name=cargo_city_from_radius_value]').attr('disabled', 'disabled');
-			}
-		}
-		
-		function onCityFromRadiusSelected() {
-			if (jQuery('[name=cargo_city_from_radius_check]').is(':checked')) {
-				jQuery('[name=cargo_city_from_radius_value]').removeAttr('disabled');
-			} else {
-				jQuery('[name=cargo_city_from_radius_value]').attr('disabled', 'disabled');
-			}
-		}
-		
-		jQuery(document).ready(function() {
-			jQuery('[name=country_from]').change(function() {
-				onCountryFromSelected();
-			});
-			jQuery('[name=country_to]').change(function() {
-				onCountryToSelected();
-			});
-			jQuery('[name=cargo_city_from]').change(function() {
-				onCityFromSelected();
-			});
-			jQuery('[name=cargo_cityname_from]').change(function() {
-				onCityNameFromChanged();
-			});
-			jQuery('[name=cargo_city_to]').change(function() {
-				onCityToSelected();
-			});
-			jQuery('[name=cargo_city_from_radius_check]').change(function() {
-				onCityFromRadiusSelected();
-			});
-			onCountryFromSelected();
-			onCountryToSelected();
-			onCityFromSelected();
-                        onCityNameFromChanged();
-			onCityToSelected();
-                        onCityFromRadiusSelected();
-			jQuery.datepicker.setDefaults(jQuery.datepicker.regional['ru']);
-			jQuery("[name=data_from]" ).datepicker({ dateFormat: "dd.mm.yy" });
-			jQuery("[name=data_to]" ).datepicker({ dateFormat: "dd.mm.yy" });
-		});
-	</script>
-	
-	<?php
+        
+        tzs_front_end_search_tr_form('transport');
 	
 	$output = ob_get_contents();
     ob_end_clean();

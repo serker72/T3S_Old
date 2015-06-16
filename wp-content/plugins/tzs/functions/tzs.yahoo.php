@@ -278,10 +278,10 @@ function tzs_get_city($id) {
 	return $row->title_ru;
 }
 
-function tzs_city_to_str($country_id, $region_id, $city_id, $def) {
+function tzs_city_to_str($country_id, $region_id, $city_id, $def, $title='') {
 	$def = htmlspecialchars($def);
 	if ($city_id != NULL && $city_id > 0) {
-		return "<span title=\"$def\">".htmlspecialchars(tzs_get_city($city_id))." (".htmlspecialchars(tzs_get_country_code($country_id)).")</span>";
+		return '<span title="'.($title !== '' ? $title : $def).'">'.htmlspecialchars(tzs_get_city($city_id)).' ('.htmlspecialchars(tzs_get_country_code($country_id)).')</span>';
 	} elseif ($region_id != NULL && $region_id > 0) {
 		return "<span title=\"$def\">".htmlspecialchars(tzs_get_region($region_id))." (".htmlspecialchars(tzs_get_country_code($country_id)).")</span>";
 	} elseif ($country_id != NULL && $country_id > 0) {

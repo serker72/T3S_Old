@@ -1,42 +1,5 @@
 <?php
 
-//include_once(TZS_PLUGIN_DIR.'/functions/tzs.trade.functions.php');
-
-
-function tzs_pr_build_countries($name) {
-	global $wpdb;
-	
-	$sql = "SELECT * FROM ".TZS_COUNTRIES_TABLE." ORDER BY FIELD(code, 'BY', 'RU', 'UA') DESC, title_ru ASC;";
-	$res = $wpdb->get_results($sql);
-	if (count($res) == 0 && $wpdb->last_error != null) {
-		// do nothink
-	} else {
-		?>
-			<option value="0">все страны</option>
-			<option disabled>- - - - - - - -</option>
-		<?php
-		$counter = 0;
-		foreach ( $res as $row ) {
-			$country_id = $row->country_id;
-			$title = $row->title_ru;
-			?>
-				<option value="<?php echo $country_id;?>" <?php
-					if ((isset($_POST[$name]) && $_POST[$name] == $country_id)) {
-						echo 'selected="selected"';
-					}
-				?>
-				><?php echo $title;?></option>
-			<?php
-			if ($counter == 2) {
-				?>
-					<option disabled>- - - - - - - -</option>
-				<?php
-			}
-			$counter++;
-		}
-	}
-}
-
 function tzs_validate_pr_search_parameters() {
 	$errors = array();
 	$res = array();
@@ -290,8 +253,8 @@ function tzs_search_pr_parameters_to_sql($p, $pref) {
         if ((isset($p['rootcategory']) == false) || ($p['rootcategory'] < 1)) {
             $sql .= ' AND type_id = '.$p['type_id'];
         }
-    } else {
-        if (isset($p['cur_type_id']) && ($p['cur_type_id'] > 0)) {
+    } else if (isset($p['cur_type_id']) && ($p['cur_type_id'] > 0)) {
+        if ((isset($p['rootcategory']) == false) || ($p['rootcategory'] < 1)) {
                 $sql .= ' AND type_id = '.$p['cur_type_id'];
         }
     }
@@ -433,7 +396,7 @@ function tzs_front_end_search_pr_form() {
                 <td>Местонахождение: страна:<br>
                     <select name="country_from">
                         <?php
-                            tzs_pr_build_countries('country_from');
+                            tzs_build_countries('country_from');
 			?>
                     </select>
                 </td>
@@ -493,7 +456,6 @@ function tzs_front_end_search_pr_form() {
                 </td>
                 <td>Дата размещения: до:<br>
                     <input type="text" name="data_to" value="<?php echo_val('data_to'); ?>" size="10">
-                    <input type="hidden" name="form_type" value="products" />
                 </td>
             </tr>
             <tr>

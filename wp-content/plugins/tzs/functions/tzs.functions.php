@@ -215,7 +215,7 @@ function trans_types_to_str($t, $t2) {
 	$type2 = "";
 	if ($t2 > 0 && isset($GLOBALS['tzs_tr2_types'][$t2])) {
 		$t = $GLOBALS['tzs_tr2_types'][$t2];
-		$type2 = $t[0].' <img src="'.$t[1].'"></img>';
+		$type2 = $t[0].'<br><img src="'.$t[1].'"></img>';
 	}
 	if (strlen($type) == 0 && strlen($type2) == 0) {
 		return "";
@@ -341,7 +341,7 @@ function tzs_make_distance_link($distance, $meters, $city) {
 		$counter++;
 	}
 	$url .="], null)";
-	return '<a class="distance_link" href=\'javascript:'.$url.';\'>'.tzs_convert_distance_to_str($distance, $meters).'</a>';
+	return '<a class="distance_link" href=\'javascript:'.$url.';\' title="Расчет расстояния между пунктами">'.tzs_convert_distance_to_str($distance, $meters).'</a>';
 }
 
 function tzs_cost_to_str($cost_str, $split_flag = false) {
@@ -521,6 +521,46 @@ function tzs_print_user_table_ed($user_id) {
 <?php
 }
 
+/*
+ * Построение выпадающего списка наименований стран
+ */
+function tzs_build_countries($name) {
+	global $wpdb;
+	
+	$sql = "SELECT * FROM ".TZS_COUNTRIES_TABLE." ORDER BY FIELD(code, 'BY', 'RU', 'UA') DESC, title_ru ASC;";
+	$res = $wpdb->get_results($sql);
+	if (count($res) == 0 && $wpdb->last_error != null) {
+		// do nothink
+	} else {
+		?>
+			<option value="0">все страны</option>
+			<option disabled>- - - - - - - -</option>
+		<?php
+		$counter = 0;
+		foreach ( $res as $row ) {
+			$country_id = $row->country_id;
+			$title = $row->title_ru;
+			?>
+				<option value="<?php echo $country_id;?>" <?php
+					if ((isset($_POST[$name]) && $_POST[$name] == $country_id)) {
+						echo 'selected="selected"';
+					}
+				?>
+				><?php echo $title;?></option>
+			<?php
+			if ($counter == 2) {
+				?>
+					<option disabled>- - - - - - - -</option>
+				<?php
+			}
+			$counter++;
+		}
+	}
+}
+
+/*
+ * Получение списка регионов по выбранной стране
+ */
 function tzs_get_regions() {
 	$id = isset($_POST['id']) && is_numeric($_POST['id']) ? intval( $_POST['id'] ) : 0;
 	$rid = isset($_POST['rid']) && is_numeric($_POST['rid']) ? intval( $_POST['rid'] ) : 0;
@@ -633,4 +673,5 @@ function tzs_print_user_contacts($row, $form_type) {
     
     return $output_tbody;
 }
+
 ?>

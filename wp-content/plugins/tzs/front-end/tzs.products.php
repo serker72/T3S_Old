@@ -44,14 +44,14 @@ function tzs_front_end_products_handler($atts) {
                         <?php } ?>
                     </th>
                     <th></th>
-                    <th colspan="3">
-                        Количество записей на странице:
+                    <th colspan="3" id="tbl_thead_records_per_page_th">
+                        <!--Количество записей на странице:
                         <select name="records_per_page" style="width: 50px;">
-                            <option value="5" <?php if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 5) || (TZS_RECORDS_PER_PAGE == 5)) echo 'selected="selected"'; ?> >5</option>
-                            <option value="10" <?php if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 10) || (TZS_RECORDS_PER_PAGE == 10)) echo 'selected="selected"'; ?> >10</option>
-                            <option value="15" <?php if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 15) || (TZS_RECORDS_PER_PAGE == 15)) echo 'selected="selected"'; ?> >15</option>
-                            <option value="20" <?php if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 20) || (TZS_RECORDS_PER_PAGE == 20)) echo 'selected="selected"'; ?> >20</option>
-                        </select><br>
+                            <option value="5" <?php //if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 5) || (TZS_RECORDS_PER_PAGE == 5)) echo 'selected="selected"'; ?> >5</option>
+                            <option value="10" <?php //if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 10) || (TZS_RECORDS_PER_PAGE == 10)) echo 'selected="selected"'; ?> >10</option>
+                            <option value="15" <?php //if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 15) || (TZS_RECORDS_PER_PAGE == 15)) echo 'selected="selected"'; ?> >15</option>
+                            <option value="20" <?php //if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 20) || (TZS_RECORDS_PER_PAGE == 20)) echo 'selected="selected"'; ?> >20</option>
+                        </select><br-->
                     </th>
                 </tr>
                 <tr>
@@ -62,7 +62,7 @@ function tzs_front_end_products_handler($atts) {
                     <th id="tbl_products_title">Название, описание и фото товара</th>
                     <th id="tbl_products_price">Цена<br/>Форма оплаты<br/>Кол-во</th>
                     <th id="tbl_products_cities">Место нахождения</th>
-                    <th id="tbl_products_comm">Контакты</th>
+                    <th id="tbl_products_comm" nonclickable="true">Контакты</th>
                 </tr>
                 <tr>
                     <th>
@@ -165,7 +165,7 @@ function tzs_front_end_products_handler($atts) {
                                 Местонахождение: страна:<br>
                                 <select name="country_from">
                                     <?php
-                                        tzs_pr_build_countries('country_from');
+                                        tzs_build_countries('country_from');
                                     ?>
                                 </select><br>
                                 Местонахождение: регион:<br>
@@ -302,20 +302,43 @@ function tzs_front_end_products_handler($atts) {
             SearchFormVisible = ~ SearchFormVisible;
         }
 
+  
+        function thRecordsPerPagePrint(records_per_page) {
+            var vTZS_RECORDS_PER_PAGE = <?php echo TZS_RECORDS_PER_PAGE; ?>;
+            var vRecordsArray = [5,10,15,20];
+            var vRecordsStr = 'Количество записей на странице:&nbsp;&nbsp;&nbsp;';
+            
+            if (!records_per_page || (records_per_page < 1)) { records_per_page = vTZS_RECORDS_PER_PAGE; }
+            
+            for(i=0;i<vRecordsArray.length;i++) {
+                if (vRecordsArray[i] != records_per_page) {
+                    vRecordsStr += '<a href="javascript:onRecordsPerPageSelected(' + vRecordsArray[i] + ')">' + vRecordsArray[i] + '</a>&nbsp;&nbsp;';
+                }
+            }
+            
+            jQuery("#tbl_thead_records_per_page_th").html(vRecordsStr);
+        }
+  
+        function onRecordsPerPageSelected(records_per_page) {
+            addHidden("#search_pr_form1", 'records_per_page', records_per_page);
+            TblTbodyReload(1);
+            thRecordsPerPagePrint(records_per_page);
+        }
         
         // Функция, отрабатывающая после готовности HTML-документа
         jQuery(document).ready(function(){
                 // Установим обработчик "клика" в строках таблицы
                 jQuery('#tbl_products').on('click', 'td', function(e) {  
-                        var nonclickable = 'true' == e.delegateTarget.rows[0].cells[this.cellIndex].getAttribute('nonclickable');
+                        var nonclickable = 'true' == e.delegateTarget.rows[1].cells[this.cellIndex].getAttribute('nonclickable');
                         var id = this.parentNode.getAttribute("rid");
-                        if (!nonclickable && (this.cellIndex != 7))
+                        if (!nonclickable)
                                 document.location = "/account/view-product/?id="+id;
                 });
 
                 // Создадми скрытые поля для формы
                 var theForm = "#search_pr_form1";
-                //addHidden(theForm, 'type_id', '<?php echo $p_id; ?>');
+                  addHidden(theForm, 'form_type', 'products');
+              //addHidden(theForm, 'type_id', '<?php echo $p_id; ?>');
                 addHidden(theForm, 'rootcategory', '<?php echo $rootcategory; ?>');
                 addHidden(theForm, 'cur_type_id', '<?php echo $p_id; ?>');
                 addHidden(theForm, 'cur_post_name', '<?php echo $p_name; ?>');
@@ -343,8 +366,10 @@ function tzs_front_end_products_handler($atts) {
 
                 // Скроем форму
                 if (SearchFormVisible) { tblTHeadShowSearchForm(); }
+                
                 // Обновим тело таблицы
                 TblTbodyReload(1);
+                thRecordsPerPagePrint(<?php echo isset($_POST['records_per_page']) ? $_POST['records_per_page'] : TZS_RECORDS_PER_PAGE; ?>);
 
                 //hijackLinks(post);
 
