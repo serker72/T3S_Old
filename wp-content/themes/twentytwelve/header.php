@@ -48,21 +48,14 @@
 		</div>
 <div style="clear: both;"></div>
 
-		<!--
-		<div id="site-navigation" class="main-navigation" role="navigation">
-			<div id="logo">
-				<a href="/"></a>
-			</div>
-			<?php wp_nav_menu( array( 'theme_location' => 'primary', 'menu_class' => 'nav-menu' ) ); ?>
-			<div id="chat">
-
-			</div>
-		</div>
-		-->
-        <?php if (!dynamic_sidebar("Тендеры и Товары") ) : ?>
-        <?php endif; ?>
-		<?php if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar("Слайдер") ) : ?>
-		<?php endif; ?>
+		
+        <?php //if (!dynamic_sidebar("Тендеры и Товары") ) : ?>
+        <?php //endif; ?>
+		<?php //if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar("Слайдер") ) : ?>
+		<?php //endif; ?>
+            <div id="sliders">
+                <img src="/wp-content/themes/twentytwelve/images/Head-pic.png">    
+            </div>
 	</div>
 </header>
 

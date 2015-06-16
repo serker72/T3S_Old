@@ -19,8 +19,8 @@ div.tooltip h3 {
 
 .trigger {
 	background: url(icon_home/tovar.jpg) no-repeat top;
-	width: 288px;
-	height: 288px;
+	width: 300px;
+	height: 300px;
 	display: block;
 	font-size: 0;
 		-webkit-transition: all 0ms;
@@ -55,8 +55,8 @@ div.tooltip1 h3 {
 
 .trigger1 {
 	background: url(icon_home/transport.jpg) no-repeat top;
-	width: 288px;
-	height: 288px;
+	width: 300px;
+	height: 300px;
 	display: block;
 	font-size: 0;
 		-webkit-transition: all 0ms;
@@ -92,8 +92,8 @@ div.tooltip2 h3 {
 
 .trigger2 {
 	background: url(icon_home/torg.jpg) no-repeat top;
-	width: 288px;
-	height: 288px;
+	width: 300px;
+	height: 300px;
 	display: block;
 	font-size: 0;
 		-webkit-transition: all 0ms;
