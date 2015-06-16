@@ -1840,7 +1840,7 @@ max-height: 46px !important;
 }
 .tbl_thead_search_button span {
     /*display: block;*/
-    padding: 0 2px;
+    /*padding: 0 2px;*/
 }
 .tbl_thead_search_button a {
     padding: 0 5px;

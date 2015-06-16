@@ -54,7 +54,7 @@
 		<?php //if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar("Слайдер") ) : ?>
 		<?php //endif; ?>
             <div id="sliders">
-                <img src="/wp-content/themes/twentytwelve/images/Head-pic.png">    
+                <a href="/"><img src="/wp-content/themes/twentytwelve/images/Head-pic.png"></a>    
             </div>
 	</div>
 </header>
