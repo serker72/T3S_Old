@@ -36,8 +36,9 @@ function tzs_front_end_shipments_handler($atts) {
                     </th>
                     <th>
                         <div id="tbl_thead_search_button_2" class="tbl_thead_search_button" title="Фильтр по типу заявок">
-                                <img chk="1" src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px">
-                                <a href="JavaScript:tblTHeadShowForm('#tbl_thead_search_div_2', '.tbl_thead_search_div');"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/navigate-down.png" width="16px" height="16px"></a>
+                            <!--img chk="1" src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px"-->
+                            <a href="JavaScript:tblTHeadShowForm('#tbl_thead_search_div_2', '.tbl_thead_search_div');"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/navigate-down.png"></a>
+                            <label class="switch"><input id="chk_2" type="checkbox" value="1" name="k" disabled="disabled"><span class="switch"></span></label>
                         </div>
                         <div id="tbl_thead_search_div_2" class="tbl_thead_search_div">
                             <span style="float: left;padding: 5px 5px;">
@@ -85,8 +86,9 @@ function tzs_front_end_shipments_handler($atts) {
                     </th>
                     <th>
                         <div id="tbl_thead_search_button_3" class="tbl_thead_search_button" title="Фильтр по участнику тендера">
-                            <img chk="1" src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px">
-                            <a href="JavaScript:tblTHeadShowForm('#tbl_thead_search_div_3', '.tbl_thead_search_div');"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/navigate-down.png" width="16px" height="16px"></a>
+                            <!--img chk="1" src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px"-->
+                            <a href="JavaScript:tblTHeadShowForm('#tbl_thead_search_div_3', '.tbl_thead_search_div');"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/navigate-down.png"></a>
+                            <label class="switch"><input id="chk_3" type="checkbox" value="1" name="k" disabled="disabled"><span class="switch"></span></label>
                         </div>
                         <div id="tbl_thead_search_div_3" class="tbl_thead_search_div">
                             Дата погрузки:<br>
@@ -97,8 +99,9 @@ function tzs_front_end_shipments_handler($atts) {
                     </th>
                     <th>
                         <div id="tbl_thead_search_button_4" class="tbl_thead_search_button" title="Фильтр по периоду публикации">
-                            <img chk="1" src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px">
-                            <a href="JavaScript:tblTHeadShowForm('#tbl_thead_search_div_4', '.tbl_thead_search_div');"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/navigate-down.png" width="16px" height="16px"></a>
+                            <!--img chk="1" src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px"-->
+                            <a href="JavaScript:tblTHeadShowForm('#tbl_thead_search_div_4', '.tbl_thead_search_div');"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/navigate-down.png"></a>
+                            <label class="switch"><input id="chk_4" type="checkbox" value="1" name="k" disabled="disabled"><span class="switch"></span></label>
                         </div>
                         <div id="tbl_thead_search_div_4" class="tbl_thead_search_div">
                             Масса: от:<br>
@@ -121,8 +124,9 @@ function tzs_front_end_shipments_handler($atts) {
                     </th>
                     <th>
                         <div id="tbl_thead_search_button_5" class="tbl_thead_search_button" title="Фильтр по описанию товара">
-                            <img chk="1" src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px">
-                            <a href="JavaScript:tblTHeadShowForm('#tbl_thead_search_div_5', '.tbl_thead_search_div');"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/navigate-down.png" width="16px" height="16px"></a>
+                            <!--img chk="1" src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px"-->
+                            <a href="JavaScript:tblTHeadShowForm('#tbl_thead_search_div_5', '.tbl_thead_search_div');"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/navigate-down.png"></a>
+                            <label class="switch"><input id="chk_5" type="checkbox" value="1" name="k" disabled="disabled"><span class="switch"></span></label>
                         </div>
                         <div id="tbl_thead_search_div_5" class="tbl_thead_search_div">
                             Тип груза:<br>
@@ -141,8 +145,9 @@ function tzs_front_end_shipments_handler($atts) {
                     </th>
                     <th>
                         <div id="tbl_thead_search_button_6" class="tbl_thead_search_button" title="Фильтр по стоимости товара">
-                                <img chk="1" src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px">
-                                <a href="JavaScript:tblTHeadShowForm('#tbl_thead_search_div_6', '.tbl_thead_search_div');"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/navigate-down.png" width="16px" height="16px"></a>
+                            <!--img chk="1" src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px"-->
+                            <a href="JavaScript:tblTHeadShowForm('#tbl_thead_search_div_6', '.tbl_thead_search_div');"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/navigate-down.png"></a>
+                            <label class="switch"><input id="chk_6" type="checkbox" value="1" name="k" disabled="disabled"><span class="switch"></span></label>
                         </div>
                             <div id="tbl_thead_search_div_6" class="tbl_thead_search_div">
                                 Тип транспорта:<br>
@@ -166,12 +171,10 @@ function tzs_front_end_shipments_handler($atts) {
                     <th>
                     </th>
                     <th>
-                        <div class="tbl_thead_search_button">
+                        <div class="tbl_thead_search_button_1">
                             <a href="JavaScript:tblTHeadShowSearchForm();" title="Полная форма изменения условий поиска"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/search-1.png" width="24px" height="24px"></a>&nbsp;
                             <a href="javascript:onTblTheadButtonClearClick();" title="Очистить все условия фильтра"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/eraser.png" width="24px" height="24px"></a>&nbsp;
                             <a href="javascript:onTblTheadButtonSearchClick();" title="Выполнить поиск по текущим условиям фильтра"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/find-1.png" width="24px" height="24px"></a>
-                            <!--button type="button" id="tbl_thead_button_clear" onclick="javascript:onTblTheadButtonClearClick();" title="Очистить все условия фильтра">Очистить</button-->
-                            <!--button type="button" id="tbl_thead_button_search" onclick="javascript:onTblTheadButtonSearchClick();" title="Выполнить поиск по текущим условиям фильтра">Искать</button-->
                         </div>
                     </th>
                 </tr>
@@ -190,10 +193,14 @@ function tzs_front_end_shipments_handler($atts) {
 
     </div>
 <!------------------------------------------------------------------------->                        
-    <div class="slide_panel">
+    <!--div class="slide_panel"-->
+    <div id="slideout">
+        <img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/search-1.png" width="32px" height="32px" alt="Форма поиска"></a>
+        <div id="slideout_inner">
         <?php 
             tzs_front_end_search_tr_form('transport'); 
         ?>
+        </div>
     </div>
 <!------------------------------------------------------------------------->                        
     <script src="/wp-content/plugins/tzs/assets/js/distance.js"></script>
@@ -280,37 +287,99 @@ function tzs_front_end_shipments_handler($atts) {
         }
         //
         function onForm1Change() {
-            if ((jQuery('[name=country_from]').val() > 0) || (jQuery('[name=country_to]').val() > 0) || (jQuery('[name=region_from]').val() > 0) || (jQuery('[name=region_to]').val() > 0) ||
+            // chk_2
+            jQuery('#chk_2').prop('checked', ((jQuery('[name=country_from]').val() > 0) || (jQuery('[name=country_to]').val() > 0) || (jQuery('[name=region_from]').val() > 0) || (jQuery('[name=region_to]').val() > 0) ||
                     (jQuery('[name=cargo_city_from]').is(':checked') && (jQuery('[name=cargo_cityname_from]').val().length > 0)) ||
                     (jQuery('[name=cargo_city_to]').is(':checked') && (jQuery('[name=cargo_cityname_to]').val().length > 0)) ||
-                    (jQuery('[name=cargo_city_from_radius_check]').is(':checked') && (jQuery('[name=cargo_city_from_radius_value]').val().length > 0))) {
-                jQuery("#tbl_thead_search_button_2 img[chk=1]").attr("src", "<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_checked.png");
+                    (jQuery('[name=cargo_city_from_radius_check]').is(':checked') && (jQuery('[name=cargo_city_from_radius_value]').val().length > 0))));
+            if (jQuery('#chk_2').is(':checked')) {
+                jQuery('#chk_2').removeAttr('disabled');
             } else {
-                jQuery("#tbl_thead_search_button_2 img[chk=1]").attr("src", "<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_unchecked.png");
+                jQuery('#chk_2').attr('disabled', 'disabled');
             }
             
-            if ((jQuery('[name=data_from]').val().length > 7) || (jQuery('[name=data_to]').val().length > 7)) {
-                jQuery("#tbl_thead_search_button_3 img[chk=1]").attr("src", "<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_checked.png");
+            // chk_3
+            jQuery('#chk_3').prop('checked', ((jQuery('[name=data_from]').val().length > 7) || (jQuery('[name=data_to]').val().length > 7)));
+            if (jQuery('#chk_3').is(':checked')) {
+                jQuery('#chk_3').removeAttr('disabled');
             } else {
-                jQuery("#tbl_thead_search_button_3 img[chk=1]").attr("src", "<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_unchecked.png");
+                jQuery('#chk_3').attr('disabled', 'disabled');
             }
             
-            if ((jQuery('[name=weight_from]').val() > 0) || (jQuery('[name=weight_to]').val() > 0) || (jQuery('[name=volume_from]').val() > 0) || (jQuery('[name=volume_to]').val() > 0)) {
-                jQuery("#tbl_thead_search_button_4 img[chk=1]").attr("src", "<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_checked.png");
+            // chk_4
+            jQuery('#chk_4').prop('checked', ((jQuery('[name=weight_from]').val() > 0) || (jQuery('[name=weight_to]').val() > 0) || (jQuery('[name=volume_from]').val() > 0) || (jQuery('[name=volume_to]').val() > 0)));
+            if (jQuery('#chk_4').is(':checked')) {
+                jQuery('#chk_4').removeAttr('disabled');
             } else {
-                jQuery("#tbl_thead_search_button_4 img[chk=1]").attr("src", "<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_unchecked.png");
+                jQuery('#chk_4').attr('disabled', 'disabled');
             }
             
-            if (jQuery('[name=sh_type]').val() > 0) {
-                jQuery("#tbl_thead_search_button_5 img[chk=1]").attr("src", "<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_checked.png");
+            // chk_5
+            jQuery('#chk_5').prop('checked', (jQuery('[name=sh_type]').val() > 0));
+            if (jQuery('#chk_5').is(':checked')) {
+                jQuery('#chk_5').removeAttr('disabled');
             } else {
-                jQuery("#tbl_thead_search_button_5 img[chk=1]").attr("src", "<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_unchecked.png");
+                jQuery('#chk_5').attr('disabled', 'disabled');
             }
             
-            if (jQuery('[name=trans_type]').val() > 0) {
-                jQuery("#tbl_thead_search_button_6 img[chk=1]").attr("src", "<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_checked.png");
+            // chk_6
+            jQuery('#chk_6').prop('checked', (jQuery('[name=trans_type]').val() > 0));
+            if (jQuery('#chk_6').is(':checked')) {
+                jQuery('#chk_6').removeAttr('disabled');
             } else {
-                jQuery("#tbl_thead_search_button_6 img[chk=1]").attr("src", "<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_unchecked.png");
+                jQuery('#chk_6').attr('disabled', 'disabled');
+            }
+        }
+        
+        function onClearFilterSelected(eventObject) {
+            var fid = eventObject.target.id;
+            var fname = eventObject.target.name;
+            var fchk = eventObject.target.checked;
+            
+            if (!fchk) {
+                switch (fid) {
+                    case 'chk_2': {
+                        jQuery('[name=country_from]').attr('value', 0);
+                        jQuery('[name=country_to]').attr('value', 0);
+                        jQuery('[name=region_from]').attr('value', 0);
+                        jQuery('[name=region_to]').attr('value', 0);
+                        jQuery('[name=cargo_city_from_radius_value]').attr('value', 0);
+                        jQuery('[name=cargo_cityname_from]').attr('value', '');
+                        jQuery('[name=cargo_cityname_to]').attr('value', '');
+                        jQuery('[name=cargo_city_from]').prop('checked', false);
+                        jQuery('[name=cargo_city_to]').prop('checked', false);
+                        jQuery('[name=cargo_city_from_radius_check]').prop('checked', false);
+                        jQuery('[name=cargo_cityname_from]').attr('disabled', 'disabled');
+                        jQuery('[name=cargo_cityname_to]').attr('disabled', 'disabled');
+                        jQuery('[name=cargo_city_from_radius_value]').attr('disabled', 'disabled');
+                        jQuery('#chk_2').attr('disabled', 'disabled');
+                        break;
+                    }
+                    case 'chk_3': {
+                        jQuery('[name=data_from]').attr('value', '');
+                        jQuery('[name=data_to]').attr('value', '');
+                        jQuery('#chk_3').attr('disabled', 'disabled');
+                        break;
+                    }
+                    case 'chk_4': {
+                        jQuery('[name=weight_from]').attr('value', 0);
+                        jQuery('[name=weight_to]').attr('value', 0);
+                        jQuery('[name=volume_from]').attr('value', 0);
+                        jQuery('[name=volume_to]').attr('value', 0);
+                        jQuery('#chk_4').attr('disabled', 'disabled');
+                        break;
+                    }
+                    case 'chk_5': {
+                        jQuery('[name=sh_type]').attr('value', 0);
+                        jQuery('#chk_5').attr('disabled', 'disabled');
+                        break;
+                    }
+                    case 'chk_6': {
+                        jQuery('[name=trans_type]').attr('value', 0);
+                        jQuery('#chk_6').attr('disabled', 'disabled');
+                        break;
+                    }
+                }
             }
         }
         
@@ -400,17 +469,19 @@ function tzs_front_end_shipments_handler($atts) {
 
                 // Устанавливаем обработчики событий 
                 setFormFielsdChangeHandler('search_pr_form');
-                jQuery('[name=records_per_page]').change(function(eventObject) {
+                jQuery('#chk_2, #chk_3, #chk_4, #chk_5, #chk_6').change(function(eventObject) { onClearFilterSelected(eventObject); });
+                
+                /*jQuery('[name=records_per_page]').change(function(eventObject) {
                     addHidden(theForm, 'records_per_page', eventObject.target.value);
                     TblTbodyReload(1); 
-                });
+                });*/
                 onForm1Change();
                 onCountryFromSelected();
 		onCountryToSelected();
-			//onCityFromSelected();
-                        //onCityNameFromChanged();
-			//onCityToSelected();
-                        //onCityFromRadiusSelected();
+                //onCityFromSelected();
+                //onCityNameFromChanged();
+                //onCityToSelected();
+                //onCityFromRadiusSelected();
                 //
                 jQuery.datepicker.setDefaults(jQuery.datepicker.regional['ru']);
                 jQuery("[name=data_from]").datepicker({ dateFormat: "dd.mm.yy" });

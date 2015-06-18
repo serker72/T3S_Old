@@ -30,6 +30,8 @@ function tzs_get_user_meta($user_id) {
             'skype' => get_user_meta($user_id, 'skype', true),
             'telephone' => get_user_meta($user_id, 'telephone', true),
             'company' => get_user_meta($user_id, 'company', true),
+            'company_description' => get_user_meta($user_id, 'company_description', true),
+            'company_logo' => get_user_meta($user_id, 'company_logo', true),
             'description' => get_user_meta($user_id, 'description', true),
             'kod_edrpou' => get_user_meta($user_id, 'kod_edrpou', true),
             'adress' => get_user_meta($user_id, 'adress', true),

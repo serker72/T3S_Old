@@ -76,14 +76,16 @@ function wppb_input_handler($page, $item_title, $id, $item_desc, $item_required,
 				$inputValue = $postData[$item_type.$id];
 			else $inputValue = '';
 		}
-		$filterArray['inputCustomField'] = '
-			<p class="form-input'.$id.$errorVar.'">
-				<label for="'.$item_type.$id.'">'.$item_title.$errorMark.'</label>
-				<input class="text-input" name="'.$item_type.$id.'" type="text" id="'.$item_type.$id.'" value="'.$inputValue.'"';
-					if (($item_options != '') || ($item_options != NULL))
-						$filterArray['inputCustomField'] .= ' maxlength="'.$item_options.'"';
-					$filterArray['inputCustomField'] .= ' /><span class="wppb-description-delimiter">'.$item_desc.'</span>					
-			</p><!-- .form-input'.$id.' -->';
+                
+                    $filterArray['inputCustomField'] = '
+                            <p class="form-input'.$id.$errorVar.'">
+                                    <label for="'.$item_type.$id.'">'.$item_title.$errorMark.'</label>
+                                    <input class="text-input" name="'.$item_type.$id.'" type="text" id="'.$item_type.$id.'" value="'.$inputValue.'"';
+                                            if (($item_options != '') || ($item_options != NULL))
+                                                    $filterArray['inputCustomField'] .= ' maxlength="'.$item_options.'"'; //disabled="disabled"
+                                            $filterArray['inputCustomField'] .= ((($id == 8) || ($id == 15)) ? ' disabled="disabled" /><button type="button" id="ksk_phone_button" onclick="javascript:ksk_phone_input(\''.$item_type.$id.'\')"/>Ввести номера телефонов</button>' : ' />').'
+                                    <span class="wppb-description-delimiter">'.$item_desc.'</span>					
+                            </p><!-- .form-input'.$id.' -->';
 		$filterArray['inputCustomField'] = apply_filters('wppb_'.$page.'_input_custom_field_'.$id, $filterArray['inputCustomField'], $item_title, $item_type, $id, $inputValue, $item_options, $item_desc, $item_required, $errorMark, $errorVar);		
 	}
 			

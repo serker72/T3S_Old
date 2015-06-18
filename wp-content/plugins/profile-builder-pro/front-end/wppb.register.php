@@ -1035,7 +1035,7 @@ function wppb_front_end_register($atts){
 							$errorVar = '';
 							$errorMark = '';
 							if ($wppb_defaultOptions['usernameRequired'] == 'yes'){
-								$errorMark = '<font color="red" title="This field is required for registration.">*</font>';
+								$errorMark = '<font color="red" title="'.__('This field is marked as required by the administrator', 'profilebuilder').'">*</font>';
 								if (isset($_POST['user_name'])){
 									if (trim($_POST['user_name']) == ''){
 										$errorMark = '<img src="'.WPPB_PLUGIN_URL . '/assets/images/pencil_delete.png" title="'.__('This field must be filled out before registering (It was marked as required by the administrator)', 'profilebuilder').'"/>';
@@ -1075,7 +1075,7 @@ function wppb_front_end_register($atts){
 									$localVar = $_POST['user_name'];
 								$registerFilterArray2['name2'] = '
 									<p class="form-username'.$errorVar.'">
-										<label for="user_name">'. __('Username', 'profilebuilder') .$errorMark.'</label>
+										<label for="user_name">'. __('Username', 'profilebuilder').'(Логин) состоит из латинских букв и цифр '.$errorMark.'</label>
 										<input class="text-input" name="user_name" type="text" id="user_name" value="'.trim($localVar).'" />
 									</p><!-- .form-username -->';
 								$registerFilterArray2['name2'] = apply_filters('wppb_register_content_name2', $registerFilterArray2['name2'], trim($localVar), $errorVar, $errorMark);
@@ -1416,6 +1416,8 @@ function wppb_front_end_register($atts){
 ?>
 	
 	</div>
+<!-------------------------------------------------------------------------------------->
+    <script src="/wp-content/plugins/profile-builder-pro/assets/js/ksk_phone.js" type="text/javascript"></script>
 <?php
 	$output = ob_get_contents();
     ob_end_clean();

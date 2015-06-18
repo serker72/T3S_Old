@@ -1658,22 +1658,40 @@ max-height: 46px !important;
     text-decoration: none;
 }
 .tbl_products_contact_phone {
+    background: transparent url(images/phone_22.png) no-repeat left center;
+    font-size: 11px;
+    padding: 0 0;
+    margin: 0 0;
 }
-.tbl_products_contact_phone b {
+.tbl_products_contact_email {
+    background: transparent url(images/email_22.png) no-repeat left center;
+    font-size: 11px;
+    padding: 0 0;
+    margin: 0 0;
+}
+.tbl_products_contact_skype {
+    background: transparent url(images/skype_22.png) no-repeat left center;
+    font-size: 11px;
+    padding: 0 0;
+    margin: 0 0;
+}
+.tbl_products_contact_phone b, .tbl_products_contact_email b, .tbl_products_contact_skype b {
+    padding-left: 12px;
     display: inline;
     font-weight: normal;
 }
-.tbl_products_contact_phone span {
+.tbl_products_contact_phone span, .tbl_products_contact_email span, .tbl_products_contact_skype span {
+    padding-left: 12px;
     color: #3C3D3D;
     display: none;
 }
-.tbl_products_contact_phone a {
+.tbl_products_contact_phone a, .tbl_products_contact_email a, .tbl_products_contact_skype a {
     color: #2F3133;
     cursor: pointer;
     font-weight: normal;
     text-decoration: none;
 }
-.tbl_products_contact_phone a:hover {
+.tbl_products_contact_phone a:hover, .tbl_products_contact_email a:hover, .tbl_products_contact_skype a:hover {
     color: #1792D6;
     font-weight: normal;
     text-decoration: none;
@@ -1843,11 +1861,36 @@ max-height: 46px !important;
     /*padding: 0 2px;*/
 }
 .tbl_thead_search_button a {
-    padding: 0 5px;
+    padding: 0 6px;
+    float: right;
+    display: block;
 }
+.tbl_thead_search_button a img {
+    border: none;
+    width: 16px;
+    height: 16px;
+    vertical-align: top;
+}    
+.tbl_thead_search_button a:hover img, .tbl_thead_search_button a:visited img {
+    border: none;
+}
+.tbl_thead_search_button_1 {
+    padding: 0 10px 5px 0;
+}
+.tbl_thead_search_button_1 a img {
+    border: none;
+    width: 24px;
+    height: 24px;
+    vertical-align: top;
+}    
+.tbl_thead_search_button_1 a:hover img, .tbl_thead_search_button_1 a:visited img {
+    border: none;
+}
+
 .tbl_thead_search_div {
     display: none;
-    background: #0B5792; 
+    background: #0B5792;
+    margin: 16px 0 0 0;
     padding: 15px 15px;
     float: left;
     /*width: 250px;*/
@@ -1885,6 +1928,35 @@ max-height: 46px !important;
     width: 98%;
 }
 
+.denys{
+    background: black;
+}
+label.switch {
+    width: 16px; /* Ширина рисунка */
+    height: 16px; /* Высота рисунка */
+    display: block; /* Блочный элемент */
+    position: relative; /* Относительное позиционирование */    
+    float: right;
+}
+label.switch input[type="checkbox"] {
+    padding: 0 0;
+    margin: 0 0;
+    left: 0; 
+    top: 0;
+    position: absolute; /* Абсолютное позиционирование */
+}
+label.switch input[type="checkbox"] + span.switch {
+    position: absolute; /* Абсолютное позиционирование */
+    left: 0; 
+    top: 0;
+    width: 100%; 
+    height: 100%;
+    background: #0B5792 url(images/checkbox_sprite.png) no-repeat;  /* Фоновый рисунок */
+    cursor: pointer; /* Курсор в виде руки */
+}
+label.switch input[type="checkbox"]:checked + span.switch  	{
+    background-position: 0 -16px;
+}
 .slide_panel {
     color: #ffffff;
     padding: 2px 10px;
@@ -1896,30 +1968,65 @@ max-height: 46px !important;
     position: absolute; /*обязательное свойство*/
     z-index: 1000000;
 }
-.denys{
-    background: black;
+#slideout {
+  position: fixed;
+  top: 140px;
+  left: 0;
+  -webkit-transition-duration: 0.3s;
+  -moz-transition-duration: 0.3s;
+  -o-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+    z-index: 1000000;
 }
-label.switch {
-    width: 16px; /* Ширина рисунка */
-    height: 16px; /* Высота рисунка */
-    padding: 0 0;
-    margin: 0 0;
-    vertical-align: bottom;
-    display: block; /* Блочный элемент */
-    position: relative; /* Относительное позиционирование */    
+#slideout_inner {
+    color: #ffffff;
+    padding: 2px 10px;
+    width: 360px;
+    background: #0B5792; 
+    border: 2px solid #000;
+  position: fixed;
+  top: 140px;
+  left: -385px;
+  -webkit-transition-duration: 0.3s;
+  -moz-transition-duration: 0.3s;
+  -o-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+    z-index: 1000000;
 }
-label.switch input[type="checkbox"] {
-    padding: 0 0;
+#slideout:hover {
+  left: 385px;
+}
+#slideout:hover #slideout_inner {
+  left: 0;
+}
+
+#ksk_phone_input_div {
+    background: #0B5792;
+    color: #ffffff;
+    border-radius: 5px;
+    border: 2px #000 solid;
+    width: 420px;
     margin: 0 0;
+    padding: 20px 20px;
+    left: 245px;
+    text-align: center;
+    position: fixed;
+    opacity: 0;
+    z-index: 100000001;
+}
+#ksk_phone_input_div td {
+    padding: 2px 5px;
     vertical-align: top;
 }
-label.switch input[type="checkbox"] + span.switch {
-    position: absolute; /* Абсолютное позиционирование */
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background: #0B5792 url(images/checkbox_sprite.png) no-repeat; /* Фоновый рисунок */
-    cursor: pointer; /* Курсор в виде руки */
+#ksk_phone_input_div td button {
+    line-height: 25px;
 }
-label.switch input[type="checkbox"]:checked + span.switch  	{
-    background-position: 0 -16px;
+.ksk_phone_1 {
+    width: 25px;
+}
+.ksk_phone_2 {
+    width: 25px;
+}
+.ksk_phone_3 {
+    width: 70px;
 }

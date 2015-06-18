@@ -1185,6 +1185,8 @@ function wppb_front_end_profile_info() {
 ?>
 			
 	</div>	
+<!-------------------------------------------------------------------------------------->
+    <script src="/wp-content/plugins/profile-builder-pro/assets/js/ksk_phone.js" type="text/javascript"></script>
 	
 <?php
 

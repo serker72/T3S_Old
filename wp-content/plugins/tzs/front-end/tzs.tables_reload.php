@@ -265,7 +265,7 @@ function tzs_front_end_tables_reload() {
     
     // Если указан параметр rootcategory, то выводим все товары раздела
     // Иначе - товары категории
-    if ($rootcategory === '1') {
+    if (($rootcategory === '1') && ($type_id === '0')) {
         $sql1 = ' AND type_id IN ('.tzs_build_product_types_id_str($cur_type_id).')';
         $p_name = '';
     } else {
@@ -294,6 +294,7 @@ function tzs_front_end_tables_reload() {
             $table_name = TZS_TRUCK_TABLE;
             $table_error_msg = 'транспорта';
             $table_order_by = 'time';
+            $table_prefix = 'tr';
             break;
         }
 
@@ -301,6 +302,7 @@ function tzs_front_end_tables_reload() {
             $table_name = TZS_SHIPMENT_TABLE;
             $table_error_msg = 'грузов';
             $table_order_by = 'time';
+            $table_prefix = 'sh';
             break;
         }        
         
@@ -319,7 +321,7 @@ function tzs_front_end_tables_reload() {
             $s_sql = tzs_search_pr_parameters_to_sql($sp, '');
             $s_title = tzs_search_pr_parameters_to_str($sp);
         } else {
-            $s_sql = tzs_search_parameters_to_sql($sp, 'tr');
+            $s_sql = tzs_search_parameters_to_sql($sp, $table_prefix);
             $s_title = tzs_search_parameters_to_str($sp);
         }
 	

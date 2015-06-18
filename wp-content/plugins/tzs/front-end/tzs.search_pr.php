@@ -250,9 +250,9 @@ function tzs_search_pr_parameters_to_sql($p, $pref) {
     
     // Type_Id
     if (isset($p['type_id']) && ($p['type_id'] > 0)) {
-        if ((isset($p['rootcategory']) == false) || ($p['rootcategory'] < 1)) {
+        //if ((isset($p['rootcategory']) == false) || ($p['rootcategory'] < 1)) {
             $sql .= ' AND type_id = '.$p['type_id'];
-        }
+        //}
     } else if (isset($p['cur_type_id']) && ($p['cur_type_id'] > 0)) {
         if ((isset($p['rootcategory']) == false) || ($p['rootcategory'] < 1)) {
                 $sql .= ' AND type_id = '.$p['cur_type_id'];

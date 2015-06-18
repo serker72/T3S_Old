@@ -669,6 +669,32 @@ function tzs_print_user_contacts($row, $form_type) {
         </div>';
     }
 
+    if ($user_info['user_email'] != '') { 
+        $output_tbody .= '<div class="tbl_products_contact_email" phone-user="'.$row->user_id.'">
+        <b>'.  substr($user_info['user_email'], 0, 3).'XX@XX</b>
+        <span>'.$user_info['user_email'].'</span>
+        <a onclick="showUserContacts(this, '.$row->user_id.', ';
+
+        if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) { $output_tbody .= 'true'; }
+        else { $output_tbody .= 'false'; }
+
+        $output_tbody .= ');">Показать</a>
+        </div>';
+    }
+
+    if ($user_info['skype'] != '') { 
+        $output_tbody .= '<div class="tbl_products_contact_skype" phone-user="'.$row->user_id.'">
+        <b>'.  substr($user_info['skype'], 0, 3).'XXXX</b>
+        <span>'.$user_info['skype'].'</span>
+        <a onclick="showUserContacts(this, '.$row->user_id.', ';
+
+        if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) { $output_tbody .= 'true'; }
+        else { $output_tbody .= 'false'; }
+
+        $output_tbody .= ');">Показать</a>
+        </div>';
+    }
+    
     $output_tbody .= '</div>';
     
     return $output_tbody;
