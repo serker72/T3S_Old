@@ -21,6 +21,11 @@
 <body <?php body_class(); ?>>
 <header id="masthead" class="site-header" role="banner">
 	<div id="header">
+		<?php if (!is_front_page()) {?>
+			<div id="logo_head" style="float: left;">
+                		<a href="/"><img src="/wp-content/themes/twentytwelve/images/logo_footer_3.png"></a>    
+            		</div>
+		<?php } ?>
 		<div id="time">
 			<script type="text/javascript">
 				var l = new Date();
@@ -46,16 +51,20 @@
 			<p>ОН-ЛАЙН</p>
 			<p>помощник</p>
 		</div>
-<div style="clear: both;"></div>
 
-		
-        <?php //if (!dynamic_sidebar("Тендеры и Товары") ) : ?>
-        <?php //endif; ?>
-		<?php //if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar("Слайдер") ) : ?>
-		<?php //endif; ?>
-            <div id="sliders">
+<?php if (is_front_page()) {?>
+<div style="clear: both;"></div>
+	 <div id="sliders">
                 <a href="/"><img src="/wp-content/themes/twentytwelve/images/Head-pic.png"></a>    
             </div>
+<?php } ?>
+
+
+        <?php if (!dynamic_sidebar("Тендеры и Товары") ) : ?>
+        <?php endif; ?>
+		<?php //if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar("Слайдер") ) : ?>
+		<?php //endif; ?>
+           
 	</div>
 </header>
 

@@ -33,7 +33,7 @@ function tzs_front_end_trucks_handler($atts) {
                     <th id="tbl_trucks_cost">Цена,<br/>стоимость</th>
                     <th id="tbl_trucks_payment">Форма оплаты</th>
                     <th id="tbl_trucks_comm">Комментарии</th>
-                    <th id="tbl_trucks_cont" nonclickable="true">Контакты перевозчика</th>
+                    <th id="tbl_trucks_cont" nonclickable="true">Контактные данные</th>
                 </tr>
                 <tr>
                     <th>
@@ -452,10 +452,15 @@ function tzs_front_end_trucks_handler($atts) {
         
         function tblTHeadShowSearchForm() {
             if (!SearchFormVisible) { 
-                tblTHeadShowForm('', '.tbl_thead_search_div');
-                jQuery('.slide_panel').animate({'left':'0'},600); 
+                //jQuery('.slide_panel').animate({'left':'0'},600); 
+                jQuery('#slideout').stop().animate({left: 385}, 1000);
+                jQuery('#slideout_inner').stop().animate({left: 0}, 1000);
             }
-            else { jQuery('.slide_panel').animate({'left':'-420'},500); }
+            else { 
+                //jQuery('.slide_panel').animate({'left':'-420'},500); 
+                jQuery('#slideout').stop().animate({left: 0}, 'slow');
+                jQuery('#slideout_inner').stop().animate({left: -385}, 'slow');
+            }
             SearchFormVisible = ~ SearchFormVisible;
         }
   
@@ -499,10 +504,10 @@ function tzs_front_end_trucks_handler($atts) {
                 addHidden(theForm, 'records_per_page', '<?php echo isset($_POST['records_per_page']) ? $_POST['records_per_page'] : TZS_RECORDS_PER_PAGE; ?>');
                 
                 // Установим размеры для выезжающей панели с формой
-                jQuery(".slide_panel").css({
+                /*jQuery(".slide_panel").css({
                     'width': '360px',
                     'left': '-420px'
-                });
+                });*/
                 
                 jQuery("#slideout, #slideout_inner").css({
                     'top': '110px'
@@ -511,6 +516,18 @@ function tzs_front_end_trucks_handler($atts) {
                 // Устанавливаем обработчики событий 
                 setFormFielsdChangeHandler('search_pr_form');
                 jQuery('#chk_2, #chk_3, #chk_4, #chk_5, #chk_6').change(function(eventObject) { onClearFilterSelected(eventObject); });
+                
+                jQuery('#slideout').hover(
+                    function() {
+                        //jQuery('#slideout').stop().animate({left: 385}, 1000);
+                        //jQuery('#slideout_inner').stop().animate({left: 0}, 1000);
+                        if (!SearchFormVisible) { tblTHeadShowSearchForm(); }
+                    }, 
+                    function() {
+                        //jQuery('#slideout').stop().animate({left: 0}, 'slow');
+                        //jQuery('#slideout_inner').stop().animate({left: -385}, 'slow');
+                    }
+                );
                 
                 /*jQuery('[name=records_per_page]').change(function(eventObject) {
                     addHidden(theForm, 'records_per_page', eventObject.target.value);

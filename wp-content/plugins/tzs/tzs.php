@@ -18,10 +18,11 @@ define( 'TZS_REGIONS_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "regions" );
 define( 'TZS_CITIES_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "cities" );
 define( 'TZS_CITY_IDS_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "city_ids" );
 // KSK - add table for products & auctions
+define( 'TZS_PRODUCT_TYPES_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "product_types" );
 define( 'TZS_PRODUCTS_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "products" );
-define( 'TZS_PRODUCT_RATES_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "product_rates" );
 define( 'TZS_AUCTIONS_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "auctions" );
 define( 'TZS_AUCTION_RATES_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "auction_rates" );
+define( 'TZS_PRODUCT_RATES_TABLE', $wpdb->prefix . TZS_TABLE_PREFIX . "product_rates" );
 
 include_once(TZS_PLUGIN_DIR.'/functions/tzs.globals.php');
 include_once(TZS_PLUGIN_DIR.'/functions/tzs.settings.php');
@@ -231,6 +232,9 @@ add_shortcode('tzs-view-product', 'tzs_front_end_view_product_handler');
 
 include_once(TZS_PLUGIN_DIR.'/front-end/tzs.view.products.php');
 add_shortcode('tzs-view-productsd', 'tzs_front_end_view_productsd_handler');
+
+include_once(TZS_PLUGIN_DIR.'/front-end/tzs.view.firms.php');
+add_shortcode('tzs-view-firms', 'tzs_front_end_view_firms_handler');
 
 include_once(TZS_PLUGIN_DIR.'/front-end/tzs.product.php');
 add_shortcode('tzs-new-product', 'tzs_front_end_product_handler');

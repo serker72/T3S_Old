@@ -35,8 +35,8 @@
 #edit_search {
 	float: left;
 	background: #f7c83c url(images/search.png) no-repeat left 10px top 10px;
-	padding: 10px 10px 10px 37px;
-	margin: 10px 12px 0 0;
+	padding: 10px 10px 10px 31px;
+	margin-bottom: 5px;
 	border-radius: 5px;
 	text-decoration: none;
 	color: #FFFFFF;
@@ -409,9 +409,10 @@
 #footer_logo a {
 	background: url(images/logo_footer_3.png) no-repeat;
 	display: block;
-	width: 100px;
-	height: 100px;
+	width: 150px;
+	height: 150px;
 	float: left;
+    margin-top: -38px;
 }
 #footer_menu_1 {
 	width: 330px;
@@ -469,7 +470,7 @@
 	height: 45px;
 	border: 0;
 	margin: 20px 20px 10px 0;
-	padding: 14px 35px;
+	padding: 14px 41px;
 	font-size: 14px;
 	cursor: pointer;
 }
@@ -863,7 +864,7 @@ input[type=text], input[type=password], select {
 	font-size: 14px;
 }
 #tbl_products td {
-        font-family: Verdana, Tahoma, Sans-serif;
+        font-family: Verdana, Tahoma, Sans-serif !important;
         font-size: 12px;
 	text-align: center;
         vertical-align: top;
@@ -877,8 +878,11 @@ input[type=text], input[type=password], select {
 	background: #e8e8e8;
 	cursor: pointer;
 }
+#tbl_products tbody tr {
+    border-bottom: 2px solid #0B5792;
+}
 #tbl_products td div {
-    padding: 5px 5px;	
+    padding: 1px 5px;	
 }
 #tbl_products td img {
     padding: 0px;	
@@ -1082,7 +1086,7 @@ a:hover {
 	float: left;
 	line-height: 80px;
 	padding-right: 35px;
-	margin-left: 110px;
+	margin-left: 40px;
 }
 .site-header #registr a {
 	color: #fff;
@@ -1105,9 +1109,10 @@ a:hover {
 .site-header #profile {
 	background: url(images/lock_icon.png) no-repeat right;
 	width: 145px;
-	float: right;
+	float: left;
 	line-height: 80px;
-	margin-right: 590px;
+	margin-right: 0px;
+    margin-left: 40px;
 }
 .site-header #profile a {
 	color: #fff;
@@ -1571,8 +1576,19 @@ max-height: 46px !important;
 #bet_button {
   float: left;
   background: #f7c83c; /*url(images/search.png) no-repeat left 10px top 10px;*/
-  padding: 10px 10px 10px 10px;
-/*  margin: 10px 12px 0 0; */
+  padding: 10px 10px 10px 29px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #FFFFFF;
+  font-size: 14px;
+}
+
+#buy_button {
+  float: left;
+  background: #f7c83c; /*url(images/search.png) no-repeat left 10px top 10px;*/
+  padding: 10px 10px 10px 35px;
+  margin-bottom: 5px;
   border-radius: 5px;
   text-decoration: none;
   color: #FFFFFF;
@@ -1675,11 +1691,41 @@ max-height: 46px !important;
     padding: 0 0;
     margin: 0 0;
 }
+.span2.offset10 > .tbl_products_contact > .tbl_products_contact_phone b, .tbl_products_contact_email b, .tbl_products_contact_skype b {
+    padding-left: 22px;
+    display: inline;
+    font-weight: normal;
+    }
+.span2.offset10 > .tbl_products_contact > .tbl_products_contact_email b, .tbl_products_contact_skype b {
+    padding-left: 22px;
+    display: inline;
+    font-weight: normal;
+    }
+.span2.offset10 > .tbl_products_contact > .tbl_products_contact_skype b {
+    padding-left: 22px;
+    display: inline;
+    font-weight: normal;
+    }
 .tbl_products_contact_phone b, .tbl_products_contact_email b, .tbl_products_contact_skype b {
     padding-left: 12px;
     display: inline;
     font-weight: normal;
 }
+.span2.offset10 > .tbl_products_contact > .tbl_products_contact_phone span, .tbl_products_contact_email span, .tbl_products_contact_skype span {
+    padding-left: 22px;
+    color: #3C3D3D;
+    display: none;
+    }
+.span2.offset10 > .tbl_products_contact > .tbl_products_contact_email span, .tbl_products_contact_skype span {
+    padding-left: 22px;
+    color: #3C3D3D;
+    display: none;
+    }
+.span2.offset10 > .tbl_products_contact > .tbl_products_contact_skype span {
+    padding-left: 22px;
+    color: #3C3D3D;
+    display: none;
+    }
 .tbl_products_contact_phone span, .tbl_products_contact_email span, .tbl_products_contact_skype span {
     padding-left: 12px;
     color: #3C3D3D;
@@ -1972,10 +2018,10 @@ label.switch input[type="checkbox"]:checked + span.switch  	{
   position: fixed;
   top: 140px;
   left: 0;
-  -webkit-transition-duration: 0.3s;
+/*  -webkit-transition-duration: 0.3s;
   -moz-transition-duration: 0.3s;
   -o-transition-duration: 0.3s;
-  transition-duration: 0.3s;
+  transition-duration: 0.3s;*/
     z-index: 1000000;
 }
 #slideout_inner {
@@ -1987,19 +2033,46 @@ label.switch input[type="checkbox"]:checked + span.switch  	{
   position: fixed;
   top: 140px;
   left: -385px;
-  -webkit-transition-duration: 0.3s;
+/*  -webkit-transition-duration: 0.3s;
   -moz-transition-duration: 0.3s;
   -o-transition-duration: 0.3s;
-  transition-duration: 0.3s;
+  transition-duration: 0.3s;*/
     z-index: 1000000;
 }
-#slideout:hover {
+/*#slideout:hover {
   left: 385px;
 }
 #slideout:hover #slideout_inner {
   left: 0;
+}*/
+#menu-tender{
+    float: left;
 }
 
+#logo_head > a > img {
+    width: 120px;
+    height: 120px;
+}
+#left-control{
+    margin-left: 27px;
+}
+#product-container{
+    padding: 0px;
+    width: 1000px;
+}
+#contact-block{
+    margin-top:  -50px;
+    margin-bottom:  10px;
+}
+/*#img_kart{
+    min-width: 300px;
+}*/
+
+/* Для использования в плагине profile-builder-pro */
+.ksk_phone_button {
+    background: #F5C034 url(images/phone_22.png) no-repeat left 5px center;
+    padding-left: 25px;
+}
 #ksk_phone_input_div {
     background: #0B5792;
     color: #ffffff;
@@ -2029,4 +2102,26 @@ label.switch input[type="checkbox"]:checked + span.switch  	{
 }
 .ksk_phone_3 {
     width: 70px;
+}
+.row-fluid [class*="span"]{
+    margin-left: 8px;
+}
+#img_kart, #descript{
+    margin-top: 0px;
+}
+#contact-block-right{
+    position: absolute;
+    top: 10px;
+}
+#company-contact{
+    font-family: Verdana, Tahoma, Sans-serif !important;
+    
+}
+#company-contact span{
+    
+    padding-left: 18px;
+}
+#company-contact b{
+    
+    padding-left: 18px;
 }

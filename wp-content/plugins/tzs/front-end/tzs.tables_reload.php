@@ -105,44 +105,6 @@ function tzs_products_table_record_out($row, $form_type) {
             <td>';
                 
     $output_tbody .= tzs_print_user_contacts($row, $form_type);
-/*    
-    $output_tbody .= '<div class="tbl_products_contact" title="Контактные данные ';
-    if ($row->sale_or_purchase == 1) { $output_tbody .= 'продавца'; } else { $output_tbody .= 'покупателя'; }
-
-    $output_tbody .= '">
-                    <a href="">';
-
-    if ($user_info['company'] != '') { $output_tbody .= $user_info['company']; } else { $output_tbody .= $user_info['fio']; }
-
-    $output_tbody .= '</a>
-                    <span>';
-
-    $meta=explode(',', $user_info['adress']); 
-    $output_tbody .= $meta[0].'</span>';
-    if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) {
-        $output_tbody .= '<div class="tzs_au_contact_view_all" phone-user-not-view="'.$row->user_id.'">Для просмотра контактов необходимо <a href="/account/login/">войти</a> или <a href="/account/registration/">зарегистрироваться</a></div>';
-    }
-
-    if ($user_info['company'] != '') {
-        $phone_list = explode(';', $user_info['tel_fax']);
-    } else {
-        $phone_list = explode(';', $user_info['telephone']);
-    }
-
-    for ($i=0;$i < count($phone_list);$i++) {
-        $output_tbody .= '<div class="tbl_products_contact_phone" phone-user="'.$row->user_id.'">
-        <b>'.preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2)', $phone_list[$i]).'</b>
-        <span>'.preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2) $3-$4-$5', $phone_list[$i]).'</span>
-        <a onclick="showUserContacts(this, '.$row->user_id.', ';
-
-        if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) { $output_tbody .= 'true'; } else { $output_tbody .= 'false'; }
-
-        $output_tbody .= ');">Показать</a>
-        </div>';
-    }
-
-    $output_tbody .= '</div>';
-  */
     $output_tbody .= '        </td>
         </tr>';
     

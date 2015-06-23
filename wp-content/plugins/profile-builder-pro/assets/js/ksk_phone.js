@@ -76,7 +76,7 @@
                                 <td><input class="ksk_phone_3" name="ksk_phone_3_1" type="text" id="ksk_phone_3_1" value="" maxlength="7" /></td>\
                                 <td>&nbsp;&nbsp;&nbsp;</td>\
                                 <td rowspan="' + tzsMaxPhoneCount + '">\
-                                    <button type="button" id="ksk_add_phone_button" onclick="javascript:show_phone_row()">Добавить один номер</button><br><br>\
+                                    <button type="button" id="ksk_add_phone_button" class="ksk_phone_button" onclick="javascript:show_phone_row()">Добавить один номер</button><br><br>\
                                     <button type="button" onclick="javascript:hide_phone()">Отменить</button>&nbsp;\
                                     <button type="button" id="ksk_save_phone_button" onclick="javascript:save_phone()">Сохранить</button>\
                                 </td>\
@@ -141,6 +141,7 @@
             
             jQuery('#adduser, #edituser').submit(function(){
                 jQuery('#input8').removeAttr('disabled');
-                jQuery('#input15').removeAttr('disabled');
+                jQuery('#input12').removeAttr('disabled');
+                jQuery('#input14').removeAttr('disabled');
            });
         });

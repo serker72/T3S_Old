@@ -156,17 +156,17 @@
                 for (i=0;i < elem.length;i++) {
                     if ((elem[i].type == 'text') || (elem[i].type == 'select-one') || (elem[i].type == 'checkbox')) {
                         if (elem[i].name === 'country_from') {
-                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onCountryFromSelected(); onFormFieldChange(eventObject); });
+                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onFormFieldChange(eventObject); onCountryFromSelected(); });
                         } else if (elem[i].name === 'country_to') {
-                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onCountryToSelected(); onFormFieldChange(eventObject); });
+                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onFormFieldChange(eventObject); onCountryToSelected(); });
                         } else if (elem[i].name === 'cargo_city_from') {
-                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onCityFromSelected(); onFormFieldChange(eventObject); });
+                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onFormFieldChange(eventObject); onCityFromSelected(); });
                         } else if (elem[i].name === 'cargo_cityname_from') {
-                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onCityNameFromChanged(); onFormFieldChange(eventObject); });
+                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onFormFieldChange(eventObject); onCityNameFromChanged(); });
                         } else if (elem[i].name === 'cargo_city_to') {
-                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onCityToSelected(); onFormFieldChange(eventObject); });
+                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onFormFieldChange(eventObject); onCityToSelected(); });
                         } else if (elem[i].name === 'cargo_city_from_radius_check') {
-                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onCityFromRadiusSelected(); onFormFieldChange(eventObject); });
+                            jQuery('[name='+elem[i].name+']').change(function(eventObject) { onFormFieldChange(eventObject); onCityFromRadiusSelected(); });
                         } else {
                             jQuery('[name='+elem[i].name+']').change(function(eventObject) { onFormFieldChange(eventObject); });
                         }

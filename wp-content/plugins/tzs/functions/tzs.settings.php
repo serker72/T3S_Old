@@ -1,5 +1,5 @@
 <?php
-define( 'TZS_RECORDS_PER_PAGE', 10 );
+define( 'TZS_RECORDS_PER_PAGE', 20 );
 define( 'TZS_FEEDBACKS_PER_PAGE', 25 );
 define( 'TZS_FEEDBACK_MIN_LEN', 5 );
 define( 'TZS_MAX_PAGES', 10 );

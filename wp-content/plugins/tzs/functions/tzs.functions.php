@@ -409,6 +409,7 @@ function tzs_cost_to_str($cost_str, $split_flag = false) {
 	} else {
 		if (strlen($str1) > 0) $str1 .= ', ';
 		$str1 .= "договорная";
+		$str = "не указана";
 		if (isset($cost['price_query'])) {
 			if (strlen($str1) > 0) $str1 .= ', ';
 			$str1 .= 'запрос цены';
@@ -416,7 +417,7 @@ function tzs_cost_to_str($cost_str, $split_flag = false) {
 	}
         
         if ($split_flag) { return array($str1, $str); }
-        else {	return $str1.$str; }
+        else {	return $str1.', '.$str; }
 }
 
 function tzs_print_array_options($arr, $capt, $name) {
@@ -607,7 +608,7 @@ function tzs_get_regions() {
 /*
  * Вывод контактных данных
  */
-function tzs_print_user_contacts($row, $form_type) {
+function tzs_print_user_contacts($row, $form_type, $show_address=false) {
     $user_info = tzs_get_user_meta($row->user_id);
 
     $output_tbody = '<div class="tbl_products_contact" title="Контактные данные ';
@@ -634,66 +635,74 @@ function tzs_print_user_contacts($row, $form_type) {
     }
     
     
-    $output_tbody .= '">
-                    <a href="">';
+    $output_tbody .= '">';
 
-    if ($user_info['company'] != '') { $output_tbody .= $user_info['company']; }
-    else { $output_tbody .= $user_info['fio']; }
-
-    $output_tbody .= '</a>
-                    <span>';
-
-    $meta=explode(',', $user_info['adress']); 
-    $output_tbody .= $meta[0].'</span>';
+    if (($user_info['company'] != '') || ($user_info['fio'] != '')) {
+    $output_tbody .= '<a href="/company/?id='.$row->user_id.'">';
     
-    if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) {
-        $output_tbody .= '<div class="tzs_au_contact_view_all" phone-user-not-view="'.$row->user_id.'">Для просмотра контактов необходимо <a href="/account/login/">войти</a> или <a href="/account/registration/">зарегистрироваться</a></div>';
-    }
+        if ($user_info['company'] != '') { $output_tbody .= $user_info['company']; }
+        else { $output_tbody .= $user_info['fio']; }
 
-    if ($user_info['company'] != '') {
-        $phone_list = explode(';', $user_info['tel_fax']);
+        $output_tbody .= '</a>';
+
+        if ($show_address) {
+            //$meta = explode(',', $user_info['adress']); 
+            //$output_tbody .= '<span>'.$meta[0].'</span>';
+            $output_tbody .= '<span>'.$user_info['adress'].'</span>';
+        }
+
+        if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) {
+            $output_tbody .= '<div class="tzs_au_contact_view_all" phone-user-not-view="'.$row->user_id.'">Для просмотра контактов необходимо <a href="/account/login/">войти</a> или <a href="/account/registration/">зарегистрироваться</a></div>';
+        }
+
+        if ($user_info['company'] != '') {
+            $phone_list = explode(';', $user_info['tel_fax']);
+        } else {
+            $phone_list = explode(';', $user_info['telephone']);
+        }
+
+        for ($i=0;$i < count($phone_list);$i++) {
+            $output_tbody .= '<div class="tbl_products_contact_phone" phone-user="'.$row->user_id.'">
+            <b>'.preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2)', $phone_list[$i]).'</b>
+            <span>'.preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2) $3-$4-$5', $phone_list[$i]).'</span>
+            <a onclick="showUserContacts(this, '.$row->user_id.', ';
+
+            if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) { $output_tbody .= 'true'; }
+            else { $output_tbody .= 'false'; }
+
+            $output_tbody .= ');">Показать</a>
+            </div>';
+        }
+
+        if ($user_info['user_email'] != '') { 
+            $output_tbody .= '<div class="tbl_products_contact_email" phone-user="'.$row->user_id.'">
+            <b>'.  substr($user_info['user_email'], 0, 3).'XX@XX</b>
+            <span>'.$user_info['user_email'].'</span>
+            <a onclick="showUserContacts(this, '.$row->user_id.', ';
+
+            if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) { $output_tbody .= 'true'; }
+            else { $output_tbody .= 'false'; }
+
+            $output_tbody .= ');">Показать</a>
+            </div>';
+        }
+
+        if ($user_info['skype'] != '') { 
+            $output_tbody .= '<div class="tbl_products_contact_skype" phone-user="'.$row->user_id.'">
+            <b>'.  substr($user_info['skype'], 0, 3).'XXXX</b>
+            <span>'.$user_info['skype'].'</span>
+            <a onclick="showUserContacts(this, '.$row->user_id.', ';
+
+            if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) { $output_tbody .= 'true'; }
+            else { $output_tbody .= 'false'; }
+
+            $output_tbody .= ');">Показать</a>
+            </div>';
+        }
     } else {
-        $phone_list = explode(';', $user_info['telephone']);
+        $output_tbody .= 'Контактные данные не указаны';
     }
-
-    for ($i=0;$i < count($phone_list);$i++) {
-        $output_tbody .= '<div class="tbl_products_contact_phone" phone-user="'.$row->user_id.'">
-        <b>'.preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2)', $phone_list[$i]).'</b>
-        <span>'.preg_replace("/^(.\d{2})(\d{3})(\d{3})(\d{2})(\d{1,2})/", '$1 ($2) $3-$4-$5', $phone_list[$i]).'</span>
-        <a onclick="showUserContacts(this, '.$row->user_id.', ';
-
-        if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) { $output_tbody .= 'true'; }
-        else { $output_tbody .= 'false'; }
-
-        $output_tbody .= ');">Показать</a>
-        </div>';
-    }
-
-    if ($user_info['user_email'] != '') { 
-        $output_tbody .= '<div class="tbl_products_contact_email" phone-user="'.$row->user_id.'">
-        <b>'.  substr($user_info['user_email'], 0, 3).'XX@XX</b>
-        <span>'.$user_info['user_email'].'</span>
-        <a onclick="showUserContacts(this, '.$row->user_id.', ';
-
-        if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) { $output_tbody .= 'true'; }
-        else { $output_tbody .= 'false'; }
-
-        $output_tbody .= ');">Показать</a>
-        </div>';
-    }
-
-    if ($user_info['skype'] != '') { 
-        $output_tbody .= '<div class="tbl_products_contact_skype" phone-user="'.$row->user_id.'">
-        <b>'.  substr($user_info['skype'], 0, 3).'XXXX</b>
-        <span>'.$user_info['skype'].'</span>
-        <a onclick="showUserContacts(this, '.$row->user_id.', ';
-
-        if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) { $output_tbody .= 'true'; }
-        else { $output_tbody .= 'false'; }
-
-        $output_tbody .= ');">Показать</a>
-        </div>';
-    }
+    
     
     $output_tbody .= '</div>';
     

@@ -64,7 +64,7 @@ get_header(); ?>
                                         <i><a href="<?php the_permalink(); ?>">Смотреть полностью......</a></i>
                                     </span>
                                     <span class="news-list-author pull-right">
-                                        Опубликовал <?php the_author() ?>
+                                        <!--Опубликовал <?php //the_author() ?>-->
                                     </span>
                                     <div class="clearfix"></div>
                                 </div><!-- .news-more -->

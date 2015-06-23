@@ -18,7 +18,7 @@ get_header(); ?>
 				<?php get_template_part( 'content', 'news' ); ?>
 
 				<nav class="nav-single">
-                                    <h3 class="assistive-text"><a href="<?php echo get_term_link( (int)$cat[0]->term_id, $cat[0]->taxonomy ); ?>"><?php echo $cat[0]->cat_name; ?></a></h3>
+                                    <h3 class="assistive-text"><a href="/brands/<?php //echo get_term_link( (int)$cat[0]->term_id, $cat[0]->taxonomy ); ?>">Бренды<?php //echo $cat[0]->cat_name; ?></a></h3>
 				</nav><!-- .nav-single -->
 
 				<?php //comments_template( '', true ); ?>

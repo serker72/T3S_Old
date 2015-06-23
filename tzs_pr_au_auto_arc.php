@@ -289,7 +289,7 @@ UNION
 }
 
 
-// Тендеры
+/*/ Тендеры
 $query = "SELECT COUNT(*) as cnt FROM wp_tzs_auctions WHERE active=1 AND expiration IS NOT NULL AND expiration <= NOW();";
 $cursor = mysqli_query($connection, $query);
 if (!$cursor) {
@@ -333,24 +333,7 @@ if ($cnt > 0) {
   AND wum.meta_key = 'fio'
   AND wp.ID = wptp.type_id
 ;";
-/*
-SELECT 'id', 'user_id', 'user_login', 'fio', 'type_id', 
-        'type_title', 'title', 'city_from', 'copies', 'price', 'currency', 'max_rate',
-        'created', 'expiration'
-UNION
-(
-  INTO OUTFILE '".addslashes($au_csv_file)."'
-  CHARACTER SET 'cp1251'
-  FIELDS TERMINATED BY ';'
-  ENCLOSED BY '\"' ESCAPED BY '".addslashes('\\')."'
-  LINES STARTING BY '' TERMINATED BY '\r\n'
-)
-*/    
-/*    $cursor = mysqli_query($connection, $query);
-    if (!$cursor) {
-        $msg_body .= "Ошибка при выполнении запроса \"".$query."\" : ".  mysqli_error().$EOF;
-        ksk_sendMailAttachmentsAndExit($admin_email, $from_email, $msg_subject, $msg_body);
-    }*/
+    
     $res = ksk_saveQueryResultsToCSV($connection, $query, $au_csv_file);
     $msg_body .= $res[1] . $EOF;
     if (!$res[0]) {
@@ -366,5 +349,6 @@ UNION
         ksk_sendMailAttachmentsAndExit($admin_email, $from_email, $msg_subject, $msg_body);
     }
 }
-
-ksk_sendMailAttachmentsAndExit($admin_email, $from_email, $msg_subject, $msg_body, '', array($pr_csv_file, $au_csv_file));
+*/
+//ksk_sendMailAttachmentsAndExit($admin_email, $from_email, $msg_subject, $msg_body, '', array($pr_csv_file, $au_csv_file));
+ksk_sendMailAttachmentsAndExit($admin_email, $from_email, $msg_subject, $msg_body, '', array($pr_csv_file));

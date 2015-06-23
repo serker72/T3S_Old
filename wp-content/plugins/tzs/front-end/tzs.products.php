@@ -62,7 +62,7 @@ function tzs_front_end_products_handler($atts) {
                     <th id="tbl_products_title">Название, описание и фото товара</th>
                     <th id="tbl_products_price">Цена<br/>Форма оплаты<br/>Кол-во</th>
                     <th id="tbl_products_cities">Место нахождения</th>
-                    <th id="tbl_products_comm" nonclickable="true">Контакты</th>
+                    <th id="tbl_products_comm" nonclickable="true">Контактные данные</th>
                 </tr>
                 <tr>
                     <th>
@@ -360,8 +360,16 @@ function tzs_front_end_products_handler($atts) {
         }
         
         function tblTHeadShowSearchForm() {
-            if (!SearchFormVisible) { jQuery('.slide_panel').animate({'left':'0'},600); }
-            else { jQuery('.slide_panel').animate({'left':'-420'},500); }
+            if (!SearchFormVisible) { 
+                //jQuery('.slide_panel').animate({'left':'0'},600); 
+                jQuery('#slideout').stop().animate({left: 385}, 1000);
+                jQuery('#slideout_inner').stop().animate({left: 0}, 1000);
+            }
+            else { 
+                //jQuery('.slide_panel').animate({'left':'-420'},500); 
+                jQuery('#slideout').stop().animate({left: 0}, 'slow');
+                jQuery('#slideout_inner').stop().animate({left: -385}, 'slow');
+            }
             SearchFormVisible = ~ SearchFormVisible;
         }
 
@@ -418,6 +426,17 @@ function tzs_front_end_products_handler($atts) {
                 setFormFielsdChangeHandler('search_pr_form');
                 jQuery('#chk_2, #chk_3, #chk_4, #chk_5, #chk_6, #chk_7').change(function(eventObject) { onClearFilterSelected(eventObject); });
                 
+                jQuery('#slideout').hover(
+                    function() {
+                        //jQuery('#slideout').stop().animate({left: 385}, 1000);
+                        //jQuery('#slideout_inner').stop().animate({left: 0}, 1000);
+                        if (!SearchFormVisible) { tblTHeadShowSearchForm(); }
+                    }, 
+                    function() {
+                        //jQuery('#slideout').stop().animate({left: 0}, 'slow');
+                        //jQuery('#slideout_inner').stop().animate({left: -385}, 'slow');
+                    }
+                );
                 /*jQuery('[name=records_per_page]').change(function(eventObject) {
                     addHidden(theForm, 'records_per_page', eventObject.target.value);
                     TblTbodyReload(1); 

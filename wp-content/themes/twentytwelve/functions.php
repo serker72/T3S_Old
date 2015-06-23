@@ -399,9 +399,9 @@ $rate=$_POST['bet_user'];
 $create=$_POST['created'];
 $currency=$_POST['currency'];
 $fl=$wpdb->insert( 
-	'wp_tzs_auction_rates', 
+	'wp_tzs_product_rates', 
 	array( 
-        'auction_id' => $auction_id,
+        'product_id' => $auction_id,
         'user_id' => $ID,
         'created' => $create,
         'rate' => $rate,
@@ -414,7 +414,7 @@ $fl=$wpdb->insert(
 
 if ($fl) 
 {
-       $sql = "SELECT * FROM ".TZS_AUCTION_RATES_TABLE." WHERE auction_id=$auction_id ORDER BY active DESC,created DESC;";
+       $sql = "SELECT * FROM ".TZS_PRODUCT_RATES_TABLE." WHERE product_id=$auction_id ORDER BY active DESC,created DESC;";
                         $res = $wpdb->get_results($sql);
                         if (count($res) == 0 && $wpdb->last_error != null) {
                             echo $sql;

@@ -190,6 +190,6 @@ $GLOBALS['tzs_pr_unit'] = array(
 	8 => 'ч',
 );
 
-$GLOBALS['tzs_au_contact_view_all'] = (get_post_meta($post_id='1', 'tzs-au-contact-view-all', true) == '1');
+$GLOBALS['tzs_au_contact_view_all'] = (get_post_meta($post_id='19', 'tzs-au-contact-view-all', true) == '1');
 
 ?>
