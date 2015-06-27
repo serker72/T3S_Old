@@ -38,7 +38,7 @@ function tzs_front_end_view_firms_handler($atts) {
                             <?php
                                 //echo tzs_print_user_table_ed($row->user_id);
                                  $form_type = get_param_def('form_type', '');
-                                 echo tzs_print_user_contacts($row, $form_type,true);
+                                 echo tzs_print_user_contacts($row, $form_type, 2);
                                  
                             ?>
                             

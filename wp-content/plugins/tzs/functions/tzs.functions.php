@@ -608,7 +608,7 @@ function tzs_get_regions() {
 /*
  * Вывод контактных данных
  */
-function tzs_print_user_contacts($row, $form_type, $show_address=false) {
+function tzs_print_user_contacts($row, $form_type, $show_address=0) {
     $user_info = tzs_get_user_meta($row->user_id);
 
     $output_tbody = '<div class="tbl_products_contact" title="Контактные данные ';
@@ -646,9 +646,12 @@ function tzs_print_user_contacts($row, $form_type, $show_address=false) {
         $output_tbody .= '</a>';
 
         if ($show_address) {
-            //$meta = explode(',', $user_info['adress']); 
-            //$output_tbody .= '<span>'.$meta[0].'</span>';
-            $output_tbody .= '<span>'.$user_info['adress'].'</span>';
+            if ($show_address == 1) {
+                $meta = explode(',', $user_info['adress']); 
+                $output_tbody .= '<span>'.$meta[0].'</span>';
+            } else {
+                $output_tbody .= '<span>'.$user_info['adress'].'</span>';
+            }
         }
 
         if (($user_id == 0) && ($GLOBALS['tzs_au_contact_view_all'] == false)) {

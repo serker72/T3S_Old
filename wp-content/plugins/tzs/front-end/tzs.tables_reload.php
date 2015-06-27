@@ -104,7 +104,7 @@ function tzs_products_table_record_out($row, $form_type) {
             </td>
             <td>';
                 
-    $output_tbody .= tzs_print_user_contacts($row, $form_type);
+    $output_tbody .= tzs_print_user_contacts($row, $form_type, 1);
     $output_tbody .= '        </td>
         </tr>';
     
@@ -195,7 +195,7 @@ function tzs_tr_sh_table_record_out($row, $form_type) {
             <td>
                 <div title="Дополнительное описание'.(($prefix === 'tr') ? ' транспортного средства">'.$row->comment : ' груза">'.$row->sh_descr).'</div>
             </td>
-            <td>'.tzs_print_user_contacts($row, $form_type).'</td>
+            <td>'.tzs_print_user_contacts($row, $form_type, 1).'</td>
         </tr>';
     
     return $output_tbody;

@@ -10,17 +10,6 @@ function tzs_front_end_trucks_handler($atts) {
                 <tr id="tbl_thead_records_per_page">
                     <th colspan="6"></th>
                     <th colspan="4" id="tbl_thead_records_per_page_th">
-                        <!--Количество записей на странице:&nbsp;&nbsp;&nbsp;
-                        <?php //echo (((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 5)) || (TZS_RECORDS_PER_PAGE == 5)) ? '' : '<a href="javascript:onRecordsPerPageSelected(5)">5</a>&nbsp;&nbsp;'; ?>
-                        <?php //echo (((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 5)) || (TZS_RECORDS_PER_PAGE == 10)) ? '' : '<a href="javascript:onRecordsPerPageSelected(10)">10</a>&nbsp;&nbsp;'; ?>
-                        <?php //echo (((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 5)) || (TZS_RECORDS_PER_PAGE == 15)) ? '' : '<a href="javascript:onRecordsPerPageSelected(15)">15</a>&nbsp;&nbsp;'; ?>
-                        <?php //echo (((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 5)) || (TZS_RECORDS_PER_PAGE == 20)) ? '' : '<a href="javascript:onRecordsPerPageSelected(20)">20</a>&nbsp;&nbsp;'; ?>
-                        <select name="records_per_page" style="width: 50px;">
-                            <option value="5" <?php //if (((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 5)) || (TZS_RECORDS_PER_PAGE == 5)) echo 'selected="selected"'; ?> >5</option>
-                            <option value="10" <?php //if (((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 10)) || (TZS_RECORDS_PER_PAGE == 10)) echo 'selected="selected"'; ?> >10</option>
-                            <option value="15" <?php //if (((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 15)) || (TZS_RECORDS_PER_PAGE == 15)) echo 'selected="selected"'; ?> >15</option>
-                            <option value="20" <?php //if (((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 20)) || (TZS_RECORDS_PER_PAGE == 20)) echo 'selected="selected"'; ?> >20</option>
-                        </select><br-->
                     </th>
                 </tr>
                 <tr>
@@ -466,7 +455,7 @@ function tzs_front_end_trucks_handler($atts) {
   
         function thRecordsPerPagePrint(records_per_page) {
             var vTZS_RECORDS_PER_PAGE = <?php echo TZS_RECORDS_PER_PAGE; ?>;
-            var vRecordsArray = [5,10,15,20];
+            var vRecordsArray = [<?php echo TZS_RECORDS_PER_PAGE_ARRAY; ?>];
             var vRecordsStr = 'Количество записей на странице:&nbsp;&nbsp;&nbsp;';
             
             if (!records_per_page || (records_per_page < 1)) { records_per_page = vTZS_RECORDS_PER_PAGE; }

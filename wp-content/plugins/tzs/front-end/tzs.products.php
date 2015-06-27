@@ -45,13 +45,6 @@ function tzs_front_end_products_handler($atts) {
                     </th>
                     <th></th>
                     <th colspan="3" id="tbl_thead_records_per_page_th">
-                        <!--Количество записей на странице:
-                        <select name="records_per_page" style="width: 50px;">
-                            <option value="5" <?php //if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 5) || (TZS_RECORDS_PER_PAGE == 5)) echo 'selected="selected"'; ?> >5</option>
-                            <option value="10" <?php //if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 10) || (TZS_RECORDS_PER_PAGE == 10)) echo 'selected="selected"'; ?> >10</option>
-                            <option value="15" <?php //if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 15) || (TZS_RECORDS_PER_PAGE == 15)) echo 'selected="selected"'; ?> >15</option>
-                            <option value="20" <?php //if ((isset($_POST['records_per_page']) && $_POST['records_per_page'] == 20) || (TZS_RECORDS_PER_PAGE == 20)) echo 'selected="selected"'; ?> >20</option>
-                        </select><br-->
                     </th>
                 </tr>
                 <tr>
@@ -376,7 +369,7 @@ function tzs_front_end_products_handler($atts) {
   
         function thRecordsPerPagePrint(records_per_page) {
             var vTZS_RECORDS_PER_PAGE = <?php echo TZS_RECORDS_PER_PAGE; ?>;
-            var vRecordsArray = [5,10,15,20];
+            var vRecordsArray = [<?php echo TZS_RECORDS_PER_PAGE_ARRAY; ?>];
             var vRecordsStr = 'Количество записей на странице:&nbsp;&nbsp;&nbsp;';
             
             if (!records_per_page || (records_per_page < 1)) { records_per_page = vTZS_RECORDS_PER_PAGE; }
