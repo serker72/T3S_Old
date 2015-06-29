@@ -19,13 +19,13 @@
 define( 'DB_NAME', 't3s' );
 
 /** Имя пользователя MySQL */
-define( 'DB_USER', 'admin' );
+define( 'DB_USER', 'root' );
 
 /** Пароль к базе данных MySQL */
-define( 'DB_PASSWORD', 'prog' );
+define( 'DB_PASSWORD', '' );
 
 /** Имя сервера MySQL */
-define( 'DB_HOST', '93.127.226.130' );
+define( 'DB_HOST', 'localhost' );
 
 /** Кодировка базы данных для создания таблиц. */
 define('DB_CHARSET', 'utf8');

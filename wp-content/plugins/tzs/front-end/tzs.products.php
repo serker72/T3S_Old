@@ -26,12 +26,12 @@ function tzs_front_end_products_handler($atts) {
 
     ?>
 <!------------------------------------------------------------------------->                        
-    <div>
+    <div id="table_product">
         <table  id="tbl_products">
             <thead>
     <form class="search_pr_form" id="search_pr_form2" name="search_pr_form1" method="POST">
                 <tr id="tbl_thead_records_per_page">
-                    <th colspan="4">
+                    <th colspan="3">
                         <?php if ($rootcategory === '1') { ?>
                             Категория товаров:
                             <select name="type_id" <?php echo ($rootcategory === '1') ? '' : ' disabled="disabled"'; ?> >
@@ -43,8 +43,13 @@ function tzs_front_end_products_handler($atts) {
                             </select>
                         <?php } ?>
                     </th>
-                    <th></th>
-                    <th colspan="3" id="tbl_thead_records_per_page_th">
+                    <th colspan="3">
+                        <div id="notice">
+                            Для добавления товара пожалуйста,<br /> войдите или зарегистрируйтесь
+                        </div>
+                    </th>
+                    
+                    <th colspan="4" id="tbl_thead_records_per_page_th">
                     </th>
                 </tr>
                 <tr>

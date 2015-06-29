@@ -3,12 +3,17 @@ function tzs_front_end_shipments_handler($atts) {
 	ob_start();
     ?>    
 <!------------------------------------------------------------------------->                        
-    <div>
+    <div id="table_product">
         <table  id="tbl_products">
             <thead>
     <form class="search_pr_form" id="search_pr_form2" name="search_pr_form1" method="POST">
                 <tr id="tbl_thead_records_per_page">
-                    <th colspan="6"></th>
+                    <th colspan="3"></th>
+                    <th colspan="3">
+                        <div id="notice">
+                            Для добавления груза пожалуйста,<br /> войдите или зарегистрируйтесь
+                        </div>
+                    </th>
                     <th colspan="4" id="tbl_thead_records_per_page_th">
                     </th>
                 </tr>
