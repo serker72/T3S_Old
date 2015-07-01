@@ -242,7 +242,7 @@ add_shortcode('tzs-edit-product', 'tzs_front_end_edit_product_handler');
 add_shortcode('tzs-del-product', 'tzs_front_end_del_product_handler');
 
 // AUCTIONS
-include_once(TZS_PLUGIN_DIR.'/front-end/tzs.auctions.php');
+/*include_once(TZS_PLUGIN_DIR.'/front-end/tzs.auctions.php');
 add_shortcode('tzs-view-auctions', 'tzs_front_end_auctions_handler');
 
 include_once(TZS_PLUGIN_DIR.'/front-end/tzs.my.auctions.php');
@@ -258,7 +258,7 @@ include_once(TZS_PLUGIN_DIR.'/front-end/tzs.auction.php');
 add_shortcode('tzs-new-auction', 'tzs_front_end_auction_handler');
 add_shortcode('tzs-edit-auction', 'tzs_front_end_edit_auction_handler');
 add_shortcode('tzs-del-auction', 'tzs_front_end_del_auction_handler');
-
+*/
 // SEARCH
 include_once(TZS_PLUGIN_DIR.'/front-end/tzs.search_pr.php');
 add_shortcode('tzs-search-pr', 'tzs_front_end_search_pr_handler');
