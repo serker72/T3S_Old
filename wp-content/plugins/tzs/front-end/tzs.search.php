@@ -40,13 +40,20 @@ function tzs_validate_search_parameters() {
         $cargo_city_from_radius_check = isset($_POST['cargo_city_from_radius_check']);
         $cargo_city_from_radius_value = get_param_def('cargo_city_from_radius_value', 0);
 
+	$price_from = get_param_def('price_from', '0');
+	$price_to = get_param_def('price_to', '0');
+
+	$price_km_from = get_param_def('price_km_from', '0');
+	$price_km_to = get_param_def('price_km_to', '0');
+        
+        
+	// validate and parse parameters
 	if (is_valid_num_zero($cargo_city_from_radius_value)) {
 		$cargo_city_from_radius_value = intval($cargo_city_from_radius_value);
 	} else {
 		array_push($errors, "Неверно выбран радиус");
 	}
         
-	// validate and parse parameters
 	if (is_valid_num_zero($country_from)) {
 		// use float not int because ID can be long
 		$country_from = floatval($country_from);
@@ -140,6 +147,28 @@ function tzs_validate_search_parameters() {
 		else
 			$cargo_cityname_from_ids = isset($r['ids']) ? $r['ids'] : null;
 	}
+	
+	if (is_valid_num_zero($price_from)) {
+		$price_from = intval($price_from);
+	} else {
+		array_push($errors, "Неверно выбрана стоимость (от)");
+	}
+	if (is_valid_num_zero($price_to)) {
+		$price_to = intval($price_to);
+	} else {
+		array_push($errors, "Неверно выбрана стоимость (до)");
+	}
+	
+	if (is_valid_num_zero($price_km_from)) {
+		$price_km_from = intval($price_km_from);
+	} else {
+		array_push($errors, "Неверно выбрана цена 1 км (от)");
+	}
+	if (is_valid_num_zero($price_km_to)) {
+		$price_km_to = intval($price_km_to);
+	} else {
+		array_push($errors, "Неверно выбрана цена 1 км (до)");
+	}
         
         // KSK - добавляем выбор ids для городов в радиусе
         $cargo_city_from_radius_ids = null;
@@ -201,6 +230,14 @@ function tzs_validate_search_parameters() {
 			$res['cargo_city_from_radius_ids'] = $cargo_city_from_radius_ids;
                 if ($cargo_city_from_radius_value != null)
                     $res['cargo_city_from_radius_value'] = $cargo_city_from_radius_value;
+		if ($price_from > 0)
+			$res['price_from'] = $price_from;
+		if ($price_to > 0)
+			$res['price_to'] = $price_to;
+		if ($price_km_from > 0)
+			$res['price_km_from'] = $price_km_from;
+		if ($price_km_to > 0)
+			$res['price_km_to'] = $price_km_to;
 	}
 	
 	$res['errors'] = $errors;
@@ -267,6 +304,17 @@ function tzs_search_parameters_to_sql($p, $pref) {
 		$sql .= ' AND trans_type = '.$p['trans_type'];
 	if (isset($p['sh_type']))
 		$sql .= ' AND sh_type = '.$p['sh_type'];
+        
+	if (isset($p['price_from']))
+		$sql .= ' AND price >= '.$p['price_from'];
+	if (isset($p['price_to']))
+		$sql .= ' AND price <= '.$p['price_to'];
+        
+	if (isset($p['price_km_from']))
+		$sql .= ' AND (price/distance) >= '.$p['price_km_from'];
+	if (isset($p['price_km_to']))
+		$sql .= ' AND (price/distance) <= '.$p['price_km_to'];
+        
 	return $sql;
 }
 
@@ -364,10 +412,24 @@ function tzs_front_end_search_tr_form($form_type) {
     <form class="search_pr_form" id="search_pr_form1" name="search_pr_form" method="POST">
         <table name="search_param" border="0">
             <tr>
-                <th colspan="2">Укажите критерии поиска <?php echo ($form_type === 'transport') ? 'транспорта' : 'грузов';?></th>
+                <th colspan="4">Укажите критерии поиска <?php echo ($form_type === 'transport') ? 'транспорта' : 'грузов';?></th>
             </tr>
             <tr>
-                <td>Пункт погрузки: страна:<br>
+                <th class="td_border_right_dotted">
+                    <div style="color: #F5C034; font-weight: bold;">
+                        ПОГРУЗКА
+                    </div>
+                </th>
+                <th class="td_border_right_dotted">
+                    <div style="color: #F5C034; font-weight: bold;">
+                        ВЫГРУЗКА
+                    </div>
+                </th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+            </tr>
+            <tr>
+                <td class="td_border_right_dotted">Страна:<br>
                     <select name="country_from">
                         <?php
                             tzs_build_countries('country_from');
@@ -375,75 +437,14 @@ function tzs_front_end_search_tr_form($form_type) {
                     </select>
                     <?php wp_nonce_field( 'country_from">', 'type_country_from">' ); ?>
                 </td>
-                <td>Пункт выгрузки: страна:<br>
+                <td class="td_border_right_dotted">Страна:<br>
                     <select name="country_to">
                         <?php
                             tzs_build_countries('country_to');
 			?>
                     </select>
                 </td>
-            <tr>
-                <td>Пункт погрузки: регион:<br>
-                    <select name="region_from">
-                                <option>все области</option>
-                    </select>
-                </td>
-                <td>Пункт выгрузки: регион:<br>
-                    <select name="region_to">
-                                <option>все области</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Пункт погрузки:&nbsp;<input type="checkbox" name="cargo_city_from" value="" <?php if (isset($_POST['cargo_city_from'])) echo 'checked="checked"'; ?>/><br>
-                    <input type="text" name="cargo_cityname_from" value="<?php echo_val('cityname_from'); ?>" size="10">
-                </td>
-                <td>Пункт выгрузки:&nbsp;<input type="checkbox" name="cargo_city_to" value="" <?php if (isset($_POST['cargo_city_to'])) echo 'checked="checked"'; ?>/><br>
-                    <input type="text" name="cargo_cityname_to" value="<?php echo_val('cargo_cityname_to'); ?>" size="10">
-                </td>
-            </tr>
-            <tr>
-                <td>Пункт загрузки в радиусе<sup>*</sup>:&nbsp;<input type="checkbox" name="cargo_city_from_radius_check" value="" <?php if (isset($_POST['cargo_city_from_radius_check'])) echo 'checked="checked"'; ?>/><br>
-                    <select name="cargo_city_from_radius_value">
-                        <?php
-                            foreach ($GLOBALS['tzs_city_from_radius_value'] as $key => $val) {
-                                echo '<option value="'.$key.'" ';
-                                if ((isset($_POST['cargo_city_from_radius_value']) && $_POST['cargo_city_from_radius_value'] == $key) || (!isset($_POST['cargo_city_from_radius_value']) && $key == 0)) {
-                                    echo 'selected="selected"';
-                                }
-                                echo '>'.htmlspecialchars($val).'</option>';
-                            }
-                        ?>
-                    </select>
-                </td>
-                <td>Тип груза:<br>
-                    <select name="sh_type">
-                        <?php
-                            foreach ($GLOBALS['tzs_sh_types_search'] as $key => $val) {
-                                    echo '<option value="'.$key.'" ';
-                                    if ((isset($_POST['sh_type']) && $_POST['sh_type'] == $key) || (!isset($_POST['sh_type']) && $key == 0)) {
-                                            echo 'selected="selected"';
-                                    }
-                                    echo '>'.htmlspecialchars($val).'</option>';
-                            }
-                        ?>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" >
-                    <i><sup>*</sup>Для выбора радиуса укажите страну и город пункта загрузки.</i>
-                </td>
-            </tr>
-            <tr>
-                <td>Дата погрузки:<br>
-                    <input type="text" name="data_from" value="<?php echo_val('data_from'); ?>" size="10">
-                </td>
-                <td>Дата выгрузки:<br>
-                    <input type="text" name="data_to" value="<?php echo_val('data_to'); ?>" size="10">
-                </td>
-            </tr>
-            <tr>
+                
                 <td>Масса: от:<br>
                     <select name="weight_from">
                             <?php tzs_print_weight('weight_from'); ?>
@@ -454,8 +455,18 @@ function tzs_front_end_search_tr_form($form_type) {
                             <?php tzs_print_weight('weight_to'); ?>
                     </select>
                 </td>
-            </tr>
             <tr>
+                <td class="td_border_right_dotted">Регион:<br>
+                    <select name="region_from">
+                                <option>все области</option>
+                    </select>
+                </td>
+                <td class="td_border_right_dotted">Регион:<br>
+                    <select name="region_to">
+                                <option>все области</option>
+                    </select>
+                </td>
+                
                 <td>Объем: от:<br>
                     <select name="volume_from">
                             <?php tzs_print_volume('volume_from'); ?>
@@ -468,6 +479,49 @@ function tzs_front_end_search_tr_form($form_type) {
                 </td>
             </tr>
             <tr>
+                <td class="td_border_right_dotted">Населенный пункт:&nbsp;<input type="checkbox" name="cargo_city_from" value="" <?php if (isset($_POST['cargo_city_from'])) echo 'checked="checked"'; ?>/><br>
+                    <input type="text" name="cargo_cityname_from" value="<?php echo_val('cityname_from'); ?>" size="10">
+                </td>
+                <td class="td_border_right_dotted">Населенный пункт:&nbsp;<input type="checkbox" name="cargo_city_to" value="" <?php if (isset($_POST['cargo_city_to'])) echo 'checked="checked"'; ?>/><br>
+                    <input type="text" name="cargo_cityname_to" value="<?php echo_val('cargo_cityname_to'); ?>" size="10">
+                </td>
+                <td>Cтоимость: от:<br>
+                    <input type="text" name="price_from" value="<?php echo_val('price_from'); ?>" size="10"><br>
+                </td>
+                <td>Cтоимость: до:<br>
+                    <input type="text" name="price_to" value="<?php echo_val('price_to'); ?>" size="10"><br>
+                </td>
+            </tr>
+            <tr>
+                <td class="td_border_right_dotted">Пункт загрузки в радиусе<sup>*</sup>:&nbsp;<input type="checkbox" name="cargo_city_from_radius_check" value="" <?php if (isset($_POST['cargo_city_from_radius_check'])) echo 'checked="checked"'; ?>/><br>
+                    <select name="cargo_city_from_radius_value">
+                        <?php
+                            foreach ($GLOBALS['tzs_city_from_radius_value'] as $key => $val) {
+                                echo '<option value="'.$key.'" ';
+                                if ((isset($_POST['cargo_city_from_radius_value']) && $_POST['cargo_city_from_radius_value'] == $key) || (!isset($_POST['cargo_city_from_radius_value']) && $key == 0)) {
+                                    echo 'selected="selected"';
+                                }
+                                echo '>'.htmlspecialchars($val).'</option>';
+                            }
+                        ?>
+                    </select>
+                </td>
+                <td class="td_border_right_dotted">&nbsp;</td>
+                
+                <td>Цена 1 км: от:<br>
+                    <input type="text" name="price_km_from" value="<?php echo_val('price_from'); ?>" size="10"><br>
+                </td>
+                <td>Цена 1 км: до:<br>
+                    <input type="text" name="price_km_to" value="<?php echo_val('price_to'); ?>" size="10"><br>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="td_border_right_dotted td_border_top_dotted">
+                    <div style="color: #F5C034; font-style: italic; font-weight: bold;">
+                        <sup>*</sup>Для выбора радиуса укажите страну и город пункта погрузки.
+                    </div>
+                </td>
+                
                 <td>Тип транспорта:<br>
                     <select name="trans_type">
                         <?php
@@ -482,8 +536,33 @@ function tzs_front_end_search_tr_form($form_type) {
                     </select>
                 </td>
                 <td>
+                    <?php if ($form_type === 'shipments') { ?>
+                    Тип груза:<br>
+                    <select name="sh_type">
+                        <?php
+                            foreach ($GLOBALS['tzs_sh_types_search'] as $key => $val) {
+                                    echo '<option value="'.$key.'" ';
+                                    if ((isset($_POST['sh_type']) && $_POST['sh_type'] == $key) || (!isset($_POST['sh_type']) && $key == 0)) {
+                                            echo 'selected="selected"';
+                                    }
+                                    echo '>'.htmlspecialchars($val).'</option>';
+                            }
+                        ?>
+                    </select>
+                    <?php } ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="td_border_right_dotted td_border_top_dotted">Дата:<br>
+                    <input type="text" name="data_from" value="<?php echo_val('data_from'); ?>" size="10">
+                </td>
+                <td class="td_border_right_dotted td_border_top_dotted">Дата:<br>
+                    <input type="text" name="data_to" value="<?php echo_val('data_to'); ?>" size="10">
+                </td>
+                
+                <td colspan="2" class="td_border_top_dotted">
                     <div style="text-align:right; vertical-aligment: middle;">
-                        <a href="JavaScript:tblTHeadShowSearchForm();" title="Скрыть форму изменения условий поиска"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/search-1.png" width="24px" height="24px"></a>&nbsp;&nbsp;
+                        <a href="JavaScript:tblTHeadShowSearchForm();" title="Скрыть форму изменения условий поиска"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/form_hide.png" width="150px" height="26px"></a>&nbsp;&nbsp;
                         <a href="javascript:onTblTheadButtonClearClick();" title="Очистить все условия фильтра"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/eraser.png" width="24px" height="24px"></a>&nbsp;&nbsp;
                         <a href="javascript:onTblSearchButtonClick();" title="Выполнить поиск по текущим условиям фильтра"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/find-1.png" width="24px" height="24px"></a>
                     </div>

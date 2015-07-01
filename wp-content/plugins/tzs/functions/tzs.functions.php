@@ -211,7 +211,14 @@ function echo_val_def($name, $def) {
 }
 
 function trans_types_to_str($t, $t2) {
-	$type = $t > 0 && isset($GLOBALS['tzs_tr_types'][$t]) ? $GLOBALS['tzs_tr_types'][$t] : "";
+	$type = $t > 0 && isset($GLOBALS['tzs_tr2_types'][$t]) ? $GLOBALS['tzs_tr2_types'][$t][0].'<br><img src="'.$GLOBALS['tzs_tr2_types'][$t][1].'"></img>' : "";
+	if (strlen($type) == 0) {
+		return "";
+	} else {
+		return $type;
+	}
+        
+	/*$type = $t > 0 && isset($GLOBALS['tzs_tr_types'][$t]) ? $GLOBALS['tzs_tr_types'][$t] : "";
 	$type2 = "";
 	if ($t2 > 0 && isset($GLOBALS['tzs_tr2_types'][$t2])) {
 		$t = $GLOBALS['tzs_tr2_types'][$t2];
@@ -225,7 +232,7 @@ function trans_types_to_str($t, $t2) {
 		return $type;
 	} else {
 		return $type2;
-	}
+	}*/
 }
 
 function tzs_cost_print_option($name, $value) {

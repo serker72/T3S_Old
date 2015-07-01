@@ -26,30 +26,16 @@ function tzs_front_end_products_handler($atts) {
 
     ?>
 <!------------------------------------------------------------------------->                        
-    <div id="table_product">
+    <div>
         <table  id="tbl_products">
             <thead>
     <form class="search_pr_form" id="search_pr_form2" name="search_pr_form1" method="POST">
                 <tr id="tbl_thead_records_per_page">
-                    <th colspan="3">
-                        <?php if ($rootcategory === '1') { ?>
-                            Категория товаров:
-                            <select name="type_id" <?php echo ($rootcategory === '1') ? '' : ' disabled="disabled"'; ?> >
-                                <option value="0">все категории</option>
-                                <option disabled>- - - - - - - -</option>
-                            <?php
-                                tzs_build_product_types('type_id', TZS_PR_ROOT_CATEGORY_PAGE_ID);
-                            ?>
-                            </select>
-                        <?php } ?>
-                    </th>
-                    <th colspan="3">
-                        <div id="notice">
-                            Для добавления товара пожалуйста,<br /> войдите или зарегистрируйтесь
-                        </div>
-                    </th>
-                    
-                    <th colspan="4" id="tbl_thead_records_per_page_th">
+                    <th colspan="3" id="thead_h1"></th>
+                    <th colspan="5">
+                        <div class="thead_button">выбор критериев поиска</div>
+                        <div class="thead_info">для добавления товаров, пожалуйста, войдите или зарегистрируйтесь</div>
+                        <div id="tbl_thead_records_per_page_th"></div>
                     </th>
                 </tr>
                 <tr>
@@ -64,21 +50,6 @@ function tzs_front_end_products_handler($atts) {
                 </tr>
                 <tr>
                     <th>
-                        <!--div id="tbl_thead_search_button_1" class="tbl_thead_search_button" title="Фильтр по категории">
-                                <img chk="1" src="<?php //echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/checkbox_<?php echo (isset($_POST['sale_or_purchase']) && $_POST['sale_or_purchase'] > 0) ? 'checked' : 'unchecked'; ?>.png" width="16px" height="16px">
-                                <a href="JavaScript:tblTHeadShowForm('#tbl_thead_search_div_1', '.tbl_thead_search_div');"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/navigate-down.png" width="16px" height="16px"></a>
-                        </div>
-                            <div id="tbl_thead_search_div_1" class="tbl_thead_search_div">
-                                Категория:<br>
-                              <select name="type_id" <?php //echo ($rootcategory === '1') ? '' : ' disabled="disabled"'; ?> >
-                                <option value="0">все категории</option>
-                                <option disabled>- - - - - - - -</option>
-                                <?php
-                                    //tzs_build_product_types('type_id', TZS_PR_ROOT_CATEGORY_PAGE_ID);
-                                ?>
-                            </select>
-                            <?php //wp_nonce_field( 'type_id', 'type_id_nonce' ); ?>
-                            </div-->
                     </th>
                     <th>
                         <div id="tbl_thead_search_button_2" class="tbl_thead_search_button" title="Фильтр по типу заявок">
@@ -182,7 +153,7 @@ function tzs_front_end_products_handler($atts) {
                     </th>
                     <th>
                         <div class="tbl_thead_search_button_1">
-                            <a href="JavaScript:tblTHeadShowSearchForm();" title="Полная форма изменения условий поиска"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/search-1.png" width="24px" height="24px"></a>&nbsp;
+                            <a href="JavaScript:onTblTheadButtonSnowClick();" title="Полная форма изменения условий поиска"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/search-1.png" width="24px" height="24px"></a>&nbsp;
                             <a href="javascript:onTblTheadButtonClearClick();" title="Очистить все условия фильтра"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/eraser.png" width="24px" height="24px"></a>&nbsp;
                             <a href="javascript:onTblTheadButtonSearchClick();" title="Выполнить поиск по текущим условиям фильтра"><img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/find-1.png" width="24px" height="24px"></a>
                         </div>
@@ -203,17 +174,18 @@ function tzs_front_end_products_handler($atts) {
 
     </div>
 <!------------------------------------------------------------------------->                        
-    <!--div class="slide_panel"-->
-    <div id="slideout">
+    <!--div id="slideout">
         <img src="<?php echo get_site_url(); ?>/wp-content/plugins/tzs/assets/images/search-1.png" width="32px" height="32px" alt="Форма поиска"></a>
-        <div id="slideout_inner">
+        <div id="slideout_inner"-->
+    <div class="slide_panel">
             <?php 
             tzs_front_end_search_pr_form(); 
             ?>
-        </div>
+        <!--/div-->
     </div>
 <!------------------------------------------------------------------------->                        
     <script src="/wp-content/plugins/tzs/assets/js/table_reload.js"></script>
+    <script src="/wp-content/plugins/tzs/assets/js/jquery.stickytableheaders.min.js"></script>
     
     <script>
         var SearchFormVisible = false;
@@ -327,6 +299,13 @@ function tzs_front_end_products_handler($atts) {
             }
         }
         
+        function onTblTheadButtonSnowClick() {
+            tblTHeadShowForm('', '.tbl_thead_search_div');
+            tblTHeadShowSearchForm();
+            // Для исключения повторного обновления страницы - return false
+            //return false;
+        }
+        
         function onTblTheadButtonSearchClick() {
             tblTHeadShowForm('', '.tbl_thead_search_div');
             if (SearchFormVisible) { tblTHeadShowSearchForm(); }
@@ -359,14 +338,14 @@ function tzs_front_end_products_handler($atts) {
         
         function tblTHeadShowSearchForm() {
             if (!SearchFormVisible) { 
-                //jQuery('.slide_panel').animate({'left':'0'},600); 
-                jQuery('#slideout').stop().animate({left: 385}, 1000);
-                jQuery('#slideout_inner').stop().animate({left: 0}, 1000);
+                jQuery('.slide_panel').animate({'left':'0'},600); 
+                //jQuery('#slideout').stop().animate({left: 385}, 1000);
+                //jQuery('#slideout_inner').stop().animate({left: 0}, 1000);
             }
             else { 
-                //jQuery('.slide_panel').animate({'left':'-420'},500); 
-                jQuery('#slideout').stop().animate({left: 0}, 'slow');
-                jQuery('#slideout_inner').stop().animate({left: -385}, 'slow');
+                jQuery('.slide_panel').animate({'left':'-420'},500); 
+                //jQuery('#slideout').stop().animate({left: 0}, 'slow');
+                //jQuery('#slideout_inner').stop().animate({left: -385}, 'slow');
             }
             SearchFormVisible = ~ SearchFormVisible;
         }
@@ -375,7 +354,7 @@ function tzs_front_end_products_handler($atts) {
         function thRecordsPerPagePrint(records_per_page) {
             var vTZS_RECORDS_PER_PAGE = <?php echo TZS_RECORDS_PER_PAGE; ?>;
             var vRecordsArray = [<?php echo TZS_RECORDS_PER_PAGE_ARRAY; ?>];
-            var vRecordsStr = 'Количество записей на странице:&nbsp;&nbsp;&nbsp;';
+            var vRecordsStr = 'Количество записей:&nbsp;&nbsp;&nbsp;';
             
             if (!records_per_page || (records_per_page < 1)) { records_per_page = vTZS_RECORDS_PER_PAGE; }
             
@@ -420,11 +399,15 @@ function tzs_front_end_products_handler($atts) {
                     'left': '-420px'
                 });
 
+                jQuery('#thead_h1').html('<div class="div_td_left"><h1 class="entry-title">'+jQuery('h1.entry-title').html()+'</h1></div>');
+                jQuery('header.entry-header').hide();
+                jQuery("#tbl_products").stickyTableHeaders();
+                
                 // Устанавливаем обработчики событий 
                 setFormFielsdChangeHandler('search_pr_form');
                 jQuery('#chk_2, #chk_3, #chk_4, #chk_5, #chk_6, #chk_7').change(function(eventObject) { onClearFilterSelected(eventObject); });
                 
-                jQuery('#slideout').hover(
+                /*jQuery('#slideout').hover(
                     function() {
                         //jQuery('#slideout').stop().animate({left: 385}, 1000);
                         //jQuery('#slideout_inner').stop().animate({left: 0}, 1000);
@@ -434,11 +417,8 @@ function tzs_front_end_products_handler($atts) {
                         //jQuery('#slideout').stop().animate({left: 0}, 'slow');
                         //jQuery('#slideout_inner').stop().animate({left: -385}, 'slow');
                     }
-                );
-                /*jQuery('[name=records_per_page]').change(function(eventObject) {
-                    addHidden(theForm, 'records_per_page', eventObject.target.value);
-                    TblTbodyReload(1); 
-                });*/
+                );*/
+    
                 onForm1Change();
                 //
                 jQuery.datepicker.setDefaults(jQuery.datepicker.regional['ru']);

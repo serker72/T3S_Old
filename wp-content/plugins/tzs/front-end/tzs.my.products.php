@@ -76,7 +76,7 @@ function tzs_front_end_my_products_handler($atts) {
         $sql = "SELECT COUNT(*) as cnt FROM ".TZS_PRODUCTS_TABLE." WHERE user_id=$user_id AND active=$active;";
         $res = $wpdb->get_row($sql);
         if (count($res) == 0 && $wpdb->last_error != null) {
-                print_error('Не удалось отобразить список товаров/услуг. Свяжитесь, пожалуйста, с администрацией сайта');
+            print_error('Не удалось отобразить список товаров/услуг. Свяжитесь, пожалуйста, с администрацией сайта');
         } else {
             $records = $res->cnt;
             $pages = ceil($records / $pp);
@@ -93,34 +93,50 @@ function tzs_front_end_my_products_handler($atts) {
             } else {
                 ?>
                 <div id="my_products_wrapper">
-                    <div id="my_products_button">
-                        <?php if ($active === '1') { ?>
-                            <button id="view_del" onClick="javascript: window.open('/account/my-product/?active=0', '_self');">Показать архивные</button>
-                        <?php } else { ?>
-                            <button id="view_edit" onClick="javascript: window.open('/account/my-product/?active=1', '_self');">Показать публикуемые</button>
-                        <?php } ?>
-                        <button id="view_add" onClick="javascript: window.open('/account/add-product/', '_self');">Добавить товар</button>
-                    </div>
-
                     <div id="my_products_table">
-                        <h3>Список <?php echo ($active === '1') ? 'публикуемых' : 'архивных'; ?> товаров</h3>
                         <table id="tbl_products">
-                        <tr>
-                            <th id="tbl_products_id">Номер</th>
-                            <th id="tbl_products_img">Фото</th>
-                            <th id="tbl_products_dtc">Дата размещения</th>
-                            <th id="title">Описание товара</th>
-                            <th id="price">Стоимость товара</th>
-                            <th id="descr">Форма оплаты</th>
-                            <th id="cities">Город</th>
-                            <th id="comm">Комментарии</th>
-                            <th id="actions" nonclickable="true">Действия</th>
-                        </tr>
+                        <thead>
+                            <tr id="tbl_thead_records_per_page">
+                                <th colspan="4" id="thead_h1">
+                                    <div class="div_td_left">
+                                        <h3>Список <?php echo ($active === '1') ? 'публикуемых' : 'архивных'; ?> товаров</h3>
+                                    </div>
+                                </th>
+                                
+                                <th colspan="6">
+                                    <div id="my_products_button">
+                                        <?php if ($active === '1') { ?>
+                                            <button id="view_del" onClick="javascript: window.open('/account/my-products/?active=0', '_self');">Показать архивные</button>
+                                        <?php } else { ?>
+                                            <button id="view_edit" onClick="javascript: window.open('/account/my-products/?active=1', '_self');">Показать публикуемые</button>
+                                        <?php } ?>
+                                        <button id="view_add" onClick="javascript: window.open('/account/add-product/', '_self');">Добавить товар</button>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th id="tbl_products_id">Номер</th>
+                                <th id="tbl_products_sale">Покупка<br/>Продажа</th>
+                                <th id="tbl_products_img">Фото</th>
+                                <th id="tbl_products_dtc">Период публикации</th>
+                                <th id="title">Описание товара</th>
+                                <th id="price">Стоимость товара</th>
+                                <th id="descr">Форма оплаты</th>
+                                <th id="cities">Город</th>
+                                <th id="comm">Комментарии</th>
+                                <th id="actions" nonclickable="true">Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         <?php
                         foreach ( $res as $row ) {
                             ?>
                             <tr rid="<?php echo $row->id;?>">
                                 <td><?php echo $row->id;?></td>
+                                <td>
+                                    <?php echo ($row->sale_or_purchase == 1) ? 'Продажа' : 'Покупка'; ?><br><br>
+                                    <?php echo ($row->fixed_or_tender == 1) ? 'Цена зафиксирована' : 'Тендерное предложение'; ?>
+                                </td>
                                 <td>
                                     <?php
                                     if (strlen($row->image_id_lists) > 0) {
@@ -145,7 +161,7 @@ function tzs_front_end_my_products_handler($atts) {
                                     }
                                     ?>
                                 </td>
-                                <td><?php echo convert_date($row->created); ?></td>
+                                <td><?php echo convert_date($row->created).'<br>'.convert_date($row->expiration); ?></td>
                                 <td><?php echo htmlspecialchars($row->title);?></td>
                                 <td><?php echo $row->price." ".$GLOBALS['tzs_pr_curr'][$row->currency];?></td>
                                 <td><?php echo $GLOBALS['tzs_pr_payment'][$row->payment];?></td>
@@ -165,18 +181,22 @@ function tzs_front_end_my_products_handler($atts) {
                         <?php
                         }
                         ?>
+                        </tbody>
                         </table>
                     </div>
                 </div>
 
+    <script src="/wp-content/plugins/tzs/assets/js/jquery.stickytableheaders.min.js"></script>
                 <script>
                 jQuery(document).ready(function(){
                         jQuery('table').on('click', 'td', function(e) {  
-                                var nonclickable = 'true' == e.delegateTarget.rows[0].cells[this.cellIndex].getAttribute('nonclickable');
+                                var nonclickable = 'true' == e.delegateTarget.rows[1].cells[this.cellIndex].getAttribute('nonclickable');
                                 var id = this.parentNode.getAttribute("rid");
                                 if (!nonclickable)
                                         document.location = "/account/view-product/?id="+id;
                         });
+                        
+                        jQuery("#tbl_products").stickyTableHeaders();
                 });
 
                 function doDisplay(id) {
